@@ -1,4 +1,4 @@
-@unless(request()->is('list_invoices', 'form_invoices'))
+@unless(request()->is('list_shipments', 'form_shipments', 'customer', 'shipper'))
 <footer class="footer py-4  ">
     <div class="container-fluid">
         <div class="row align-items-center justify-content-lg-between">

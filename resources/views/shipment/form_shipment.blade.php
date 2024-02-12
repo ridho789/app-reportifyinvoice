@@ -1,5 +1,5 @@
 @extends('layouts.base')
-<!-- @section('title', 'Form Invoice') -->
+<!-- @section('title', 'Form Shipment') -->
 @section('content')
 <div class="container-fluid py-4">
     <div class="row mt-4">
@@ -9,7 +9,7 @@
                     <div class="icon icon-lg icon-shape bg-gradient-dark shadow text-center border-radius-xl mt-n4 me-3 float-start">
                         <i class="material-icons opacity-10">event</i>
                     </div>
-                    <h6 class="mb-0">New Invoice</h6>
+                    <h6 class="mb-0">New Shipment</h6>
                 </div>
                 <div class="card-body pt-2">
                     <form class="multisteps-form__form">
@@ -28,15 +28,9 @@
                                             <input class="multisteps-form__input form-control" type="text" onfocus="focused(this)" onfocusout="defocused(this)">
                                         </div>
                                     </div>
-                                    <div class="col-12 col-sm-3 mt-3 mt-sm-0">
+                                    <div class="col-12 col-sm-5 mt-3 mt-sm-0">
                                         <div class="input-group input-group-dynamic">
                                             <label class="form-label">Date</label>
-                                            <input class="multisteps-form__input form-control" type="text" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-2 mt-3 mt-sm-0">
-                                        <div class="input-group input-group-dynamic">
-                                            <label class="form-label">Code Company</label>
                                             <input class="multisteps-form__input form-control" type="text" onfocus="focused(this)" onfocusout="defocused(this)">
                                         </div>
                                     </div>
@@ -98,7 +92,7 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-end mt-5">
-                            <a href="{{ url('/list_invoices') }}" type="button" name="button" class="btn btn-light m-0">Cancel</a>
+                            <a href="{{ url('/list_shipments') }}" type="button" name="button" class="btn btn-light m-0">Cancel</a>
                             <button type="button" name="button" class="btn bg-gradient-dark m-0 ms-2">Create</button>
                         </div>
                     </form>

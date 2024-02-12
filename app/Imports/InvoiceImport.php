@@ -5,7 +5,7 @@ namespace App\Imports;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
-class InvoiceImport implements ToCollection
+class ShipmentImport implements ToCollection
 {
     /**
     * @param Collection $collection

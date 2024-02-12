@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('tbl_invoices', function (Blueprint $table) {
             $table->id('id_invoice');
-            $table->string('customer');
-            $table->string('invoice_number');
-            $table->date('date');
-            $table->string('term');
-            $table->date('payment_due');
-            $table->string('freight_type');
-            $table->string('banker')->nullable();
-            $table->string('account_number')->nullable();
+            $table->string('weight');
+            $table->string('cbm');
+            $table->string('price');
+            $table->string('amount');
+            $table->date('inv_date');
+            $table->string('spelled');
             $table->timestamps();
         });
     }

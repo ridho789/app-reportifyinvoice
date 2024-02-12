@@ -1,12 +1,12 @@
 @extends('layouts.base')
-<!-- @section('title', 'List Invoices') -->
+<!-- @section('title', 'Shipments') -->
 @section('content')
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12 d-flex ms-auto">
             <div>
-                <a href="{{ url('/form_invoices') }}" class="btn btn-icon bg-gradient-primary">
-                    <i class="material-icons text-xs position-relative">archive</i> invoice
+                <a href="{{ url('/form_shipments') }}" class="btn btn-icon bg-gradient-primary">
+                    <i class="material-icons text-xs position-relative">archive</i> new shipment
                 </a>
             </div>
             <div>
@@ -21,9 +21,9 @@
         <div class="col-12">
             <div class="card mb-4">
                 <div class="card-header pb-5">
-                    <h6>List Invoices</h6>
+                    <h6>List Shipments</h6>
                     <p class="text-sm mb-0">
-                        View all list of invoices in the system.
+                        View all list of shipments in the system.
                     </p>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
@@ -32,7 +32,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Invoice No.</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">shipment No.</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Term</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment Due</th>

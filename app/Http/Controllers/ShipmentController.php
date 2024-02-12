@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class InvoiceController extends Controller
+class ShipmentController extends Controller
 {
     public function index() {
-        return view('/invoice.list_invoices');
+        return view('/shipment.list_shipments');
     }
 
     public function create() {
-        return view('/invoice.form_invoice');
+        return view('/shipment.form_shipment');
     }
 }

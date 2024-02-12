@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Invoice extends Model
+class Shipment extends Model
 {
     use HasFactory;
-    protected $table = 'tbl_invoices';
+    protected $table = 'tbl_shipments';
 }
