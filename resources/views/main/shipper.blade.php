@@ -82,7 +82,7 @@
 
         <div class="col-12">
             <div class="card mb-4">
-                <div class="card-header pb-4">
+                <div class="card-header pb-5">
                     <h6>List Shippers</h6>
                     <p class="text-sm mb-0">
                         View all list of shippers in the system.
@@ -125,7 +125,6 @@
                 </div>
                 @else
                 <div class="card-body px-0 pt-0 pb-0">
-                    <p class="text-center text-sm">No data available</p>
                     <div class="d-flex justify-content-center mb-3">
                         <button type="button" class="btn bg-gradient-dark" id="btn-new-shipper">New Shipper</button>
                     </div>

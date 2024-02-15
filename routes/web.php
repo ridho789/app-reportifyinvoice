@@ -5,6 +5,7 @@ use App\Http\Controllers\shipmentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ShipperController;
+use App\Http\Controllers\BillRecapController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,8 +28,13 @@ Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/list_shipments', [shipmentController::class, 'index']);
 Route::get('/form_shipments', [shipmentController::class, 'create']);
 
+// bill recaps
+Route::get('/list_bill_recaps', [BillRecapController::class, 'index']);
+
 // customer
 Route::get('/customer', [CustomerController::class, 'index']);
+Route::post('customer-store', [CustomerController::class, 'store']);
+Route::post('customer-update', [CustomerController::class, 'update']);
 
 // shipper
 Route::get('/shipper', [ShipperController::class, 'index']);

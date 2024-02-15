@@ -16,7 +16,7 @@
                 </a>
             </li>
             <li class="nav-item mt-3">
-                <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Management</h6>
+                <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MGMT</h6>
             </li>
             <li class="nav-item">
                 <div>
@@ -31,8 +31,20 @@
                 </div>
             </li>
             <li class="nav-item">
+                <div>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ request()->is('list_bill_recaps') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/list_bill_recaps') }}">
+                                <span class="sidenav-mini-icon"> B </span>
+                                <span class="nav-link-text ms-1">Bill Recaps (SOA)</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
                 <hr class="horizontal light">
-                <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Main Data</h6>
+                <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Main</h6>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white {{ request()->is('customer') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/customer') }}">
@@ -42,7 +54,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white {{ request()->is('shipper') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/shipper') }}">
-                    <span class="sidenav-mini-icon"> S </span>
+                    <span class="sidenav-mini-icon"> Sp </span>
                     <span class="nav-link-text ms-1">Shippers</span>
                 </a>
             </li>
