@@ -32,6 +32,8 @@ Route::get('/form_shipments', [shipmentController::class, 'create']);
 Route::get('/list_bill_recap', [BillRecapController::class, 'index']);
 Route::get('/form_bill_recap', [BillRecapController::class, 'create']);
 Route::post('bill_recap-store', [BillRecapController::class, 'store']);
+Route::get('bill_recap-edit/{id_bill_recap}', [BillRecapController::class, 'edit']);
+Route::post('bill_recap-update', [BillRecapController::class, 'update']);
 
 // customer
 Route::get('/customer', [CustomerController::class, 'index']);

@@ -22,6 +22,92 @@
                     </p>
                 </div>
                 <div class="card-body px-4 pt-0 pb-0">
+                    @if ($bill)
+                    <form class="form" action="{{ url('bill_recap-update') }}" method="POST">
+                        @csrf
+                        <div class="form-bill-recap mb-4">
+                            <input type="hidden" name="id" value="{{ $bill->id_bill_recap }}">
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</label>
+                                @if (count($customers) > 0)
+                                <select class="form-control" name="id_customer" required>
+                                    <option value="">Choose one..</option>
+                                    @foreach ($customers as $c)
+                                    <option value="{{ $c->id_customer }}" {{ old('id_customer', $bill->id_customer) == $c->id_customer ? 'selected' : '' }}>{{ $c->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @else
+                                <select class="form-control" name="id_customer" disabled>
+                                    <option value="">No data available</option>
+                                </select>
+                                @endif
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Load Date</label>
+                                <input type="date" name="load_date" class="form-control" value="{{ old('load_date', $bill->load_date) }}" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Inv</label>
+                                <input type="text" name="no_inv" class="form-control" value="{{ old('no_inv', $bill->no_inv) }}" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Freight</label>
+                                <select class="form-control" name="freight" required>
+                                    <option value="">Choose one..</option>
+                                    <option value="SIN BTH" {{ old('freight', $bill->freight_type) == 'SIN BTH' ? 'selected' : '' }}>SIN BTH</option>
+                                    <option value="SIN JKT" {{ old('freight', $bill->freight_type) == 'SIN JKT' ? 'selected' : '' }}>SIN JKT</option>
+                                    <option value="BTH JKT" {{ old('freight', $bill->freight_type) == 'BTH JKT' ? 'selected' : '' }}>BTH JKT</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Entry Date / BL</label>
+                                <input type="date" name="entry_date" class="form-control" value="{{ old('entry_date', $bill->entry_date) }}" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Size (M3)</label>
+                                <input type="text" name="size" id="size" class="form-control" value="{{ old('size', $bill->size) }}" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Unit Price</label>
+                                <input type="text" name="unit_price" id="unit_price" class="form-control" value="{{ old('unit_price', $bill->unit_price) }}" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Amount</label>
+                                <input type="text" name="amount" id="amount" class="form-control" value="{{ old('amount', $bill->amount) }}" readonly>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment Date</label>
+                                <input type="date" name="payment_date" value="{{ old('payment_date', $bill->payment_date) }}" class="form-control">
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment Amount</label>
+                                <input type="text" name="payment_amount" id="payment_amount" value="{{ old('payment_amount', $bill->payment_amount) }}" class="form-control">
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Remaining Bill</label>
+                                <input type="text" name="remaining_bill" id="remaining_bill" value="{{ old('remaining_bill', $bill->remaining_bill) }}" class="form-control" readonly>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Overdue Bill</label>
+                                <input type="date" name="overdue_bill" value="{{ old('overdue_bill', $bill->overdue_bill) }}" class="form-control">
+                            </div>
+                        </div>
+
+                        <button type="submit" id="submitBtnBill" class="btn btn-primary btn-sm">Update</button>
+                    </form>
+                    @else
                     <form class="form" action="{{ url('bill_recap-store') }}" method="POST">
                         @csrf
                         <div class="form-bill-recap mb-4">
@@ -105,6 +191,7 @@
 
                         <button type="submit" id="submitBtnBill" class="btn btn-primary btn-sm">Submit</button>
                     </form>
+                    @endif
                 </div>
             </div>
         </div>
