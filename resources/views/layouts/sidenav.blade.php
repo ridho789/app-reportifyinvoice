@@ -34,9 +34,9 @@
                 <div>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white {{ request()->is('list_bill_recaps') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/list_bill_recaps') }}">
+                            <a class="nav-link text-white {{ request()->is('list_bill_recap', 'form_bill_recap') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/list_bill_recap') }}">
                                 <span class="sidenav-mini-icon"> B </span>
-                                <span class="nav-link-text ms-1">Bill Recaps (SOA)</span>
+                                <span class="nav-link-text ms-1">Bill Recap (SOA)</span>
                             </a>
                         </li>
                     </ul>

@@ -16,11 +16,12 @@ return new class extends Migration
             $table->date('load_date');
             $table->string('no_inv');
             $table->string('freight_type');
+            $table->date('entry_date');
             $table->string('size');
             $table->string('unit_price');
             $table->string('amount');
-            $table->date('payment_date');
-            $table->string('payment_amount');
+            $table->date('payment_date')->nullable();
+            $table->string('payment_amount')->nullable();
             $table->string('remaining_bill')->nullable();
             $table->date('overdue_bill')->nullable();
             $table->timestamps();
