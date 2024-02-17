@@ -11,7 +11,11 @@ class BillRecapController extends Controller
 {
     public function index() {
         $customers = Customer::all();
-        $bills = BillRecap::all();
+        $bills = BillRecap::with('customer')
+            ->join('tbl_customers', 'tbl_customers.id_customer', '=', 'tbl_bill_recaps.id_customer')
+            ->orderBy('tbl_customers.name', 'asc')
+            ->orderBy('tbl_bill_recaps.load_date', 'asc')
+            ->get();
         $customerName = Customer::pluck('name', 'id_customer');
         return view('/bill_recap.list_bill_recap', compact('customers', 'bills', 'customerName'));
     }

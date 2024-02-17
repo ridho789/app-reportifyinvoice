@@ -9,6 +9,7 @@ class BillRecap extends Model
 {
     use HasFactory;
     protected $table = 'tbl_bill_recaps';
+
     protected $fillable = [
         'id_bill_recap ',
         'id_customer ',
@@ -24,4 +25,8 @@ class BillRecap extends Model
         'remaining_bill',
         'overdue_bill',
     ];
+
+    public function customer() {
+        return $this->belongsTo(Customer::class, 'tbl_customers', 'id_customer');
+    }
 }
