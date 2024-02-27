@@ -1,8 +1,8 @@
 @extends('layouts.base')
-<!-- @section('title', 'Form Shipment') -->
+<!-- @section('title', 'Shipment') -->
 @section('content')
 <div class="container-fluid py-4">
-    <div class="row mt-4">
+    <!-- <div class="row mt-4 mb-4">
         <div class="col-lg-9 col-12 mx-auto position-relative">
             <div class="card">
                 <div class="card-header p-3 pt-2">
@@ -99,6 +99,257 @@
                 </div>
             </div>
         </div>
+    </div> -->
+    <div class="row">
+        <div id="form-new-bill-recap">
+            <div class="card mb-4">
+                <div class="card-header p-3 pt-2">
+                    <div class="icon icon-lg icon-shape bg-gradient-dark shadow text-center border-radius-xl mt-n4 me-3 float-start">
+                        <i class="material-icons opacity-10">event</i>
+                    </div>
+                    <h6 class="mb-0">Form Shipment</h6>
+                </div>
+                <div class="card-body px-4 pt-0 pb-0 mt-3">
+                    <form class="form" action="{{ url('bill_recap-store') }}" method="POST">
+                        @csrf
+                        <div class="form-bill-recap mb-5">
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No.</label>
+                                <input type="text" name="no" class="form-control" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</label>
+                                <input type="date" name="date" class="form-control" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</label>
+                                <input type="text" name="shipper" class="form-control" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</label>
+                                <input type="text" name="customer" class="form-control" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ship</label>
+                                <input type="text" name="ship" class="form-control" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Ships</label>
+                                <input type="text" name="tot_ship" class="form-control" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Packages</label>
+                                <input type="text" name="tot_pack" class="form-control" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Weight</label>
+                                <input type="text" name="tot_weight" class="form-control" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Volume</label>
+                                <input type="text" name="tot_vol" class="form-control" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etd</label>
+                                <input type="date" name="etd" class="form-control" required>
+                            </div>
+
+                            <div class="input-group input-group-static">
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Eta</label>
+                                <input type="date" name="eta" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <h6>Shipment Line</h6>
+                        <hr>
+
+                        <div class="form-bill-recap mb-4">
+                            <div class="sub-form-recaping">
+                                <div class="header-grouping">
+                                    <label class="text-uppercase text-secondary text-xs font-weight-bolder">IN</label>
+                                </div>
+                                <div class="input-grouping">
+                                    <div class="input-grouping">
+                                        <div class="input-group input-group-static" style="width: 100px;">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</label>
+                                            <input type="date" name="date" class="form-control" required>
+                                        </div>
+
+                                        <div class="input-group input-group-static" style="width: 130px;">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. BL</label>
+                                            <input type="text" name="date" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="sub-form-recaping mx-3">
+                                        <div class="header-grouping">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder">Size MKT</label>
+                                        </div>
+                                        <div class="input-grouping">
+                                            <div class="input-group input-group-static" style="width: 40px;">
+                                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Pkg</label>
+                                                <input type="text" name="date" class="form-control" required>
+                                            </div>
+
+                                            <div class="input-group input-group-static" style="width: 50px;">
+                                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">KG</label>
+                                                <input type="text" name="date" class="form-control" required>
+                                            </div>
+
+                                            <div class="input-group input-group-static" style="width: 50px;">
+                                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">M3</label>
+                                                <input type="text" name="date" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="sub-form-recaping">
+                                        <div class="header-grouping">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder text-danger">Warehouse</label>
+                                        </div>
+                                        <div class="input-grouping">
+                                            <div class="input-group input-group-static" style="width: 50px;">
+                                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">KG</label>
+                                                <input type="text" name="date" class="form-control" required>
+                                            </div>
+
+                                            <div class="input-group input-group-static" style="width: 50px;">
+                                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">M3</label>
+                                                <input type="text" name="date" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="sub-form-recaping mx-3">
+                                        <div class="header-grouping">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder">SIze C&G</label>
+                                        </div>
+                                        <div class="input-grouping">
+                                            <div class="input-group input-group-static" style="width: 50px;">
+                                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">KG</label>
+                                                <input type="text" name="date" class="form-control" required>
+                                            </div>
+
+                                            <div class="input-group input-group-static" style="width: 50px;">
+                                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">M3</label>
+                                                <input type="text" name="date" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sub-form-recaping">
+                                <div class="header-grouping">
+                                    <label class="text-uppercase text-secondary text-xs font-weight-bolder">OUT</label>
+                                </div>
+                                <div class="input-grouping">
+                                    <div class="input-grouping">
+                                        <div class="input-group input-group-static" style="width: 100px;">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</label>
+                                            <input type="date" name="date" class="form-control" required>
+                                        </div>
+
+                                        <div class="input-group input-group-static" style="width: 100px;">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Aju</label>
+                                            <input type="text" name="date" class="form-control" required>
+                                        </div>
+
+                                        <div class="input-group input-group-static" style="width: 130px;">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Inv</label>
+                                            <input type="text" name="date" class="form-control" required>
+                                        </div>
+
+                                        <div class="input-group input-group-static" style="width: 55px;">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Pkg</label>
+                                            <input type="text" name="date" class="form-control" required>
+                                        </div>
+
+                                        <div class="input-group input-group-static" style="width: 55px;">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">KG</label>
+                                            <input type="text" name="date" class="form-control" required>
+                                        </div>
+
+                                        <div class="input-group input-group-static" style="width: 55px;">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Est M3</label>
+                                            <input type="text" name="date" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="sub-form-recaping mx-3">
+                                        <div class="header-grouping">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder">Total M3</label>
+                                        </div>
+                                        <div class="input-grouping">
+                                            <div class="input-group input-group-static" style="width: 55px;">
+                                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">KG</label>
+                                                <input type="text" name="date" class="form-control" required>
+                                            </div>
+
+                                            <div class="input-group input-group-static" style="width: 55px;">
+                                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">M3</label>
+                                                <input type="text" name="date" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="sub-form-recaping">
+                                        <div class="header-grouping">
+                                            <label class="text-uppercase text-secondary text-xxs font-weight-bolder">Difference</label>
+                                        </div>
+                                        <div class="input-grouping">
+                                            <div class="input-group input-group-static" style="width: auto;">
+                                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">M3</label>
+                                                <input type="text" name="date" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="submitBtnBill" class="btn btn-primary btn-sm">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<style>
+    .form-bill-recap {
+        display: flex;
+        overflow-x: auto;
+    }
+
+    .input-group-static {
+        margin-right: 10px;
+    }
+
+    .sub-form-bill-recap {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        overflow-x: auto;
+    }
+
+    .sub-form-recaping {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-grouping {
+        margin-left: -5px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .input-grouping {
+        display: flex;
+    }
+</style>
 @endsection

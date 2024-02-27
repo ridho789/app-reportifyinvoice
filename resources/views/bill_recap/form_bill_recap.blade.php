@@ -51,7 +51,7 @@
 
                             <div class="input-group input-group-static">
                                 <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Inv</label>
-                                <input type="text" name="no_inv" class="form-control" value="{{ old('no_inv', $bill->no_inv) }}" required>
+                                <input type="text" name="no_inv" class="form-control" value="{{ old('no_inv', $bill->no_inv) }}" style="width: 170px;" required>
                             </div>
 
                             <div class="input-group input-group-static">
@@ -135,7 +135,7 @@
 
                             <div class="input-group input-group-static">
                                 <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Inv</label>
-                                <input type="text" name="no_inv" class="form-control" required>
+                                <input type="text" name="no_inv" class="form-control" style="width: 170px;" required>
                             </div>
 
                             <div class="input-group input-group-static">
