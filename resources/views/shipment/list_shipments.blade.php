@@ -4,10 +4,20 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12 d-flex ms-auto">
-            <div>
+            <!-- <div>
                 <a href="{{ url('/form_shipments') }}" class="btn bg-gradient-primary" id="btn-new-bill-recap">
                     new shipment
                 </a>
+            </div> -->
+            <div class="btn-group dropdown">
+                <button type="button" class="btn bg-gradient-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    new shipment
+                </button>
+                <ul class="dropdown-menu px-2 py-3" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item border-radius-md" href="{{ url('/form_shipments') }}">Shipment - Sea Freight</a></li>
+                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Shipment - Air Freight</a></li>
+                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Shipment - Singapore</a></li>
+                </ul>
             </div>
             <div>
                 <button class="btn bg-gradient-dark ms-2" type="button" id="dropdownImport" data-bs-toggle="dropdown" aria-expanded="false">
@@ -41,7 +51,7 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Volume</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etd</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Eta</th>
-                                    <th class="text-center text-uppercase text-secondary"></th>
+                                    <!-- <th class="text-center text-uppercase text-secondary"></th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -82,11 +92,11 @@
                                     <td class="align-middle text-center text-sm">
                                         <p class="text-sm font-weight-normal mb-0">-</p>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <a href="javascript:;" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit product">
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
-                                    </td>
+                                    </td> -->
                                 </tr>
                             </tbody>
                         </table>
