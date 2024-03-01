@@ -10,7 +10,8 @@ class ShipmentController extends Controller
         return view('/shipment.list_shipments');
     }
 
+    // sea shipment
     public function create() {
-        return view('/shipment.form_shipment');
+        return view('/shipment.sea_shipment.form_sea_shipment');
     }
 }
