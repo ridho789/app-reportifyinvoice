@@ -13,11 +13,11 @@
                 </div>
                 <div class="card-body px-4 pt-0 pb-0 mb-3">
                     <div class="table-responsive">
-                        <table class="table align-items-center mb-0">
+                        <table class="table table-bordered align-items-center mb-0">
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">No.</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" rowspan="2">BL Date</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">BL Date</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Total Packages <br> pkgs</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Total Weight <br> kgs</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="3">Total CBM</th>
@@ -37,8 +37,8 @@
                                             <p class="text-xs text-secondary mb-0">-</p>
                                         </div>
                                     </td>
-                                    <td>
-                                        <p class="text-xs text-secondary mb-0">-</p>
+                                    <td class="align-middle text-center">
+                                        <p class="text-secondary text-xs font-weight-normal">-</p>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
@@ -79,14 +79,17 @@
                         <i class="material-icons opacity-10">event</i>
                     </div>
                     <h6 class="mb-0">Sea Freight Shipment</h6>
+                    <p class="text-sm mb-0">
+                        List of sea freight shipment.
+                    </p>
                 </div>
                 <div class="card-body px-4 pt-0 pb-0">
                     <div class="table-responsive">
-                        <table class="table align-items-center mb-0">
+                        <table class="table table-bordered align-items-center mb-0">
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No.</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ship</th>
@@ -105,7 +108,7 @@
                                             <p class="text-xs text-secondary mb-0">-</p>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="align-middle text-center">
                                         <p class="text-xs text-secondary mb-0">-</p>
                                     </td>
                                     <td class="align-middle text-center">
@@ -140,17 +143,17 @@
                         </table>
                     </div>
 
-                    <div class="table-responsive py-3">
+                    <div class="table-responsive py-3 mt-3">
                         <!-- <h6>List of Shipment Sea Freight</h6> -->
                         <p class="text-sm mb-0">
-                            List of sea freight shipment.
+                            <!-- List of sea freight shipment. -->
                         </p>
-                        <table class="table align-items-center mb-0">
+                        <table class="table table-bordered align-items-center mb-0">
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">No.</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" rowspan="2">Date</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2" rowspan="2">Code</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Date</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Code</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Marking</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="2">Quantity</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Weight <br> kg</th>
@@ -172,54 +175,54 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>
+                                    <td contenteditable="true">
                                         <div class="d-flex px-3 py-1">
-                                            <p class="text-xs text-secondary mb-0">-</p>
+                                            <p class="text-xs text-secondary mb-0 font-weight-normal">-</p>
                                         </div>
                                     </td>
-                                    <td>
-                                        <p class="text-xs text-secondary mb-0">-</p>
+                                    <td class="align-middle text-center" contenteditable="true">
+                                        <p class="text-xs text-secondary mb-0 font-weight-normal">-</p>
                                     </td>
-                                    <td>
-                                        <p class="text-xs text-secondary mb-0">-</p>
+                                    <td class="align-middle text-center" contenteditable="true">
+                                        <p class="text-xs text-secondary mb-0 font-weight-normal">-</p>
                                     </td>
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
                                     <!-- qty -->
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
                                     <!-- ### -->
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
                                     <!-- dimension -->
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
                                     <!-- ### -->
                                     <!-- total cbm -->
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
                                     <!-- ### -->
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" contenteditable="true">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
                                 </tr>

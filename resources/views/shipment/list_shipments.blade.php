@@ -40,22 +40,26 @@
             </a>
         </div>
         <div class="col-md-4 py-4 py-md-0">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h1 class="text-gradient text-primary"> <span id="status2" countto="44">44</span> <span class="text-xs ms-n1">TS</span></h1>
-                    <h6 class="mb-0 font-weight-bolder">Air Freight</h6>
-                    <p class="opacity-8 mb-0 text-sm">A F</p>
+            <a href="#">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h1 class="text-gradient text-primary"> <span id="status2" countto="44">44</span> <span class="text-xs ms-n1">TS</span></h1>
+                        <h6 class="mb-0 font-weight-bolder">Air Freight</h6>
+                        <p class="opacity-8 mb-0 text-sm">A F</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h1 class="text-gradient text-primary"><span id="status3" countto="87">87</span> <span class="text-xs ms-n2">TS</span></h1>
-                    <h6 class="mb-0 font-weight-bolder">Singapore Freight</h6>
-                    <p class="opacity-8 mb-0 text-sm">S I N</p>
+            <a href="#">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h1 class="text-gradient text-primary"><span id="status3" countto="87">87</span> <span class="text-xs ms-n2">TS</span></h1>
+                        <h6 class="mb-0 font-weight-bolder">Singapore Freight</h6>
+                        <p class="opacity-8 mb-0 text-sm">S I N</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 </div>
