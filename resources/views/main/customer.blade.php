@@ -56,18 +56,17 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6 mb-4">
-                                    <div class="input-group input-group-static">
-                                        <label>Select a shipper (<span class="text-info">Optional</span>)</label>
+                                    <div class="input-group input-group-static text-xs">
                                         @if (count($shippers) > 0)
-                                            <select class="form-control" name="id_shipper">
-                                                <option value="">Choose one..</option>
+                                            <label style="margin-left: -1px; margin-bottom: 12px;">Select a shipper (<span class="text-info">Optional</span>)</label>
+                                            <select class="form-control select2" name="id_shipper[]" multiple style="width: 100%;">
                                                 @foreach ($shippers as $s)
-                                                <option value="{{ $s->id_shipper }}" {{ old('id_shipper') == $s->id_shipper ? 'selected' : '' }}>{{ $s->name }}
-                                                </option>
+                                                    <option value="{{ $s->id_shipper }}" {{ (is_array(old('id_shipper')) && in_array($s->id_shipper, old('id_shipper'))) ? 'selected' : '' }}>{{ $s->name }}</option>
                                                 @endforeach
                                             </select>
                                         @else
-                                            <select class="form-control" name="id_shipper" disabled>
+                                            <label style="margin-bottom: 4.5px;">Select a shipper (<span class="text-info">Optional</span>)</label>
+                                            <select class="form-control" disabled>
                                                 <option value="">No data available</option>
                                             </select>
                                         @endif
@@ -101,18 +100,17 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6 mb-4">
-                                    <div class="input-group input-group-static">
-                                        <label>Select a shipper (<span class="text-info">Optional</span>)</label>
+                                    <div class="input-group input-group-static text-xs">
                                         @if (count($shippers) > 0)
-                                            <select class="form-control" name="id_shipper" id="edit-shipper">
-                                                <option value="">Choose one..</option>
+                                            <label style="margin-left: -1px; margin-bottom: 12px;">Select a shipper (<span class="text-info">Optional</span>)</label>
+                                            <select class="form-control select2" name="id_shipper[]" multiple style="width: 100%;" id="edit-shipper">
                                                 @foreach ($shippers as $s)
-                                                <option value="{{ $s->id_shipper }}" {{ old('id_shipper') == $s->id_shipper ? 'selected' : '' }}>{{ $s->name }}
-                                                </option>
+                                                    <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
                                                 @endforeach
                                             </select>
                                         @else
-                                            <select class="form-control" name="id_shipper" disabled>
+                                            <label style="margin-bottom: 4.5px;">Select a shipper (<span class="text-info">Optional</span>)</label>
+                                            <select class="form-control" disabled>
                                                 <option value="">No data available</option>
                                             </select>
                                         @endif
@@ -146,7 +144,7 @@
                             </thead>
                             <tbody>
                                 @foreach($customers as $c)
-                                <tr data-id="{{ $c->id_customer }}" data-shipper="{{ $c->id_shipper }}">
+                                <tr data-id="{{ $c->id_customer }}" data-shipper="{{ implode(',', explode(',', $c->shipper_ids)) }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
@@ -158,7 +156,24 @@
                                         <p class="text-sm font-weight-normal mb-0">{{ $c->name }}</p>
                                     </td>
                                     <td class="shipper-selected align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $shipperName[$c->id_shipper] ?? '-' }}</p>
+                                        @php
+                                            $shipperNamesString = null;
+                                            if ($c->shipper_ids) {
+                                                $shipperIds = explode(',', $c->shipper_ids);
+                                                $shipperNames = [];
+    
+                                                foreach ($shipperIds as $shipperId) {
+                                                    // Periksa apakah shipperId ada dalam array $shipperName sebelum menambahkannya ke $shipperNames
+                                                    if (isset($shipperName[$shipperId])) {
+                                                        $shipperNames[] = $shipperName[$shipperId];
+                                                    }
+                                                }
+    
+                                                $shipperNamesString = implode(', ', $shipperNames);
+                                            }
+                                        @endphp
+
+                                        <p class="text-sm font-weight-normal mb-0">{{ $shipperNamesString ?? '-' }}</p>
                                     </td>
                                     <td>
                                         <a href="#" class="mx-4 btn-edit-customer" id="btn-edit-customer" style="float: right;">
@@ -182,8 +197,15 @@
         </div>
     </div>
 </div>
-
 <script>
+    // multi select
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Please choose..",
+            maximumSelectionLength: 7
+        });
+    });
+
     setTimeout(function() {
         var errorMessage = document.getElementById('error-message');
         if (errorMessage) {
@@ -218,11 +240,22 @@
                 var row = this.closest("tr");
                 var id = row.getAttribute("data-id");
                 var customer = row.querySelector(".name-customer-selected").textContent;
-                var shipper = row.getAttribute("data-shipper");
+                var shipperIds = row.getAttribute("data-shipper").split(',');
+                $('#edit-shipper').val(shipperIds).trigger('change');
+
+                if (shipperIds.length > 0) {
+                    var selectElement = document.getElementById("edit-shipper");
+                    selectElement.querySelectorAll('option').forEach(function(option) {
+                        if (shipperIds.includes(option.value)) {
+                            option.setAttribute('selected', 'selected');
+                        } else {
+                            option.removeAttribute('selected');
+                        }
+                    });
+                }
 
                 document.getElementById("edit-id").value = id;
                 document.getElementById("edit-customer").value = customer.trim();
-                document.getElementById("edit-shipper").value = shipper;
 
                 if (myEditForm.style.display === 'none') {
                     myEditForm.style.display = 'block';

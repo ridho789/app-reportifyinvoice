@@ -18,6 +18,11 @@ class CustomerController extends Controller
     public function store(Request $request) {
         $existingCustomer = Customer::where('name', $request->customer)->first();
 
+        $shipperIds = null;
+        if ($request->id_shipper) {
+            $shipperIds = implode(',', $request->id_shipper);
+        }
+
         if ($existingCustomer) {
             return redirect()->back()->with([
                 'error' => $request->customer . ' already in the system',
@@ -28,8 +33,8 @@ class CustomerController extends Controller
         } else {
 
             $customer = $request->customer;
-            $id_shipper = $request->id_shipper;
-            Customer::insert(['name'=> $customer, 'id_shipper' => $id_shipper]);
+            $shipper_ids = $shipperIds;
+            Customer::insert(['name'=> $customer, 'shipper_ids' => $shipper_ids]);
             
             return redirect()->back();
         }
@@ -38,6 +43,11 @@ class CustomerController extends Controller
     public function update(Request $request) {
         $existingCustomer = Customer::where('id_customer', $request->id)->first();
         $currentCustomer = $existingCustomer->name;
+
+        $shipperIds = null;
+        if ($request->id_shipper) {
+            $shipperIds = implode(',', $request->id_shipper);
+        }
 
         if ($currentCustomer != $request->customer) {
             $checkCustomer = Customer::where('name', $request->customer)->first();
@@ -52,7 +62,7 @@ class CustomerController extends Controller
             } else {
                 customer::where('id_customer', $request->id)->update([
                     'name' => $request->customer,
-                    'id_shipper' => $request->id_shipper
+                    'shipper_ids' => $shipperIds
                 ]);
         
                 return redirect()->back();
@@ -60,7 +70,7 @@ class CustomerController extends Controller
 
         } else {
             customer::where('id_customer', $request->id)->update([
-                'id_shipper' => $request->id_shipper
+                'shipper_ids' => $shipperIds
             ]);
     
             return redirect()->back();

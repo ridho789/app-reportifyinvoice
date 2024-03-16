@@ -107,11 +107,11 @@
                                     <tr>
                                         <td width=7.5%>
                                             <div class="d-flex px-3 py-1">
-                                                <input type="text" class="form-control" name="no[]" placeholder="...">
+                                                <input type="text" class="form-control" name="number" placeholder="...">
                                             </div>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <input type="date" class="form-control" name="date[]">
+                                            <input type="date" class="form-control" name="dates">
                                         </td>
                                         <td class="align-middle text-center">
                                             <span class="text-secondary text-xs font-weight-normal">-</span>
@@ -134,11 +134,11 @@
                                         <td class="align-middle text-center">
                                             <span class="text-secondary text-xs font-weight-normal">-</span>
                                         </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">-</span>
+                                        <td class="align-middle text-center" width=7.5%>
+                                            <input type="date" class="form-control" name="etd">
                                         </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">-</span>
+                                        <td class="align-middle text-center" width=7.5%>
+                                            <input type="date" class="form-control" name="eta">
                                         </td>
                                     </tr>
                                 </tbody>
