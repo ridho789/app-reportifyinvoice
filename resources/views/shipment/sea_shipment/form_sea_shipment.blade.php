@@ -92,8 +92,8 @@
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No.</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ship</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Ships</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Packages</th>
@@ -114,10 +114,20 @@
                                             <input type="date" class="form-control" name="dates">
                                         </td>
                                         <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">-</span>
+                                            <select class="form-select text-xs select-cust" name="id_customer">
+                                                <option value="">...</option>
+                                                @foreach ($customers as $c)
+                                                    <option value="{{ $c->id_customer }}">{{ $c->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">-</span>
+                                            <select class="form-select text-xs select-shipper" name="id_shipper">
+                                                <option value="">...</option>
+                                                @foreach ($shippers as $s)
+                                                    <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </td>
                                         <td class="align-middle text-center">
                                             <span class="text-secondary text-xs font-weight-normal">-</span>
@@ -222,10 +232,10 @@
                                         <input type="text" class="form-control text-center" name="cbm2[]" placeholder="..." style="border: 0px;">
                                     </td>
                                     <!-- ### -->
-                                    <td class="align-middle text-center" contenteditable="true">
+                                    <td class="align-middle text-center">
                                         <input type="text" class="form-control" name="desc[]" placeholder="desc.." style="border: 0px;">
                                     </td>
-                                    <td class="align-middle text-center" contenteditable="true">
+                                    <td class="align-middle text-center">
                                         <select class="form-select text-xs" name="state[]" style="border: 0px;">
                                             <option value="hold">HOLD</option>
                                             <option value="continue">CONTINUE</option>
@@ -240,4 +250,10 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('.select-cust').select2();
+        $('.select-shipper').select2();
+    });
+</script>
 @endsection

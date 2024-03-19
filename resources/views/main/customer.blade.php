@@ -58,7 +58,7 @@
                                 <div class="col-lg-6 mb-4">
                                     <div class="input-group input-group-static text-xs">
                                         @if (count($shippers) > 0)
-                                            <label style="margin-left: -1px; margin-bottom: 12px;">Select a shipper (<span class="text-info">Optional</span>)</label>
+                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select a shipper (<span class="text-info">Optional</span>)</label>
                                             <select class="form-control select2" name="id_shipper[]" multiple style="width: 100%;">
                                                 @foreach ($shippers as $s)
                                                     <option value="{{ $s->id_shipper }}" {{ (is_array(old('id_shipper')) && in_array($s->id_shipper, old('id_shipper'))) ? 'selected' : '' }}>{{ $s->name }}</option>
