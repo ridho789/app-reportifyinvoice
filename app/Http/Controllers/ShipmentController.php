@@ -15,7 +15,7 @@ class ShipmentController extends Controller
     // sea shipment
     public function create() {
         $customers = Customer::orderBy('name')->get();
-        $shippers = Shipper::all();
+        $shippers = Shipper::orderBy('name')->get();
         return view('/shipment.sea_shipment.form_sea_shipment', compact('customers', 'shippers'));
     }
 }

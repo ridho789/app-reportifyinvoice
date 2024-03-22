@@ -117,7 +117,7 @@
                                             <select class="form-select text-xs select-cust" name="id_customer">
                                                 <option value="">...</option>
                                                 @foreach ($customers as $c)
-                                                    <option value="{{ $c->id_customer }}">{{ $c->name }}</option>
+                                                    <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
                                                 @endforeach
                                             </select>
                                         </td>
@@ -255,5 +255,37 @@
         $('.select-cust').select2();
         $('.select-shipper').select2();
     });
+
+    $('.select-cust').change(function(){
+        var selectedCustomerId = $(this).val();
+        var selectedCustomerShipperIds = $('option:selected', this).data('shipper-ids');
+
+        var $selectShipper = $('.select-shipper');
+        $('.select-shipper').val(null).trigger('change');
+        $selectShipper.find('option').prop('disabled', true);
+
+        if (selectedCustomerShipperIds) {
+            if (typeof selectedCustomerShipperIds === 'string') {
+                var shipperIdsArray = selectedCustomerShipperIds.split(',');
+
+                $.each(shipperIdsArray, function(index, value){
+                    var shipperName = $('option[value="'+ value +'"]', $selectShipper).text();
+                    var existingOption = $selectShipper.find('option[value="' + value + '"]');
+                    if (existingOption.length) {
+                        existingOption.prop('disabled', false);
+                    }
+                });
+
+            } else {
+                var shipperId = selectedCustomerShipperIds;
+                var shipperName = $('option[value="'+ shipperId +'"]', $selectShipper).text();
+                var existingOption = $selectShipper.find('option[value="' + shipperId + '"]');
+                if (existingOption.length) {
+                    existingOption.prop('disabled', false);
+                }
+            }
+        }
+    });
+
 </script>
 @endsection
