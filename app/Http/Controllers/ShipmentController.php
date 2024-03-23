@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Shipper;
+use App\Models\Ship;
 
 class ShipmentController extends Controller
 {
@@ -16,6 +17,7 @@ class ShipmentController extends Controller
     public function create() {
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
-        return view('/shipment.sea_shipment.form_sea_shipment', compact('customers', 'shippers'));
+        $ships = Ship::orderBy('name')->get();
+        return view('/shipment.sea_shipment.form_sea_shipment', compact('customers', 'shippers', 'ships'));
     }
 }

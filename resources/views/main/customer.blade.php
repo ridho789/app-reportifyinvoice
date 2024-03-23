@@ -201,8 +201,7 @@
     // multi select
     $(document).ready(function() {
         $('.select2').select2({
-            placeholder: "Please choose..",
-            maximumSelectionLength: 7
+            placeholder: "Please choose.."
         });
     });
 

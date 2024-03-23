@@ -105,15 +105,15 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td width=7.5%>
+                                        <td width=15%>
                                             <div class="d-flex px-3 py-1">
                                                 <input type="text" class="form-control" name="number" placeholder="...">
                                             </div>
                                         </td>
-                                        <td class="align-middle text-center" width=7.5%>
+                                        <td class="align-middle text-center" width=5.5%>
                                             <input type="date" class="form-control" name="dates">
                                         </td>
-                                        <td class="align-middle text-center">
+                                        <td class="align-middle text-center" width=10%>
                                             <select class="form-select text-xs select-cust" name="id_customer">
                                                 <option value="">...</option>
                                                 @foreach ($customers as $c)
@@ -121,7 +121,7 @@
                                                 @endforeach
                                             </select>
                                         </td>
-                                        <td class="align-middle text-center">
+                                        <td class="align-middle text-center" width=10%>
                                             <select class="form-select text-xs select-shipper" name="id_shipper">
                                                 <option value="">...</option>
                                                 @foreach ($shippers as $s)
@@ -129,25 +129,30 @@
                                                 @endforeach
                                             </select>
                                         </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">-</span>
+                                        <td class="align-middle text-center" width=10%>
+                                            <select class="form-select text-xs select-ship" name="id_ship">
+                                                <option value="">...</option>
+                                                @foreach ($ships as $s)
+                                                    <option value="{{ $s->id_ship }}">{{ $s->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">-</span>
+                                            <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." readonly>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">-</span>
+                                            <input type="text" class="form-control text-center" name="tot_pkgs" placeholder="..." readonly>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">-</span>
+                                            <input type="text" class="form-control text-center" name="tot_weight" placeholder="..." readonly>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">-</span>
+                                            <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." readonly>
                                         </td>
-                                        <td class="align-middle text-center" width=7.5%>
+                                        <td class="align-middle text-center" width=5.5%>
                                             <input type="date" class="form-control" name="etd">
                                         </td>
-                                        <td class="align-middle text-center" width=7.5%>
+                                        <td class="align-middle text-center" width=5.5%>
                                             <input type="date" class="form-control" name="eta">
                                         </td>
                                     </tr>
@@ -254,6 +259,7 @@
     $(document).ready(function() {
         $('.select-cust').select2();
         $('.select-shipper').select2();
+        $('.select-ship').select2({tags: true});
     });
 
     $('.select-cust').change(function(){

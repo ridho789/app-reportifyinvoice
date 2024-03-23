@@ -5,6 +5,7 @@ use App\Http\Controllers\shipmentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ShipperController;
+use App\Http\Controllers\ShipController;
 use App\Http\Controllers\BillRecapController;
 
 /*
@@ -46,3 +47,8 @@ Route::post('customer-update', [CustomerController::class, 'update']);
 Route::get('/shipper', [ShipperController::class, 'index']);
 Route::post('shipper-store', [ShipperController::class, 'store']);
 Route::post('shipper-update', [ShipperController::class, 'update']);
+
+// ship
+Route::get('/ship', [ShipController::class, 'index']);
+Route::post('ship-store', [ShipController::class, 'store']);
+Route::post('ship-update', [ShipController::class, 'update']);

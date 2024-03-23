@@ -22,7 +22,7 @@ class CustomerController extends Controller
         if ($request->id_shipper) {
             $shipperIds = implode(',', $request->id_shipper);
         }
-
+        
         if ($existingCustomer) {
             return redirect()->back()->with([
                 'error' => $request->customer . ' already in the system',
@@ -31,7 +31,7 @@ class CustomerController extends Controller
             ]);
 
         } else {
-
+            
             $customer = $request->customer;
             $shipper_ids = $shipperIds;
             Customer::insert(['name'=> $customer, 'shipper_ids' => $shipper_ids]);

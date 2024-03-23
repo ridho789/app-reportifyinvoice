@@ -53,8 +53,14 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link text-white {{ request()->is('ship') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/ship') }}">
+                    <span class="sidenav-mini-icon"> S </span>
+                    <span class="nav-link-text ms-1">Ship</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-white {{ request()->is('shipper') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/shipper') }}">
-                    <span class="sidenav-mini-icon"> Sp </span>
+                    <span class="sidenav-mini-icon"> Sh </span>
                     <span class="nav-link-text ms-1">Shippers</span>
                 </a>
             </li>
