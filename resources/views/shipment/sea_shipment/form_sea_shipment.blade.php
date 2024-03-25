@@ -173,7 +173,7 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Date</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Code</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Marking</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="2">Quantity</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="4">Quantity</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Weight <br> kg</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="3">Dimension</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="2">Total CBM</th>
@@ -181,8 +181,8 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">State</th>
                                 </tr>
                                 <tr>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Pkgs</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Loose</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" colspan="2">Pkgs</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" colspan="2">Loose</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">p</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">l</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">t</th>
@@ -208,11 +208,25 @@
                                         <input type="text" class="form-control text-center" name="marking[]" placeholder="..." style="border: 0px;">
                                     </td>
                                     <!-- qty -->
-                                    <td class="align-middle text-center" width=7.5%>
+                                    <td class="align-middle text-center" width=5%>
                                         <input type="text" class="form-control text-center" name="qty_pkg[]" placeholder="..." style="border: 0px;">
                                     </td>
-                                    <td class="align-middle text-center" width=7.5%>
+                                    <td class="align-middle text-center" width=5%>
+                                        <select class="form-select text-xs" name="unit_qty_pkg[]" style="border: 0px;">
+                                            <option value="plt">PLT</option>
+                                            <option value="ctn">CTN</option>
+                                            <option value="pkg">PKG</option>
+                                        </select>
+                                    </td>
+                                    <td class="align-middle text-center" width=5%>
                                         <input type="text" class="form-control text-center" name="qty_loose[]" placeholder="..." style="border: 0px;">
+                                    </td>
+                                    <td class="align-middle text-center" width=5%>
+                                        <select class="form-select text-xs" name="unit_qty_loose[]" style="border: 0px;">
+                                            <option value="plt">PLT</option>
+                                            <option value="ctn">CTN</option>
+                                            <option value="pkg">PKG</option>
+                                        </select>
                                     </td>
                                     <!-- ### -->
                                     <td class="align-middle text-center" width=10%>
