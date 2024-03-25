@@ -10,7 +10,7 @@ class CustomerController extends Controller
 {
     public function index() {
         $customers = Customer::orderBy('name')->get();
-        $shippers = Shipper::all();
+        $shippers = Shipper::orderBy('name')->get();
         $shipperName = Shipper::pluck('name', 'id_shipper');
         return view('main.customer', compact('customers', 'shippers', 'shipperName'));
     }
