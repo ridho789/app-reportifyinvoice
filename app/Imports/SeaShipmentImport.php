@@ -4,8 +4,11 @@ namespace App\Imports;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use App\Models\Customer;
+use App\Models\Shipper;
+use App\Models\Ship;
 
-class ShipmentImport implements ToCollection
+class SeaShipmentImport implements ToCollection
 {
     /**
     * @param Collection $collection

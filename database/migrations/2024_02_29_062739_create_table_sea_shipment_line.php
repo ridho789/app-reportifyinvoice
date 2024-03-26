@@ -16,16 +16,17 @@ return new class extends Migration
             $table->date('date');
             $table->string('code');
             $table->string('marking');
-            $table->string('qty_pkgs');
-            $table->string('qty_loose');
+            $table->string('qty_pkgs')->nullable();
+            $table->string('qty_loose')->nullable();
             $table->string('weight');
             $table->string('dimension_p');
             $table->string('dimension_l');
             $table->string('dimension_t');
             $table->string('tot_cbm_1');
-            $table->string('tot_cbm_2');
-            $table->string('desc');
-            $table->string('state');
+            $table->string('tot_cbm_2')->nullable();
+            $table->string('lts')->nullable();
+            $table->string('desc')->nullable();
+            $table->string('state')->nullable();
             $table->timestamps();
         });
     }

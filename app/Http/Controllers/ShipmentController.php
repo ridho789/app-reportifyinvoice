@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Shipper;
 use App\Models\Ship;
+use App\Imports\SeaShipmentImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ShipmentController extends Controller
 {
@@ -14,10 +16,27 @@ class ShipmentController extends Controller
     }
 
     // sea shipment
-    public function create() {
+    public function createSeaShipment() {
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
         return view('/shipment.sea_shipment.form_sea_shipment', compact('customers', 'shippers', 'ships'));
+    }
+
+    public function importSeaShipment(Request $request) {
+        $request->validate([
+            'file' => 'required|mimes:xlsx|max:2048',
+        ]);
+
+        try {
+            $file = $request->file('file');
+            $import = new SeaShipmentImport;
+
+            Excel::import($import, $file);
+
+        } catch (\Exception $e) {
+
+            return redirect('/form_sea_shipment');
+        }
     }
 }

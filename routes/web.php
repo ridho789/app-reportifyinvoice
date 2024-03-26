@@ -29,7 +29,8 @@ Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/list_shipments', [shipmentController::class, 'index']);
 
 // sea shipment
-Route::get('/form_sea_shipment', [shipmentController::class, 'create']);
+Route::get('/form_sea_shipment', [shipmentController::class, 'createSeaShipment']);
+Route::post('import-sea-shipment', [shipmentController::class, 'importSeaShipment']);
 
 // bill recaps
 Route::get('/list_bill_recap', [BillRecapController::class, 'index']);

@@ -19,10 +19,39 @@
                     Import
                 </button>
                 <ul class="dropdown-menu px-2 py-3" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Shipment - Sea Freight</a></li>
+                    <li><a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal" data-bs-target="#seafreightModal">Shipment - Sea Freight</a></li>
                     <li><a class="dropdown-item border-radius-md" href="javascript:;">Shipment - Air Freight</a></li>
                     <li><a class="dropdown-item border-radius-md" href="javascript:;">Shipment - Singapore</a></li>
                 </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal - Import Sea Shipment -->
+    <div class="modal fade" id="seafreightModal" tabindex="-1" role="dialog" aria-labelledby="seafreightModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-normal text-md" id="seafreightModalLabel"><b>Import Shipment - Sea Freight</b></h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ url('import-sea-shipment') }}" method="POST" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="basic-form custom_file_input">
+                            @csrf
+                                <input class="form-control" type="file" name="file" required>
+                            @error('file')
+                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn bg-gradient-primary btn-md">Import</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

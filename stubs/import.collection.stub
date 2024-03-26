@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Imports;
+namespace DummyNamespace;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
-class ShipperImport implements ToCollection
+class DummyClass implements ToCollection
 {
     /**
     * @param Collection $collection

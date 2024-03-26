@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('table_sea_shipment', function (Blueprint $table) {
             $table->id('id_sea_shipment');
-            $table->string('no');
-            $table->date('date');
+            $table->string('no_aju')->nullable();
+            $table->date('date')->nullable();
+            $table->string('origin');
             $table->string('tot_ships');
             $table->string('tot_pkgs');
             $table->string('tot_weight');
             $table->string('tot_vol');
-            $table->date('etd');
-            $table->date('eta');
+            $table->date('etd')->nullable();
+            $table->date('eta')->nullable();
             $table->timestamps();
         });
     }

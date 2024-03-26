@@ -90,11 +90,12 @@
                             <table class="table table-bordered align-items-center mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No.</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Aju</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ship</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Origin</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Ships</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Packages</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Weight</th>
@@ -105,7 +106,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td width=15%>
+                                        <td width=10%>
                                             <div class="d-flex px-3 py-1">
                                                 <input type="text" class="form-control" name="number" placeholder="...">
                                             </div>
@@ -136,6 +137,9 @@
                                                     <option value="{{ $s->id_ship }}">{{ $s->name }}</option>
                                                 @endforeach
                                             </select>
+                                        </td>
+                                        <td class="align-middle text-center" width=5.5%>
+                                            <input type="text" class="form-control text-center" name="origin" placeholder="...">
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." readonly>
@@ -177,6 +181,7 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Weight <br> kg</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="3">Dimension</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="2">Total CBM</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">LTS</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Desc</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">State</th>
                                 </tr>
@@ -229,7 +234,7 @@
                                         </select>
                                     </td>
                                     <!-- ### -->
-                                    <td class="align-middle text-center" width=10%>
+                                    <td class="align-middle text-center" width=5%>
                                         <input type="text" class="form-control text-center" name="weight[]" placeholder="..." style="border: 0px;">
                                     </td>
                                     <!-- dimension -->
@@ -251,11 +256,15 @@
                                         <input type="text" class="form-control text-center" name="cbm2[]" placeholder="..." style="border: 0px;">
                                     </td>
                                     <!-- ### -->
-                                    <td class="align-middle text-center">
-                                        <input type="text" class="form-control" name="desc[]" placeholder="desc.." style="border: 0px;">
+                                    <td class="align-middle text-center" width=5%>
+                                        <input type="text" class="form-control text-center" name="lts[]" placeholder="..." style="border: 0px;">
                                     </td>
                                     <td class="align-middle text-center">
-                                        <select class="form-select text-xs" name="state[]" style="border: 0px;">
+                                        <input type="text" class="form-control text-center" name="desc[]" placeholder="..." style="border: 0px;">
+                                    </td>
+                                    <td class="align-middle text-center" width=7.5%>
+                                        <select class="form-select text-center text-xs" name="state[]" style="border: 0px;">
+                                            <option value="">...</option>
                                             <option value="hold">HOLD</option>
                                             <option value="continue">CONTINUE</option>
                                         </select>
