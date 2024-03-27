@@ -9,4 +9,8 @@ class Shipper extends Model
 {
     use HasFactory;
     protected $table = 'tbl_shippers';
+
+    protected $fillable = [
+        'name',
+    ];
 }

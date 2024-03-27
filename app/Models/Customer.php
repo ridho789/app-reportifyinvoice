@@ -9,4 +9,9 @@ class Customer extends Model
 {
     use HasFactory;
     protected $table = 'tbl_customers';
+
+    protected $fillable = [
+        'name',
+        'shipper_ids',
+    ];
 }

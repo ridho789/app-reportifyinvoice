@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('table_sea_shipment_line', function (Blueprint $table) {
             $table->id('id_sea_shipment_line');
             $table->date('date');
-            $table->string('code');
+            $table->string('code')->nullable();
             $table->string('marking');
             $table->string('qty_pkgs')->nullable();
             $table->string('qty_loose')->nullable();

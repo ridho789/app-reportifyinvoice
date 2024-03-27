@@ -33,10 +33,11 @@ class ShipmentController extends Controller
             $import = new SeaShipmentImport;
 
             Excel::import($import, $file);
+            return redirect('/customer');
 
         } catch (\Exception $e) {
 
-            return redirect('/form_sea_shipment');
+            return redirect('/list_shipments');
         }
     }
 }

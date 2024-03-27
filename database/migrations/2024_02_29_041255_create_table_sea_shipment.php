@@ -16,10 +16,6 @@ return new class extends Migration
             $table->string('no_aju')->nullable();
             $table->date('date')->nullable();
             $table->string('origin');
-            $table->string('tot_ships');
-            $table->string('tot_pkgs');
-            $table->string('tot_weight');
-            $table->string('tot_vol');
             $table->date('etd')->nullable();
             $table->date('eta')->nullable();
             $table->timestamps();
