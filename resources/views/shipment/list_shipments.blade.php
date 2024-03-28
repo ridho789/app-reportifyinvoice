@@ -58,10 +58,10 @@
 
     <div class="row">
         <div class="col-md-4">
-            <a href="#">
+            <a href="{{ url('/list_sea_shipment') }}">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h1 class="text-gradient text-primary"><span id="status1" countto="21">21</span> <span class="text-xs ms-n2">TS</span></h1>
+                        <h1 class="text-gradient text-primary"><span id="status1" countto="{{ $seaShipment }}">{{ $seaShipment }}</span> <span class="text-xs ms-n2">TS</span></h1>
                         <h6 class="mb-0 font-weight-bolder">Sea Freight</h6>
                         <p class="opacity-8 mb-0 text-sm">S F</p>
                     </div>

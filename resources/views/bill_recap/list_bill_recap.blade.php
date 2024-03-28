@@ -100,7 +100,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ url('bill_recap-edit', ['id' => Crypt::encrypt($b->id_bill_recap)]) }}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit bill">
+                                        <a href="{{ url('bill_recap-edit', ['id' => Crypt::encrypt($b->id_bill_recap)]) }}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit">
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
                                     </td>

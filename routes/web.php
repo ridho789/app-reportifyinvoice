@@ -30,6 +30,8 @@ Route::get('/list_shipments', [shipmentController::class, 'index']);
 
 // sea shipment
 Route::get('/form_sea_shipment', [shipmentController::class, 'createSeaShipment']);
+Route::get('/list_sea_shipment', [shipmentController::class, 'listSeaShipment']);
+Route::get('sea_shipment-edit/{id_sea_shipment_line}', [shipmentController::class, 'editSeaShipment']);
 Route::post('import-sea-shipment', [shipmentController::class, 'importSeaShipment']);
 
 // bill recaps

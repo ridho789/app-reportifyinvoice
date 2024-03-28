@@ -22,7 +22,8 @@
                 <div>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white {{ request()->is('list_shipments', 'form_sea_shipment') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/list_shipments') }}">
+                            <a class="nav-link text-white {{ request()->is('list_shipments', 'form_sea_shipment', 'list_sea_shipment') ? 'active bg-gradient-primary' : '' }}" 
+                            href="{{ url('/list_shipments') }}">
                                 <span class="sidenav-mini-icon"> S </span>
                                 <span class="nav-link-text ms-1">Shipments</span>
                             </a>
@@ -34,7 +35,8 @@
                 <div>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white {{ request()->is('list_bill_recap', 'form_bill_recap', 'bill_recap-edit/*') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/list_bill_recap') }}">
+                            <a class="nav-link text-white {{ request()->is('list_bill_recap', 'form_bill_recap', 'bill_recap-edit/*') ? 'active bg-gradient-primary' : '' }}" 
+                            href="{{ url('/list_bill_recap') }}">
                                 <span class="sidenav-mini-icon"> B </span>
                                 <span class="nav-link-text ms-1">Bill Recap (SOA)</span>
                             </a>
