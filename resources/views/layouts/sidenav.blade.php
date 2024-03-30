@@ -22,7 +22,7 @@
                 <div>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white {{ request()->is('list_shipments', 'form_sea_shipment', 'list_sea_shipment') ? 'active bg-gradient-primary' : '' }}" 
+                            <a class="nav-link text-white {{ request()->is('list_shipments', 'form_sea_shipment', 'list_sea_shipment', 'sea_shipment-edit/*') ? 'active bg-gradient-primary' : '' }}" 
                             href="{{ url('/list_shipments') }}">
                                 <span class="sidenav-mini-icon"> S </span>
                                 <span class="nav-link-text ms-1">Shipments</span>

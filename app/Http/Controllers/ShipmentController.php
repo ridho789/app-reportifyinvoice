@@ -21,10 +21,12 @@ class ShipmentController extends Controller
 
     // sea shipment
     public function createSeaShipment() {
+        $seaShipment = '';
+        $seaShipmentLines = '';
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
-        return view('/shipment.sea_shipment.form_sea_shipment', compact('customers', 'shippers', 'ships'));
+        return view('/shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships'));
     }
 
     public function listSeaShipment() {
@@ -41,6 +43,10 @@ class ShipmentController extends Controller
 
         $seaShipment = SeaShipment::where('id_sea_shipment', $id)->first();
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->get();
+        $customers = Customer::orderBy('name')->get();
+        $shippers = Shipper::orderBy('name')->get();
+        $ships = Ship::orderBy('name')->get();
+        return view('/shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships'));
     }
 
     public function importSeaShipment(Request $request) {
