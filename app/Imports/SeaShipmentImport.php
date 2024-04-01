@@ -24,21 +24,11 @@ class SeaShipmentImport implements WithMultipleSheets
 
     public function sheets(): array
     {
-        // return [
-        //     'Sheet1' => new SeaShipmentSheetImport(),
-        //     'Sheet2' => new SeaShipmentSheetImport(),
-        //     'Sheet3' => new SeaShipmentSheetImport(),
-        // ];
-
-        $sheetNames = [];
-        $sheets = Excel::getSheetNames();
-        dd($sheets);
-        
-        foreach ($sheets as $sheet) {
-            $sheetNames[$sheet] = new SeaShipmentSheetImport();
-        }
-
-        return $sheetNames;
+        return [
+            'Sheet1' => new SeaShipmentSheetImport(),
+            'Sheet2' => new SeaShipmentSheetImport(),
+            'Sheet3' => new SeaShipmentSheetImport(),
+        ];
     }
 
     public function getLogErrors()
