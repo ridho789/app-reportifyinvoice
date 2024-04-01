@@ -16,7 +16,8 @@ class ShipmentController extends Controller
 {
     public function index() {
         $seaShipment = SeaShipment::count();
-        return view('/shipment.list_shipments', compact('seaShipment'));
+        $logErrors = '';
+        return view('shipment.list_shipments', compact('seaShipment', 'logErrors'));
     }
 
     // sea shipment
@@ -26,7 +27,7 @@ class ShipmentController extends Controller
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
-        return view('/shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships'));
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships'));
     }
 
     public function listSeaShipment() {
@@ -34,7 +35,7 @@ class ShipmentController extends Controller
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');
         $ship = Ship::pluck('name', 'id_ship');
-        return view('/shipment.sea_shipment.list_sea_shipments', compact('allSeaShipment','customer', 'shipper', 'ship'));
+        return view('shipment.sea_shipment.list_sea_shipments', compact('allSeaShipment','customer', 'shipper', 'ship'));
     }
 
     public function editSeaShipment($id) {
@@ -46,7 +47,7 @@ class ShipmentController extends Controller
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
-        return view('/shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships'));
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships'));
     }
 
     public function importSeaShipment(Request $request) {
@@ -54,27 +55,27 @@ class ShipmentController extends Controller
             'file' => 'required|mimes:xlsx|max:2048',
         ]);
 
-        $file = $request->file('file');
-        $import = new SeaShipmentImport;
+        try {
+            $file = $request->file('file');
+            $import = new SeaShipmentImport;
+            Excel::import($import, $file);
+            $logErrors = $import->getLogErrors();
 
-        Excel::import($import, $file);
-        return redirect('/customer');
+            if ($logErrors) {
+                return redirect('list_shipments')->with('logErrors', $logErrors);
 
-        // try {
-        //     $file = $request->file('file');
-        //     $import = new SeaShipmentImport;
+            } else {
+                return redirect('list_sea_shipment');
+            }
 
-        //     Excel::import($import, $file);
-        //     return redirect('/customer');
+        } catch (\Exception $e) {
+            $sqlErrors = $e->getMessage();
 
-        // } catch (\Exception $e) {
-        //     $sqlErrors = $e->getMessage();
+            if (!empty($sqlErrors)){
+                $logErrors = $sqlErrors;
+            }
 
-        //     if (!empty($sqlErrors)){
-        //         $logErrors = $sqlErrors;
-        //     }
-
-        //     return redirect('/list_shipments');
-        // }
+            return redirect('list_shipments')->with('logErrors', $logErrors);
+        }
     }
 }

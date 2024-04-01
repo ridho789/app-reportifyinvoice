@@ -11,7 +11,6 @@
                 <ul class="dropdown-menu px-2 py-3" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item border-radius-md" href="{{ url('/form_sea_shipment') }}">Shipment - Sea Freight</a></li>
                     <li><a class="dropdown-item border-radius-md" href="javascript:;">Shipment - Air Freight</a></li>
-                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Shipment - Singapore</a></li>
                 </ul>
             </div>
             <div class="btn-group dropdown">
@@ -21,7 +20,6 @@
                 <ul class="dropdown-menu px-2 py-3" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal" data-bs-target="#seafreightModal">Shipment - Sea Freight</a></li>
                     <li><a class="dropdown-item border-radius-md" href="javascript:;">Shipment - Air Freight</a></li>
-                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Shipment - Singapore</a></li>
                 </ul>
             </div>
         </div>
@@ -41,9 +39,9 @@
                     <div class="modal-body">
                         <div class="basic-form custom_file_input">
                             @csrf
-                                <input class="form-control" type="file" name="file" required>
+                            <input class="form-control" type="file" name="file" required>
                             @error('file')
-                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
+                            <div class="text-danger text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
@@ -55,6 +53,25 @@
             </div>
         </div>
     </div>
+
+    @if(session()->has('logErrors'))
+    <div class="row">
+        <div class="col-md-12 py-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-sm text-danger">Error Log</h5>
+                    @if(is_array(session('logErrors')))
+                    @foreach(session('logErrors') as $logError)
+                    {{ $logError }} <br>
+                    @endforeach
+                    @else
+                    {{ session('logErrors') }}
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <div class="row">
         <div class="col-md-6">

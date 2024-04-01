@@ -18,6 +18,7 @@ class SeaShipment extends Model
         'eta',
         'id_shipper',
         'id_customer',
-        'id_ship'
+        'id_ship',
+        'value_key'
     ];
 }

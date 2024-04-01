@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('origin');
             $table->date('etd')->nullable();
             $table->date('eta')->nullable();
+            $table->string('value_key')->nullable()->unique();
             $table->timestamps();
         });
     }
