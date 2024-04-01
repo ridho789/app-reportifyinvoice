@@ -4,27 +4,57 @@ namespace App\Imports;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\Customer;
 use App\Models\Shipper;
 use App\Models\Ship;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 
-class SeaShipmentImport implements ToCollection
+class SeaShipmentImport implements WithMultipleSheets
 {
     /**
-    * @param Collection $collection
-    */
+     * @param Collection $collection
+     */
 
     // errors
     private $logErrors = [];
 
+    public function sheets(): array
+    {
+        // return [
+        //     'Sheet1' => new SeaShipmentSheetImport(),
+        //     'Sheet2' => new SeaShipmentSheetImport(),
+        //     'Sheet3' => new SeaShipmentSheetImport(),
+        // ];
+
+        $sheetNames = [];
+        $sheets = Excel::getSheetNames();
+        dd($sheets);
+        
+        foreach ($sheets as $sheet) {
+            $sheetNames[$sheet] = new SeaShipmentSheetImport();
+        }
+
+        return $sheetNames;
+    }
+
+    public function getLogErrors()
+    {
+        return $this->logErrors;
+    }
+}
+
+class SeaShipmentSheetImport implements ToCollection
+{
     public function collection(Collection $collection)
     {
         $rowNumber = 0;
         $currentRow = 0;
 
-        foreach ($collection as $row){
+        foreach ($collection as $row) {
             $currentRow++;
             if ($rowNumber < 3) {
                 // Header shipment column
@@ -39,25 +69,23 @@ class SeaShipmentImport implements ToCollection
                 if ($row[3]) {
                     $checkShipper = Shipper::where('name', 'like', '%' . $row[3] . '%')->first();
                     if (empty($checkShipper)) {
-                        $checkShipper = Shipper::create(['name'=> $row[3]]);
+                        $checkShipper = Shipper::create(['name' => $row[3]]);
                         $IdShipper = $checkShipper->id;
-
                     } else {
                         $IdShipper = $checkShipper->id_shipper;
                     }
                 }
-    
+
                 // Customer
                 if ($row[2]) {
                     $checkCustomer = Customer::where('name', 'like', '%' . $row[2] . '%')->first();
                     if (empty($checkCustomer)) {
-                        $checkCustomer = Customer::create(['name'=> $row[2], 'shipper_ids' => $IdShipper]);
+                        $checkCustomer = Customer::create(['name' => $row[2], 'shipper_ids' => $IdShipper]);
                         $IdCustomer = $checkCustomer->id;
-
                     } else {
                         $IdCustomer = $checkCustomer->id_customer;
                     }
-                    
+
                     $checkShipperIds = $checkCustomer->shipper_ids;
                     if ($checkShipperIds && strpos($checkShipperIds, $IdShipper) === false) {
                         $checkShipperIds .= ",$IdShipper";
@@ -70,16 +98,15 @@ class SeaShipmentImport implements ToCollection
                 if ($row[4]) {
                     $checkShip = Ship::where('name', 'like', '%' . $row[4] . '%')->first();
                     if (empty($checkShip)) {
-                        $checkShip = Ship::create(['name'=> $row[4]]);
+                        $checkShip = Ship::create(['name' => $row[4]]);
                         $IdShip = $checkShip->id;
-
                     } else {
                         $IdShip = $checkShip->id_ship;
                     }
                 }
 
                 $valueKey = $row[0] . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1])->format('Y-m-d') . $IdShipper . $IdCustomer;
-                
+
                 $dataSeaShipment = [
                     'no_aju' => $row[0],
                     'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1]),
@@ -91,7 +118,7 @@ class SeaShipmentImport implements ToCollection
                     'id_ship' => $IdShip,
                     'value_key' => $valueKey
                 ];
-                
+
                 // Create shipment sea freight
                 $seaShipment = SeaShipment::create($dataSeaShipment);
             }
@@ -127,9 +154,5 @@ class SeaShipmentImport implements ToCollection
             // Next row
             $rowNumber++;
         }
-    }
-
-    public function getLogErrors() {
-        return $this->logErrors;
     }
 }

@@ -415,10 +415,10 @@
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="qty_pkg[]" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="qty_pkgs[]" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <select class="form-select text-center text-xs" name="unit_qty_pkg[]" style="border: 0px;">
+                                            <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
                                                 <option value="">...</option>
                                                 <option value="plt">PLT</option>
                                                 <option value="ctn">CTN</option>
@@ -484,6 +484,7 @@
     </div>
 </div>
 <script>
+    // select2
     $(document).ready(function() {
         $('.select-cust').select2();
         $('.select-shipper').select2();
@@ -522,5 +523,70 @@
             }
         }
     });
+
+    // Function to update total ships
+    function updateTotalShips() {
+        var blDates = [];
+        var rows = document.querySelectorAll('input[name="bldate[]"]');
+
+        rows.forEach(function(row) {
+            if (row.value.trim() !== '') {
+                blDates.push(row.value.trim());
+            }
+        });
+
+        var uniqueBlDates = Array.from(new Set(blDates));
+        document.querySelector('input[name="tot_ships"]').value = uniqueBlDates.length;
+    }
+
+    updateTotalShips();
+
+    var blDateInputs = document.querySelectorAll('input[name="bldate[]"]');
+    blDateInputs.forEach(function(input) {
+        input.addEventListener('change', updateTotalShips);
+    });
+
+    // Function to update total packages
+    function calculateTotalPackages() {
+        var totalPackages = 0;
+        var rows = document.querySelectorAll('input[name="qty_pkgs[]"]');
+        
+        rows.forEach(function(row) {
+            if (row.value.trim() !== '') {
+                totalPackages += parseInt(row.value) || 0;
+            }
+        });
+
+        document.querySelector('input[name="tot_pkgs"]').value = totalPackages;
+    }
+
+    calculateTotalPackages();
+
+    var qtyPkgInputs = document.querySelectorAll('input[name="qty_pkgs[]"]');
+    qtyPkgInputs.forEach(function(input) {
+        input.addEventListener('change', calculateTotalPackages);
+    });
+
+    // Function to update total weight
+    function calculateTotalWeight() {
+        var totalWeight = 0;
+        var rows = document.querySelectorAll('input[name="weight[]"]');
+        
+        rows.forEach(function(row) {
+            if (row.value.trim() !== '') {
+                totalWeight += parseFloat(row.value) || 0;
+            }
+        });
+
+        document.querySelector('input[name="tot_weight"]').value = totalWeight;
+    }
+
+    calculateTotalWeight();
+
+    var qtyPkgInputs = document.querySelectorAll('input[name="weight[]"]');
+    qtyPkgInputs.forEach(function(input) {
+        input.addEventListener('change', calculateTotalWeight);
+    });
+
 </script>
 @endsection
