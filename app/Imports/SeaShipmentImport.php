@@ -115,7 +115,16 @@ class SeaShipmentSheetImport implements ToCollection
 
             // Shipment line
             if ($rowNumber > 8 && !empty($row[0])) {
-                $tot_cbm = ($row[8] * $row[9] * $row[10]) / 1000;
+                $tot_cbm1 = null;
+                $tot_cbm2 = null;
+
+                if ($row[3]) {
+                    $tot_cbm1 = ($row[8] * $row[9] * $row[10]) / 1000;
+                }
+
+                if ($row[5]) {
+                    $tot_cbm2 = ($row[8] * $row[9] * $row[10]) / 1000;
+                }
 
                 $dataShipmentLine = [
                     'id_sea_shipment' => $seaShipment->id,
@@ -130,8 +139,8 @@ class SeaShipmentSheetImport implements ToCollection
                     'dimension_p' => $row[8],
                     'dimension_l' => $row[9],
                     'dimension_t' => $row[10],
-                    'tot_cbm_1' => $tot_cbm,
-                    'tot_cbm_2' => $row[12],
+                    'tot_cbm_1' => $tot_cbm1,
+                    'tot_cbm_2' => $tot_cbm2,
                     'lts' => $row[13],
                     'desc' => $row[14],
                     'state' => $row[15],

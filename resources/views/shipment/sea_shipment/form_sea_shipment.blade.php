@@ -85,7 +85,7 @@
                 </div>
                 <div class="card-body px-4 pt-0 pb-0">
                     @if ($seaShipment)
-                    <form id="form-sea-freight" method="POST" action="#">
+                    <form id="form-sea-freight" method="POST" action="{{ url('sea_shipment-update') }}">
                         @csrf
                         <div class="table-responsive">
                             <table class="table table-bordered align-items-center mb-0">
@@ -206,6 +206,7 @@
                                 <tbody>
                                     @foreach($seaShipmentLines as $ssl)
                                     <tr>
+                                        <input type="hidden" name="id_sea_shipment_line[]" value="{{ $ssl->id_sea_shipment_line }}">
                                         <td class="align-middle text-center text-sm" width=2.5%>
                                             <div class="d-flex px-3 py-1">
                                                 {{ $loop->iteration }}.
@@ -227,9 +228,10 @@
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
                                                 <option value="" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == '' ? 'selected' : '' }}>-</option>
-                                                <option value="plt" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'plt' ? 'selected' : '' }}>PLT</option>
+                                                <option value="cse" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'cse' ? 'selected' : '' }}>CSE</option>
                                                 <option value="ctn" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'ctn' ? 'selected' : '' }}>CTN</option>
                                                 <option value="pkg" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'pkg' ? 'selected' : '' }}>PKG</option>
+                                                <option value="plt" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'plt' ? 'selected' : '' }}>PLT</option>
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
@@ -238,9 +240,10 @@
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
                                                 <option value="" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == '' ? 'selected' : '' }}>-</option>
-                                                <option value="plt" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == 'plt' ? 'selected' : '' }}>PLT</option>
+                                                <option value="cse" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'cse' ? 'selected' : '' }}>CSE</option>
                                                 <option value="ctn" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == 'ctn' ? 'selected' : '' }}>CTN</option>
                                                 <option value="pkg" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == 'pkg' ? 'selected' : '' }}>PKG</option>
+                                                <option value="plt" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == 'plt' ? 'selected' : '' }}>PLT</option>
                                             </select>
                                         </td>
                                         <!-- ### -->
@@ -283,6 +286,10 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
                         </div>
                     </form>
                     @else
@@ -420,9 +427,10 @@
                                         <td class="align-middle text-center" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
                                                 <option value="">...</option>
-                                                <option value="plt">PLT</option>
+                                                <option value="cse">CSE</option>
                                                 <option value="ctn">CTN</option>
                                                 <option value="pkg">PKG</option>
+                                                <option value="plt">PLT</option>
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
@@ -431,9 +439,10 @@
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
                                                 <option value="">...</option>
-                                                <option value="plt">PLT</option>
+                                                <option value="cse">CSE</option>
                                                 <option value="ctn">CTN</option>
                                                 <option value="pkg">PKG</option>
+                                                <option value="plt">PLT</option>
                                             </select>
                                         </td>
                                         <!-- ### -->

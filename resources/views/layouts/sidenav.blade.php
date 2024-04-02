@@ -57,7 +57,7 @@
             <li class="nav-item">
                 <a class="nav-link text-white {{ request()->is('ship') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/ship') }}">
                     <span class="sidenav-mini-icon"> S </span>
-                    <span class="nav-link-text ms-1">Ship</span>
+                    <span class="nav-link-text ms-1">Ships</span>
                 </a>
             </li>
             <li class="nav-item">
