@@ -19,16 +19,27 @@ class SeaShipmentImport implements WithMultipleSheets
      * @param Collection $collection
      */
 
-    // errors
     private $logErrors = [];
+    private $sheetNames = [];
+
+    public function __construct(array $sheetNames)
+    {
+        $this->sheetNames = $sheetNames;
+    }
+
+    public function getSheetNames()
+    {
+        return $this->sheetNames;
+    }
 
     public function sheets(): array
     {
-        return [
-            'Sheet1' => new SeaShipmentSheetImport(),
-            'Sheet2' => new SeaShipmentSheetImport(),
-            'Sheet3' => new SeaShipmentSheetImport(),
-        ];
+        $sheets = [];
+        foreach ($this->sheetNames as $sheetName) {
+            $sheets[$sheetName] = new SeaShipmentSheetImport();
+        }
+
+        return $sheets;
     }
 
     public function getLogErrors()

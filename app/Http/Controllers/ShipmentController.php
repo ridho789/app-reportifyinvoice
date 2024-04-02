@@ -11,6 +11,7 @@ use App\Models\SeaShipmentLine;
 use App\Imports\SeaShipmentImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ShipmentController extends Controller
 {
@@ -93,7 +94,10 @@ class ShipmentController extends Controller
 
         try {
             $file = $request->file('file');
-            $import = new SeaShipmentImport;
+            $spreadsheet = IOFactory::load($file);
+            $sheetNames = $spreadsheet->getSheetNames();
+
+            $import = new SeaShipmentImport($sheetNames);
             Excel::import($import, $file);
             $logErrors = $import->getLogErrors();
 
