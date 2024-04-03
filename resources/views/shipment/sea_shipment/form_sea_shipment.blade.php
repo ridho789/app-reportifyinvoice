@@ -597,5 +597,52 @@
         input.addEventListener('change', calculateTotalWeight);
     });
 
+    // Update CBM
+    var inputsP = document.querySelectorAll('input[name="p[]"]');
+    var inputsL = document.querySelectorAll('input[name="l[]"]');
+    var inputsT = document.querySelectorAll('input[name="t[]"]');
+    var inputsCBM1 = document.querySelectorAll('input[name="cbm1[]"]');
+
+    inputsP.forEach(function(input, index) {
+        input.addEventListener('input', function() {
+            updateCBM(index);
+        });
+    });
+
+    inputsL.forEach(function(input, index) {
+        input.addEventListener('input', function() {
+            updateCBM(index);
+        });
+    });
+
+    inputsT.forEach(function(input, index) {
+        input.addEventListener('input', function() {
+            updateCBM(index);
+        });
+    });
+
+    function updateCBM(index) {
+        var row = inputsP[index].closest('tr');
+        var p = parseFloat(inputsP[index].value);
+        var l = parseFloat(inputsL[index].value);
+        var t = parseFloat(inputsT[index].value);
+
+        var volume = (p * l * t) / 1000;
+
+        var inputCBM1 = row.querySelector('input[name="cbm1[]"]');
+        var inputCBM2 = row.querySelector('input[name="cbm2[]"]');
+
+        var inputQtyPkgs = row.querySelector('input[name="qty_pkgs[]"]');
+        var inputQtyLoose = row.querySelector('input[name="qty_loose[]"]');
+
+        if (inputQtyPkgs.value && inputQtyPkgs.value != '-') {
+            inputCBM1.value = volume;
+        }
+
+        if (inputQtyLoose.value && inputQtyLoose.value != '-') {
+            inputCBM2.value = volume;
+        }
+    }
+
 </script>
 @endsection
