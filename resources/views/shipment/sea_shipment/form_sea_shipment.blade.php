@@ -4,7 +4,8 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div>
-            <div class="card mb-4">
+            @if ($groupSeaShipmentLines)
+            <div class="card mb-5">
                 <div class="card-header pb-2">
                     <h6>Summary of Sea Freight Shipment</h6>
                     <p class="text-sm mb-0">
@@ -31,27 +32,28 @@
 
                             </thead>
                             <tbody>
+                                @foreach ($groupSeaShipmentLines as $date => $gsl)
                                 <tr>
-                                    <td>
+                                    <td width=5%>
                                         <div class="d-flex px-3 py-1">
-                                            <p class="text-xs text-secondary mb-0">-</p>
+                                            <p class="text-xs text-secondary mb-0">{{ $loop->iteration }}.</p>
                                         </div>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <p class="text-secondary text-xs font-weight-normal">-</p>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M-y') }}</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">-</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_qty_pkgs'] }}</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">-</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_weight'] ?? '-' }}</span>
                                     </td>
                                     <!-- total cbm -->
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">-</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm1'] ?? '-' }}</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">-</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm2'] ?? '-' }}</span>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
@@ -61,13 +63,15 @@
                                         <span class="text-secondary text-xs font-weight-normal">-</span>
                                     </td>
                                 </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+            @endif
 
-            <div class="card mt-5">
+            <div class="card mt-0 p-0">
                 <!-- <div class="card-header pb-4">
                     <h6>Shipment Sea Freight</h6>
                     <p class="text-sm mb-0">

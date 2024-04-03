@@ -25,10 +25,11 @@ class ShipmentController extends Controller
     public function createSeaShipment() {
         $seaShipment = '';
         $seaShipmentLines = '';
+        $groupSeaShipmentLines = '';
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships'));
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships', 'groupSeaShipmentLines'));
     }
 
     public function listSeaShipment() {
@@ -45,10 +46,30 @@ class ShipmentController extends Controller
 
         $seaShipment = SeaShipment::where('id_sea_shipment', $id)->first();
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->get();
+
+        $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
+            return $item->date;
+        })->map(function ($group) {
+            return [
+                'total_qty_pkgs' => $group->filter(function ($item) {
+                    return is_numeric($item->qty_pkgs);
+                })->sum('qty_pkgs'),
+                'total_weight' => $group->filter(function ($item) {
+                    return is_numeric($item->weight);
+                })->sum('weight'),
+                'total_cbm1' => $group->filter(function ($item) {
+                    return is_numeric($item->tot_cbm_1);
+                })->sum('tot_cbm_1'),
+                'total_cbm2' => $group->filter(function ($item) {
+                    return is_numeric($item->tot_cbm_2);
+                })->sum('tot_cbm_2')
+            ];
+        });
+
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships'));
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships', 'groupSeaShipmentLines'));
     }
 
     public function updateSeaShipment(Request $request) {
