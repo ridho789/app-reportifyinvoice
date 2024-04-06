@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_insurance', function (Blueprint $table) {
+        Schema::create('tbl_insurances', function (Blueprint $table) {
             $table->id('id_insurance');
-            $table->string('quantity');
-            $table->string('unit');
+            $table->string('quantity')->nullable();
+            $table->string('unit')->nullable();
             $table->string('description')->nullable();
-            $table->string('currency');
-            $table->string('original_price');
-            $table->string('exchange_rate');
-            $table->string('idr');
-            $table->string('premi');
+            $table->string('currency')->nullable();
+            $table->string('original_price')->nullable();
+            $table->string('exchange_rate')->nullable();
+            $table->string('idr')->nullable();
+            $table->string('premi')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_insurance');
+        Schema::dropIfExists('tbl_insurances');
     }
 };

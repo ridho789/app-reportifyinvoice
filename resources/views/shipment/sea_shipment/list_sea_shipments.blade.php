@@ -2,7 +2,7 @@
 <!-- @section('title', 'Sea Freight Shipment') -->
 @section('content')
 <div class="container-fluid py-4">
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-12 d-flex ms-auto">
             <div>
                 <a href="{{ url('/form_sea_shipment') }}" class="btn btn-icon bg-gradient-primary" id="btn-new-sea-shipment">
@@ -10,7 +10,7 @@
                 </a>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="row">
         <div class="col-12">

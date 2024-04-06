@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('table_sea_shipment_line', function (Blueprint $table) {
+        Schema::table('tbl_sea_shipment_line', function (Blueprint $table) {
             $table->unsignedBigInteger('id_sea_shipment')->after('id_sea_shipment_line');
-            $table->foreign('id_sea_shipment')->references('id_sea_shipment')->on('table_sea_shipment');
+            $table->foreign('id_sea_shipment')->references('id_sea_shipment')->on('tbl_sea_shipment');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('table_sea_shipment_line', function (Blueprint $table) {
+        Schema::table('tbl_sea_shipment_line', function (Blueprint $table) {
             $table->dropForeign(['id_sea_shipment']);
             $table->dropColumn('id_sea_shipment');
         });

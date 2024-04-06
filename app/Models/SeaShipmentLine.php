@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class SeaShipmentLine extends Model
 {
     use HasFactory;
-    protected $table = 'table_sea_shipment_line';
+    protected $table = 'tbl_sea_shipment_line';
 
     protected $fillable = [
         'id_sea_shipment',

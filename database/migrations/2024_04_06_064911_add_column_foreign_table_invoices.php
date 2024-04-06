@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreign('id_cas')->references('id_cas')->on('tbl_cas_items');
 
             $table->unsignedBigInteger('id_insurance')->after('id_cas');
-            $table->foreign('id_insurance')->references('id_insurance')->on('tbl_insurance');
+            $table->foreign('id_insurance')->references('id_insurance')->on('tbl_insurances');
         });
     }
 

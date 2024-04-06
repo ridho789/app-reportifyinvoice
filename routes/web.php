@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ShipperController;
 use App\Http\Controllers\ShipController;
+use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\BillRecapController;
 
 /*
@@ -56,3 +57,7 @@ Route::post('shipper-update', [ShipperController::class, 'update']);
 Route::get('/ship', [ShipController::class, 'index']);
 Route::post('ship-store', [ShipController::class, 'store']);
 Route::post('ship-update', [ShipController::class, 'update']);
+
+// insurance
+Route::get('/insurance', [InsuranceController::class, 'index']);
+Route::post('import-insurances', [InsuranceController::class, 'importInsurances']);
