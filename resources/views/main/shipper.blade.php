@@ -112,8 +112,8 @@
                                     <td class="name-shipper-selected">
                                         <p class="text-sm font-weight-normal mb-0">{{ $s->name }}</p>
                                     </td>
-                                    <td>
-                                        <a href="#" class="mx-4 btn-edit-shipper" id="btn-edit-shipper" style="float: right;">
+                                    <td class="text-end">
+                                        <a href="#" class="mx-4 btn-edit-shipper" id="btn-edit-shipper">
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
                                     </td>

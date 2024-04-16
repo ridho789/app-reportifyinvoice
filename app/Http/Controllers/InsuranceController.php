@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Insurance;
-use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 use App\Imports\InsuranceImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,8 +12,9 @@ class InsuranceController extends Controller
 {
     public function index() {
         $insurances = Insurance::all();
+        $seaShipmentLine = SeaShipmentLine::pluck('marking', 'id_sea_shipment_line');
         $logErrors = '';
-        return view('main.insurance', compact('insurances', 'logErrors'));
+        return view('main.insurance', compact('insurances', 'seaShipmentLine', 'logErrors'));
     }
 
     public function importInsurances(Request $request) {

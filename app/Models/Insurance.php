@@ -11,7 +11,7 @@ class Insurance extends Model
     protected $table = 'tbl_insurances';
 
     protected $fillable = [
-        'id_sea_shipment',
+        'id_sea_shipment_line',
         'id_item',
         'quantity',
         'unit',

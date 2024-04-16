@@ -77,7 +77,7 @@
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">#</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Marking</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Price</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Charge</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
                             </thead>
@@ -87,18 +87,18 @@
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-sm font-weight-normal text-secondary mb-0">{{ $loop->iteration }}</p>
+                                                <p class="text-sm font-weight-normal text-secondary mb-0">{{ $loop->iteration }}.</p>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="name-customer-selected">
-                                        <p class="text-sm font-weight-normal mb-0">-</p>
+                                        <p class="text-sm font-weight-normal mb-0">{{ $seaShipmentLine[$i->id_sea_shipment_line] ?? '-' }}</p>
                                     </td>
                                     <td class="shipper-selected align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $i->idr }}</p>
+                                        <p class="text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($i->idr ?? 0, 0, ',', '.') }}</p>
                                     </td>
-                                    <td>
-                                        <a href="#" class="mx-4 btn-edit-customer" id="btn-edit-customer" style="float: right;">
+                                    <td class="text-end">
+                                        <a href="#" class="mx-4">
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
                                     </td>
