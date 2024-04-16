@@ -41,6 +41,38 @@
         </div>
     </div>
 
+    <!-- Modal - Edit Insurances -->
+    <div class="modal fade" id="insuranceEditModal" tabindex="-1" role="dialog" aria-labelledby="insuranceEditModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-normal text-md" id="insuranceEditModalLabel"><b>Insurance</b></h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ url('insurance-update') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" id="id" name="id">
+                        <div class="input-group input-group-static mb-4">
+                            <label>Marking</label>
+                            <input type="text" class="form-control" id="marking" name="marking" value="{{ old('marking') }}" disabled>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <label>Charge</label>
+                            <input type="text" class="form-control" id="charge" name="charge" value="{{ old('charge') }}" required>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-primary btn-md ms-1">Update</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     @if(session()->has('logErrors'))
     <div class="row">
         <div class="col-md-12 mb-4">
@@ -91,14 +123,14 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="name-customer-selected">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $seaShipmentLine[$i->id_sea_shipment_line] ?? '-' }}</p>
+                                    <td>
+                                        <p class="marking-selected text-sm font-weight-normal mb-0">{{ $seaShipmentLine[$i->id_sea_shipment_line] ?? '-' }}</p>
                                     </td>
-                                    <td class="shipper-selected align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($i->idr ?? 0, 0, ',', '.') }}</p>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="charge-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($i->idr ?? 0, 0, ',', '.') }}</p>
                                     </td>
                                     <td class="text-end">
-                                        <a href="#" class="mx-4">
+                                        <a href="#" class="mx-4 edit-button" data-bs-toggle="modal" data-bs-target="#insuranceEditModal">
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
                                     </td>
@@ -120,3 +152,59 @@
     </div>
 </div>
 @endsection
+
+<script>
+    function formatCurrency(num) {
+        num = num.toString().replace(/[^\d-]/g, '');
+
+        num = num.replace(/-+/g, (match, offset) => offset > 0 ? "" : "-");
+
+        let isNegative = false;
+        if (num.startsWith("-")) {
+            isNegative = true;
+            num = num.slice(1);
+        }
+
+        let formattedNum = "Rp " + Math.abs(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+        if (isNegative) {
+            formattedNum = "-" + formattedNum;
+        }
+
+        return formattedNum;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var editButtons = document.querySelectorAll(".edit-button");
+        editButtons.forEach(function(button) {
+            button.addEventListener("click", function(event) {
+                event.preventDefault();
+
+                var row = this.closest("tr");
+                var id = row.getAttribute("data-id");
+                var marking = row.querySelector(".marking-selected").textContent;
+                var charge = row.querySelector(".charge-selected").textContent.trim();
+
+                const chargeConvert = parseFloat(charge);
+
+                // Mengisi data ke dalam formulir
+                document.getElementById("id").value = id;
+                document.getElementById("marking").value = marking;
+                document.getElementById("charge").value = charge;
+            });
+        });
+
+        let inputCharges = document.querySelectorAll("#charge");
+        inputCharges.forEach(function(inputCharge) {
+            inputCharge.addEventListener("input", function() {
+                this.value = formatCurrency(this.value);
+            });
+        });
+
+        // let unexpectedPrices = document.querySelectorAll(".unexpected-price");
+        // unexpectedPrices.forEach(function(unexpectedPrice) {
+        //     let price = unexpectedPrice.textContent;
+        //     unexpectedPrice.textContent = formatCurrency(price);
+        // });
+    });
+</script>

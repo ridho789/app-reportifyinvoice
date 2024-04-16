@@ -60,4 +60,5 @@ Route::post('ship-update', [ShipController::class, 'update']);
 
 // insurance
 Route::get('/insurance', [InsuranceController::class, 'index']);
+Route::post('insurance-update', [InsuranceController::class, 'update']);
 Route::post('import-insurances', [InsuranceController::class, 'importInsurances']);

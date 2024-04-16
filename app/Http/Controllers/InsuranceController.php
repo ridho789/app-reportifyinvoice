@@ -17,6 +17,19 @@ class InsuranceController extends Controller
         return view('main.insurance', compact('insurances', 'seaShipmentLine', 'logErrors'));
     }
 
+    public function update(Request $request) {
+        $numericCharge = preg_replace("/[^0-9]/", "", explode(",", $request->charge)[0]);
+        if ($request->charge[0] === '-') {
+            $numericCharge *= -1;
+        }
+
+        Insurance::where('id_insurance', $request->id)->update([
+            'idr' => $numericCharge
+        ]);
+
+        return redirect()->back();
+    }
+
     public function importInsurances(Request $request) {
         $request->validate([
             'file' => 'required|mimes:xlsx|max:2048',

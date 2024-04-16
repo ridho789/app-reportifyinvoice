@@ -154,16 +154,16 @@
                                             <input type="text" class="form-control text-center" name="origin" value="{{ $seaShipment->origin ?? '-' }}" placeholder="...">
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." readonly>
+                                            <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." disabled>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_pkgs" placeholder="..." readonly>
+                                            <input type="text" class="form-control text-center" name="tot_pkgs" placeholder="..." disabled>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_weight" placeholder="..." readonly>
+                                            <input type="text" class="form-control text-center" name="tot_weight" placeholder="..." disabled>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." readonly>
+                                            <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." disabled>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
                                             <input type="date" class="form-control" name="etd" value="{{ $seaShipment->etd }}">
