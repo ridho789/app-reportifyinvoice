@@ -200,11 +200,5 @@
                 this.value = formatCurrency(this.value);
             });
         });
-
-        // let unexpectedPrices = document.querySelectorAll(".unexpected-price");
-        // unexpectedPrices.forEach(function(unexpectedPrice) {
-        //     let price = unexpectedPrice.textContent;
-        //     unexpectedPrice.textContent = formatCurrency(price);
-        // });
     });
 </script>

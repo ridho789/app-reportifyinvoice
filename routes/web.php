@@ -66,4 +66,5 @@ Route::post('import-insurances', [InsuranceController::class, 'importInsurances'
 
 // pricelist
 Route::get('/pricelist', [PricelistController::class, 'index']);
+Route::post('pricelist-update', [PricelistController::class, 'update']);
 Route::post('import-pricelist', [PricelistController::class, 'importPricelist']);

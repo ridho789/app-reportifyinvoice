@@ -42,26 +42,42 @@
     </div>
 
     <!-- Modal - Edit Pricelist -->
-    <!-- <div class="modal fade" id="insuranceEditModal" tabindex="-1" role="dialog" aria-labelledby="insuranceEditModalLabel" aria-hidden="true">
+    <div class="modal fade" id="pricelistEditModal" tabindex="-1" role="dialog" aria-labelledby="pricelistEditModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title font-weight-normal text-md" id="insuranceEditModalLabel"><b>Insurance</b></h5>
+                    <h5 class="modal-title font-weight-normal text-md" id="pricelistEditModalLabel"><b>Edit Pricelist</b></h5>
                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ url('insurance-update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ url('pricelist-update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="id" name="id">
                         <div class="input-group input-group-static mb-4">
-                            <label>Marking</label>
-                            <input type="text" class="form-control" id="marking" name="marking" value="{{ old('marking') }}" disabled>
+                            <label>Customer</label>
+                            <input type="text" class="form-control" id="customer" name="customer" value="{{ old('customer') }}" disabled>
                         </div>
                         <div class="input-group input-group-static mb-4">
-                            <label>Charge</label>
-                            <input type="text" class="form-control" id="charge" name="charge" value="{{ old('charge') }}" required>
+                            <label>Shipper</label>
+                            <input type="text" class="form-control" id="shipper" name="shipper" value="{{ old('shipper') }}" disabled>
+                        </div>
+                        <div class="input-group input-group-static mb-1">
+                            <label>Origin</label>
+                        </div>
+                        <div class="input-group input-group-static mb-3">
+                            <select class="form-select text-left" id="origin" name="origin" style="border: 0px;" required>
+                                <option value="">...</option>
+                                <option value="BTH-JKT">BTH-JKT</option>
+                                <option value="BTH-SIN">BTH-SIN</option>
+                                <option value="SIN-BTH">SIN-BTH</option>
+                                <option value="SIN-JKT">SIN-JKT</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <label>Price</label>
+                            <input type="text" class="form-control" id="price" name="price" value="{{ old('price') }}" required>
                         </div>
                         <div class="text-end">
                             <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
@@ -71,7 +87,7 @@
                 </form>
             </div>
         </div>
-    </div> -->
+    </div>
 
     @if(session()->has('logErrors'))
     <div class="row">
@@ -126,19 +142,19 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="marking-selected text-sm font-weight-normal mb-0">{{ $customer[$p->id_customer] ?? '-' }}</p>
+                                        <p class="customer-selected text-sm font-weight-normal mb-0">{{ $customer[$p->id_customer] ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="charge-selected text-sm font-weight-normal mb-0">{{ $shipper[$p->id_shipper] ?? '-' }}</p>
+                                        <p class="shipper-selected text-sm font-weight-normal mb-0">{{ $shipper[$p->id_shipper] ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="charge-selected text-sm font-weight-normal mb-0">{{ $p->origin ?? '-' }}</p>
+                                        <p class="origin-selected text-sm font-weight-normal mb-0">{{ $p->origin ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="charge-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }}</p>
+                                        <p class="price-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }}</p>
                                     </td>
                                     <td class="text-end">
-                                        <a href="#" class="mx-4 edit-button" data-bs-toggle="modal" data-bs-target="#insuranceEditModal">
+                                        <a href="#" class="mx-4 edit-button" data-bs-toggle="modal" data-bs-target="#pricelistEditModal">
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
                                     </td>
@@ -161,7 +177,7 @@
 </div>
 @endsection
 
-<!-- <script>
+<script>
     function formatCurrency(num) {
         num = num.toString().replace(/[^\d-]/g, '');
 
@@ -190,29 +206,27 @@
 
                 var row = this.closest("tr");
                 var id = row.getAttribute("data-id");
-                var marking = row.querySelector(".marking-selected").textContent;
-                var charge = row.querySelector(".charge-selected").textContent.trim();
+                var customer = row.querySelector(".customer-selected").textContent;
+                var shipper = row.querySelector(".shipper-selected").textContent;
+                var origin = row.querySelector(".origin-selected").textContent;
+                var price = row.querySelector(".price-selected").textContent.trim();
 
-                const chargeConvert = parseFloat(charge);
+                const priceConvert = parseFloat(price);
 
                 // Mengisi data ke dalam formulir
                 document.getElementById("id").value = id;
-                document.getElementById("marking").value = marking;
-                document.getElementById("charge").value = charge;
+                document.getElementById("customer").value = customer;
+                document.getElementById("shipper").value = shipper;
+                document.getElementById("origin").value = origin;
+                document.getElementById("price").value = price;
             });
         });
 
-        let inputCharges = document.querySelectorAll("#charge");
-        inputCharges.forEach(function(inputCharge) {
-            inputCharge.addEventListener("input", function() {
+        let inputPrices = document.querySelectorAll("#price");
+        inputPrices.forEach(function(inputPrice) {
+            inputPrice.addEventListener("input", function() {
                 this.value = formatCurrency(this.value);
             });
         });
-
-        // let unexpectedPrices = document.querySelectorAll(".unexpected-price");
-        // unexpectedPrices.forEach(function(unexpectedPrice) {
-        //     let price = unexpectedPrice.textContent;
-        //     unexpectedPrice.textContent = formatCurrency(price);
-        // });
     });
-</script> -->
+</script>

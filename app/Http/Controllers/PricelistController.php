@@ -19,6 +19,20 @@ class PricelistController extends Controller
         return view('main.pricelist', compact('pricelists', 'customer', 'shipper','logErrors'));
     }
 
+    public function update(Request $request) {
+        $numericPrice = preg_replace("/[^0-9]/", "", explode(",", $request->price)[0]);
+        if ($request->price[0] === '-') {
+            $numericPrice *= -1;
+        }
+
+        Pricelist::where('id_pricelist', $request->id)->update([
+            'origin' => $request->origin,
+            'price' => $numericPrice
+        ]);
+
+        return redirect()->back();
+    }
+
     public function importPricelist(Request $request) {
         $request->validate([
             'file' => 'required|mimes:xlsx|max:2048',

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_shippings', function (Blueprint $table) {
-            $table->id('id_shipping');
-            $table->date('eta')->nullable();
-            $table->date('etd')->nullable();
-            $table->date('aju')->nullable();
+        Schema::create('tbl_cas', function (Blueprint $table) {
+            $table->id('id_cas');
+            $table->string('lts');
+            $table->string('desc')->nullable();
+            $table->string('charge');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_shippings');
+        Schema::dropIfExists('tbl_cas');
     }
 };
