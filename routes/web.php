@@ -8,6 +8,7 @@ use App\Http\Controllers\ShipperController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\BillRecapController;
+use App\Http\Controllers\PricelistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,3 +63,7 @@ Route::post('ship-update', [ShipController::class, 'update']);
 Route::get('/insurance', [InsuranceController::class, 'index']);
 Route::post('insurance-update', [InsuranceController::class, 'update']);
 Route::post('import-insurances', [InsuranceController::class, 'importInsurances']);
+
+// pricelist
+Route::get('/pricelist', [PricelistController::class, 'index']);
+Route::post('import-pricelist', [PricelistController::class, 'importPricelist']);

@@ -70,7 +70,7 @@ class SeaShipmentSheetImport implements ToCollection
                 if ($row[3]) {
                     $checkShipper = Shipper::where('name', 'like', '%' . $row[3] . '%')->first();
                     if (empty($checkShipper)) {
-                        $checkShipper = Shipper::create(['name' => $row[3]]);
+                        $checkShipper = Shipper::create(['name' => strtoupper($row[3])]);
                         $IdShipper = $checkShipper->id;
                     } else {
                         $IdShipper = $checkShipper->id_shipper;
@@ -81,7 +81,7 @@ class SeaShipmentSheetImport implements ToCollection
                 if ($row[2]) {
                     $checkCustomer = Customer::where('name', 'like', '%' . $row[2] . '%')->first();
                     if (empty($checkCustomer)) {
-                        $checkCustomer = Customer::create(['name' => $row[2], 'shipper_ids' => $IdShipper]);
+                        $checkCustomer = Customer::create(['name' => strtoupper($row[2]), 'shipper_ids' => $IdShipper]);
                         $IdCustomer = $checkCustomer->id;
                     } else {
                         $IdCustomer = $checkCustomer->id_customer;
@@ -99,7 +99,7 @@ class SeaShipmentSheetImport implements ToCollection
                 if ($row[4]) {
                     $checkShip = Ship::where('name', 'like', '%' . $row[4] . '%')->first();
                     if (empty($checkShip)) {
-                        $checkShip = Ship::create(['name' => $row[4]]);
+                        $checkShip = Ship::create(['name' => strtoupper($row[4])]);
                         $IdShip = $checkShip->id;
                     } else {
                         $IdShip = $checkShip->id_ship;
@@ -109,9 +109,9 @@ class SeaShipmentSheetImport implements ToCollection
                 $valueKey = $row[0] . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1])->format('Y-m-d') . $IdShipper . $IdCustomer;
 
                 $dataSeaShipment = [
-                    'no_aju' => $row[0],
+                    'no_aju' => strtoupper($row[0]),
                     'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1]),
-                    'origin' => $row[5],
+                    'origin' => strtoupper($row[5]),
                     'etd' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]),
                     'eta' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[7]),
                     'id_shipper' => $IdShipper,
@@ -140,8 +140,8 @@ class SeaShipmentSheetImport implements ToCollection
                 $dataShipmentLine = [
                     'id_sea_shipment' => $seaShipment->id,
                     'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]),
-                    'code' => $row[1],
-                    'marking' => $row[2],
+                    'code' => strtoupper($row[1]),
+                    'marking' => strtoupper($row[2]),
                     'qty_pkgs' => $row[3],
                     'unit_qty_pkgs' => $row[4],
                     'qty_loose' => $row[5],
@@ -152,9 +152,9 @@ class SeaShipmentSheetImport implements ToCollection
                     'dimension_t' => $row[10],
                     'tot_cbm_1' => $tot_cbm1,
                     'tot_cbm_2' => $tot_cbm2,
-                    'lts' => $row[13],
-                    'desc' => $row[14],
-                    'state' => $row[15],
+                    'lts' => strtoupper($row[13]),
+                    'desc' => strtoupper($row[14]),
+                    // 'state' => $row[15],
                 ];
 
                 // Create shipment sea freight line

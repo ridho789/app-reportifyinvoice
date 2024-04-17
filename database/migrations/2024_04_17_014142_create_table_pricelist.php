@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_prices', function (Blueprint $table) {
-            $table->id('id_price');
-            $table->string('cubic_price');
-            $table->string('kilo_price');
+        Schema::create('tbl_pricelists', function (Blueprint $table) {
+            $table->id('id_pricelist');
+            $table->string('origin');
+            $table->string('price');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_prices');
+        Schema::dropIfExists('tbl_pricelists');
     }
 };

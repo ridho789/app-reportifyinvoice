@@ -74,12 +74,12 @@ class ShipmentController extends Controller
 
     public function updateSeaShipment(Request $request) {
         SeaShipment::where('id_sea_shipment', $request->id_sea_shipment)->update([
-            'no_aju' => $request->no_aju,
+            'no_aju' => strtoupper($request->no_aju),
             'date' => $request->date,
             'id_customer' => $request->id_customer,
             'id_shipper' => $request->id_shipper,
             'id_ship' => $request->id_ship,
-            'origin' => $request->origin,
+            'origin' => strtoupper($request->origin),
             'etd' => $request->etd,
             'eta' => $request->eta,
         ]);
@@ -87,8 +87,8 @@ class ShipmentController extends Controller
         foreach ($request->id_sea_shipment_line as $index => $idSeaShipmentLine) {
             SeaShipmentLine::where('id_sea_shipment_line', $idSeaShipmentLine)->update([
                 'date' => $request->bldate[$index],
-                'code' => $request->code[$index],
-                'marking' => $request->marking[$index],
+                'code' => strtoupper($request->code[$index]),
+                'marking' => strtoupper($request->marking[$index]),
                 'qty_pkgs' => $request->qty_pkgs[$index],
                 'qty_loose' => $request->qty_loose[$index],
                 'unit_qty_pkgs' => $request->unit_qty_pkgs[$index],
@@ -99,8 +99,8 @@ class ShipmentController extends Controller
                 'dimension_t' => $request->t[$index],
                 'tot_cbm_1' => $request->cbm1[$index],
                 'tot_cbm_2' => $request->cbm2[$index],
-                'lts' => $request->lts[$index],
-                'desc' => $request->desc[$index],
+                'lts' => strtoupper($request->lts[$index]),
+                'desc' => strtoupper($request->desc[$index]),
                 'state' => $request->state[$index],
             ]);
         }
