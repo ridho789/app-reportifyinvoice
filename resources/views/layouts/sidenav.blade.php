@@ -49,8 +49,14 @@
                 <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Main</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ request()->is('customer') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/customer') }}">
+                <a class="nav-link text-white {{ request()->is('cas') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/cas') }}">
                     <span class="sidenav-mini-icon"> C </span>
+                    <span class="nav-link-text ms-1">Cas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->is('customer') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/customer') }}">
+                    <span class="sidenav-mini-icon"> Cu </span>
                     <span class="nav-link-text ms-1">Customers</span>
                 </a>
             </li>

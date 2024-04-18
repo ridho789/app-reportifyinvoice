@@ -9,6 +9,7 @@ use App\Http\Controllers\ShipController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\BillRecapController;
 use App\Http\Controllers\PricelistController;
+use App\Http\Controllers\CasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,3 +69,8 @@ Route::post('import-insurances', [InsuranceController::class, 'importInsurances'
 Route::get('/pricelist', [PricelistController::class, 'index']);
 Route::post('pricelist-update', [PricelistController::class, 'update']);
 Route::post('import-pricelist', [PricelistController::class, 'importPricelist']);
+
+// cas
+Route::get('/cas', [CasController::class, 'index']);
+Route::post('cas-update', [CasController::class, 'update']);
+Route::post('import-cas', [CasController::class, 'importCas']);

@@ -1,28 +1,28 @@
 @extends('layouts.base')
-<!-- @section('title', 'Insurances') -->
+<!-- @section('title', 'Cas') -->
 @section('content')
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12 d-flex ms-auto">
             <div>
-                <button class="btn bg-gradient-dark" type="button" id="dropdownImport" data-bs-toggle="modal" data-bs-target="#insuranceModal">
+                <button class="btn bg-gradient-dark" type="button" id="dropdownImport" data-bs-toggle="modal" data-bs-target="#casModal">
                     Import
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal - Import Insurances -->
-    <div class="modal fade" id="insuranceModal" tabindex="-1" role="dialog" aria-labelledby="insuranceModalLabel" aria-hidden="true">
+    <!-- Modal - Import Cas -->
+    <div class="modal fade" id="casModal" tabindex="-1" role="dialog" aria-labelledby="casModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title font-weight-normal text-md" id="insuranceModalLabel"><b>Import Insurances</b></h5>
+                    <h5 class="modal-title font-weight-normal text-md" id="casModalLabel"><b>Import Cas</b></h5>
                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ url('import-insurances') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ url('import-cas') }}" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="basic-form custom_file_input">
                             @csrf
@@ -41,27 +41,31 @@
         </div>
     </div>
 
-    <!-- Modal - Edit Insurances -->
-    <div class="modal fade" id="insuranceEditModal" tabindex="-1" role="dialog" aria-labelledby="insuranceEditModalLabel" aria-hidden="true">
+    <!-- Modal - Edit Cas -->
+    <div class="modal fade" id="casEditModal" tabindex="-1" role="dialog" aria-labelledby="casEditModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title font-weight-normal text-md" id="insuranceEditModalLabel"><b>Edit Insurance</b></h5>
+                    <h5 class="modal-title font-weight-normal text-md" id="casEditModalLabel"><b>Edit Cas</b></h5>
                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ url('insurance-update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ url('cas-update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="id" name="id">
                         <div class="input-group input-group-static mb-4">
-                            <label>Marking</label>
-                            <input type="text" class="form-control" id="marking" name="marking" value="{{ old('marking') }}" disabled>
+                            <label>LTS</label>
+                            <input type="text" class="form-control" id="lts" name="lts" value="{{ old('lts') }}" disabled>
                         </div>
                         <div class="input-group input-group-static mb-4">
                             <label>Charge</label>
                             <input type="text" class="form-control" id="charge" name="charge" value="{{ old('charge') }}" required>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <label>Desc</label>
+                            <input type="text" class="form-control" id="desc" name="desc" value="{{ old('desc') }}" required>
                         </div>
                         <div class="text-end">
                             <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
@@ -96,26 +100,27 @@
         <div class="col-12">
             <div class="card mb-4">
                 <div class="card-header pb-5">
-                    <h6>List Insurances</h6>
+                    <h6>List Cas</h6>
                     <p class="text-sm mb-0">
-                        View all list of insurances in the system.
+                        View all list of cas in the system.
                     </p>
                 </div>
-                @if (count($insurances) > 0)
+                @if (count($cas) > 0)
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">#</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Marking</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">LTS</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Charge</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Desc</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($insurances as $i)
-                                <tr data-id="{{ $i->id_insurance }}">
+                                @foreach($cas as $c)
+                                <tr data-id="{{ $c->id_cas }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
@@ -124,13 +129,16 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="marking-selected text-sm font-weight-normal mb-0">{{ $seaShipmentLine[$i->id_sea_shipment_line] ?? '-' }}</p>
+                                        <p class="lts-selected text-sm font-weight-normal mb-0">{{ $c->lts ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="charge-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($i->idr ?? 0, 0, ',', '.') }}</p>
+                                        <p class="charge-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($c->charge ?? 0, 0, ',', '.') }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="desc-selected text-sm font-weight-normal mb-0">{{ $c->desc ?? '-' }}</p>
                                     </td>
                                     <td class="text-end">
-                                        <a href="#" class="mx-4 edit-button" data-bs-toggle="modal" data-bs-target="#insuranceEditModal">
+                                        <a href="#" class="mx-4 edit-button" data-bs-toggle="modal" data-bs-target="#casEditModal">
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
                                     </td>
@@ -182,15 +190,17 @@
 
                 var row = this.closest("tr");
                 var id = row.getAttribute("data-id");
-                var marking = row.querySelector(".marking-selected").textContent;
+                var lts = row.querySelector(".lts-selected").textContent;
                 var charge = row.querySelector(".charge-selected").textContent.trim();
+                var desc = row.querySelector(".desc-selected").textContent;
 
                 const chargeConvert = parseFloat(charge);
 
                 // Mengisi data ke dalam formulir
                 document.getElementById("id").value = id;
-                document.getElementById("marking").value = marking;
+                document.getElementById("lts").value = lts;
                 document.getElementById("charge").value = charge;
+                document.getElementById("desc").value = desc;
             });
         });
 

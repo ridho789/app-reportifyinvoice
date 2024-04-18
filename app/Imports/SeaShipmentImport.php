@@ -58,7 +58,7 @@ class SeaShipmentSheetImport implements ToCollection
         foreach ($collection as $row) {
             $currentRow++;
             if ($rowNumber < 3) {
-                // Header shipment column
+                // Header column
                 $headerColumn = $row->toArray();
                 $rowNumber++;
                 continue;

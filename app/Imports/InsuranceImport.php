@@ -20,7 +20,7 @@ class InsuranceImport implements ToCollection
         $rowNumber = 0;
         foreach ($collection as $row) {
             if ($rowNumber < 1) {
-                // Header shipment column
+                // Header column
                 $headerColumn = $row->toArray();
                 $rowNumber++;
                 continue;

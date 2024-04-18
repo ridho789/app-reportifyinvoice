@@ -73,6 +73,16 @@ class ShipmentController extends Controller
     }
 
     public function updateSeaShipment(Request $request) {
+        $customer = Customer::where('id_customer', $request->id_customer)->first();
+        $shipperIds = $customer->shipper_ids;
+        $shipperIdsArray = explode(",", $shipperIds);
+
+        if (!in_array($request->id_shipper, $shipperIdsArray)) {
+            Customer::where('id_customer', $request->id_customer)->update([
+                'shipper_ids' => $shipperIds . ',' . $request->id_shipper,
+            ]);
+        }
+
         SeaShipment::where('id_sea_shipment', $request->id_sea_shipment)->update([
             'no_aju' => strtoupper($request->no_aju),
             'date' => $request->date,
