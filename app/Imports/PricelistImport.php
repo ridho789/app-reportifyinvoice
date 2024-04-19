@@ -39,6 +39,7 @@ class PricelistImport implements ToCollection
             }
 
             // Customer
+            $IdCustomer = null;
             if ($row[0]) {
                 $checkCustomer = Customer::where('name', 'like', '%' . $row[0] . '%')->first();
                 if (empty($checkCustomer)) {
