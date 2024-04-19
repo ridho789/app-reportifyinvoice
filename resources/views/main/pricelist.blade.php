@@ -43,7 +43,7 @@
 
     <!-- Modal - Edit Pricelist -->
     <div class="modal fade" id="pricelistEditModal" tabindex="-1" role="dialog" aria-labelledby="pricelistEditModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title font-weight-normal text-md" id="pricelistEditModalLabel"><b>Edit Pricelist</b></h5>
@@ -80,8 +80,8 @@
                             <input type="text" class="form-control" id="price" name="price" value="{{ old('price') }}" required>
                         </div>
                         <div class="text-end">
-                            <button type="button" class="btn bg-gradient-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn bg-gradient-primary btn-sm ms-1">Update</button>
+                            <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-primary btn-md ms-1">Update</button>
                         </div>
                     </div>
                 </form>
