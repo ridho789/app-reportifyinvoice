@@ -56,8 +56,16 @@
                     <div class="modal-body">
                         <input type="hidden" id="id" name="id">
                         <div class="input-group input-group-static mb-4">
+                            <label>Customer</label>
+                            <input type="text" class="form-control" id="customer" name="customer" value="{{ old('customer') }}" disabled>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <label>Shipper</label>
+                            <input type="text" class="form-control" id="shipper" name="shipper" value="{{ old('shipper') }}" disabled>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
                             <label>LTS</label>
-                            <input type="text" class="form-control" id="lts" name="lts" value="{{ old('lts') }}" disabled>
+                            <input type="text" class="form-control" id="lts" name="lts" value="{{ old('lts') }}" required>
                         </div>
                         <div class="input-group input-group-static mb-4">
                             <label>Charge</label>
@@ -112,7 +120,9 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">#</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">LTS</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Customer</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Lts</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Charge</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Desc</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
@@ -129,6 +139,12 @@
                                         </div>
                                     </td>
                                     <td>
+                                        <p class="customer-selected text-sm font-weight-normal mb-0">{{ $customer[$c->id_customer] ?? '-' }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="shipper-selected text-sm font-weight-normal mb-0">{{ $shipper[$c->id_shipper] ?? '-' }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
                                         <p class="lts-selected text-sm font-weight-normal mb-0">{{ $c->lts ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
@@ -190,6 +206,8 @@
 
                 var row = this.closest("tr");
                 var id = row.getAttribute("data-id");
+                var customer = row.querySelector(".customer-selected").textContent;
+                var shipper = row.querySelector(".shipper-selected").textContent;
                 var lts = row.querySelector(".lts-selected").textContent;
                 var charge = row.querySelector(".charge-selected").textContent.trim();
                 var desc = row.querySelector(".desc-selected").textContent;
@@ -198,6 +216,8 @@
 
                 // Mengisi data ke dalam formulir
                 document.getElementById("id").value = id;
+                document.getElementById("customer").value = customer;
+                document.getElementById("shipper").value = shipper;
                 document.getElementById("lts").value = lts;
                 document.getElementById("charge").value = charge;
                 document.getElementById("desc").value = desc;

@@ -12,6 +12,8 @@ class Cas extends Model
 
     protected $fillable = [
         'id_cas',
+        'id_customer',
+        'id_shipper',
         'lts',
         'desc',
         'charge',

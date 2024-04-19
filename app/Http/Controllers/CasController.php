@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cas;
+use App\Models\Customer;
+use App\Models\Shipper;
 use App\Imports\CasImport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -11,8 +13,10 @@ class CasController extends Controller
 {
     public function index() {
         $cas = Cas::all();
+        $customer = Customer::pluck('name', 'id_customer');
+        $shipper = Shipper::pluck('name', 'id_shipper');
         $logErrors = '';
-        return view('main.cas', compact('cas', 'logErrors'));
+        return view('main.cas', compact('cas', 'customer', 'shipper', 'logErrors'));
     }
 
     public function update(Request $request) {
