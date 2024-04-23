@@ -61,20 +61,20 @@
                     <div class="modal-body">
 
                         <div class="input-group input-group-static mb-1">
-                            <label>Customer</label>
+                            <label>Customer (<span class="text-info">Optional</span>)</label>
                         </div>
                         <select class="form-select select-new-cust mb-4" name="id_customer" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                            <option value="">Select a customer</option>
+                            <option value="">...</option>
                             @foreach ($customers as $c)
                             <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
                             @endforeach
                         </select>
                         
                         <div class="input-group input-group-static mb-1">
-                            <label>Shipper</label>
+                            <label>Shipper (<span class="text-info">Optional</span>)</label>
                         </div>
                         <select class="form-select select-new-shipper mb-4" name="id_shipper" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                            <option value="">Select a shipper</option>
+                            <option value="">...</option>
                             @foreach ($shippers as $s)
                             <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
                             @endforeach
@@ -83,27 +83,27 @@
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>LTS <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="new-lts" name="new_lts" value="{{ old('new-lts') }}" oninput="this.value = this.value.toUpperCase()" required>
+                                <input type="text" class="form-control" id="new-lts" name="new_lts" value="{{ old('new-lts') }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." required>
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
                                 <label>Charge <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="new-charge" name="new_charge" value="{{ old('new-charge') }}" required>
+                                <input type="text" class="form-control" id="new-charge" name="new_charge" value="{{ old('new-charge') }}" placeholder="..." required>
                             </div>
                         </div>
                         <div class="input-group input-group-static mb-4">
-                            <label>Desc</label>
-                            <input type="text" class="form-control" id="new-desc" name="new_desc" value="{{ old('new-desc') }}">
+                            <label>Desc (<span class="text-info">Optional</span>)</label>
+                            <input type="text" class="form-control" id="new-desc" name="new_desc" value="{{ old('new-desc') }}" placeholder="...">
                         </div>
 
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
-                                <label>Start Period</label>
+                                <label>Start Period (<span class="text-info">Optional</span>)</label>
                                 <input type="date" class="form-control" id="new_start_period" name="new_start_period" value="{{ old('new_start_period') }}">
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <label>End Period</label>
+                                <label>End Period (<span class="text-info">Optional</span>)</label>
                                 <input type="date" class="form-control" id="new_end_period" name="new_end_period" value="{{ old('new_end_period') }}">
                             </div>
                         </div>
@@ -133,20 +133,20 @@
                     <div class="modal-body">
                         <input type="hidden" id="id" name="id">
                         <div class="input-group input-group-static mb-1">
-                            <label>Customer</label>
+                            <label>Customer (<span class="text-info">Optional</span>)</label>
                         </div>
                         <select class="form-select select-new-cust mb-4" id="customer" name="id_customer" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                            <option value="">Select a customer</option>
+                            <option value="">...</option>
                             @foreach ($customers as $c)
                             <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
                             @endforeach
                         </select>
                         
                         <div class="input-group input-group-static mb-1">
-                            <label>Shipper</label>
+                            <label>Shipper (<span class="text-info">Optional</span>)</label>
                         </div>
                         <select class="form-select select-new-shipper mb-4" id="shipper" name="id_shipper" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                            <option value="">Select a shipper</option>
+                            <option value="">...</option>
                             @foreach ($shippers as $s)
                             <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
                             @endforeach
@@ -155,27 +155,27 @@
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>LTS <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="lts" name="lts" value="{{ old('lts') }}" oninput="this.value = this.value.toUpperCase()" required>
+                                <input type="text" class="form-control" id="lts" name="lts" value="{{ old('lts') }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." required>
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
                                 <label>Charge <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="charge" name="charge" value="{{ old('charge') }}" required>
+                                <input type="text" class="form-control" id="charge" name="charge" value="{{ old('charge') }}" placeholder="..." required>
                             </div>
                         </div>
                         <div class="input-group input-group-static mb-4">
-                            <label>Desc</label>
-                            <input type="text" class="form-control" id="desc" name="desc" value="{{ old('desc') }}">
+                            <label>Desc (<span class="text-info">Optional</span>)</label>
+                            <input type="text" class="form-control" id="desc" name="desc" value="{{ old('desc') }}" placeholder="...">
                         </div>
 
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
-                                <label>Start Period</label>
+                                <label>Start Period (<span class="text-info">Optional</span>)</label>
                                 <input type="date" class="form-control" id="start_period" name="start_period" value="{{ old('start_period') }}">
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <label>End Period</label>
+                                <label>End Period (<span class="text-info">Optional</span>)</label>
                                 <input type="date" class="form-control" id="end_period" name="end_period" value="{{ old('end_period') }}">
                             </div>
                         </div>
@@ -262,16 +262,16 @@
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         @if (!empty($c->start_period))
-                                        <p class="start-period-selected text-sm font-weight-normal mb-0">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $c->start_period)->format('d-M-y') ?? '-' }}</p>
+                                        <p class="start-period-selected text-sm font-weight-normal mb-0" data-start-period="{{ $c->start_period }}">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $c->start_period)->format('d-M-y') ?? '-' }}</p>
                                         @else
                                         <p class="start-period-selected text-sm font-weight-normal mb-0">-</p>
                                         @endif
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         @if (!empty($c->end_period))
-                                        <p class="end-period-selected text-sm font-weight-normal mb-0">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $c->end_period)->format('d-M-y') ?? '-' }}</p>
+                                        <p class="end-period-selected text-sm font-weight-normal mb-0" data-end-period="{{ $c->end_period }}">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $c->end_period)->format('d-M-y') ?? '-' }}</p>
                                         @else
-                                        <p class="start-period-selected text-sm font-weight-normal mb-0">-</p>
+                                        <p class="end-period-selected text-sm font-weight-normal mb-0">-</p>
                                         @endif
                                     </td>
                                     <td class="text-end">
@@ -391,6 +391,24 @@
                 document.getElementById("lts").value = lts;
                 document.getElementById("charge").value = charge;
                 document.getElementById("desc").value = desc;
+                
+                var startPeriodElement = row.querySelector(".start-period-selected");
+                if (startPeriodElement.hasAttribute("data-start-period")) {
+                    var startPeriod = row.querySelector(".start-period-selected").getAttribute("data-start-period").trim();
+                    document.getElementById("start_period").value = startPeriod;
+
+                } else {
+                    document.getElementById("start_period").value = null;
+                }
+                
+                var endPeriodElement = row.querySelector(".end-period-selected");
+                if (endPeriodElement.hasAttribute("data-end-period")) {
+                    var endPeriod = row.querySelector(".end-period-selected").getAttribute("data-end-period").trim();
+                    document.getElementById("end_period").value = endPeriod;
+
+                } else {
+                    document.getElementById("end_period").value = null;
+                }
             });
         });
 

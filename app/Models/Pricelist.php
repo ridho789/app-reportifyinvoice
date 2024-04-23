@@ -16,5 +16,7 @@ class Pricelist extends Model
         'id_customer',
         'origin',
         'price',
+        'start_period',
+        'end_period'
     ];
 }

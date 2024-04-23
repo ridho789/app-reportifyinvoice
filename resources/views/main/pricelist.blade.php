@@ -55,19 +55,36 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="id" name="id">
-                        <div class="input-group input-group-static mb-4">
-                            <label>Customer</label>
-                            <input type="text" class="form-control" id="customer" name="customer" value="{{ old('customer') }}" disabled>
-                        </div>
-                        <div class="input-group input-group-static mb-4">
-                            <label>Shipper</label>
-                            <input type="text" class="form-control" id="shipper" name="shipper" value="{{ old('shipper') }}" disabled>
-                        </div>
+
                         <div class="input-group input-group-static mb-1">
-                            <label>Origin</label>
+                            <label>Customer (<span class="text-info">Optional</span>)</label>
                         </div>
-                        <div class="input-group input-group-static mb-3">
-                            <select class="form-select text-left" id="origin" name="origin" style="border: 0px;" required>
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select select-cust" id="customer" name="id_customer" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                <option value="">...</option>
+                                @foreach ($customers as $c)
+                                <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="input-group input-group-static mb-1">
+                            <label>Shipper (<span class="text-info">Optional</span>)</label>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select select-shipper" id="shipper" name="id_shipper" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                <option value="">...</option>
+                                @foreach ($shippers as $s)
+                                <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="input-group input-group-static mb-1">
+                            <label>Origin <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select text-left" id="origin" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
                                 <option value="">...</option>
                                 <option value="BTH-JKT">BTH-JKT</option>
                                 <option value="BTH-SIN">BTH-SIN</option>
@@ -76,8 +93,19 @@
                             </select>
                         </div>
                         <div class="input-group input-group-static mb-4">
-                            <label>Price</label>
-                            <input type="text" class="form-control" id="price" name="price" value="{{ old('price') }}" required>
+                            <label>Price <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="price" name="price" value="{{ old('price') }}" placeholder="..." required>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <div class="col-5">
+                                <label>Start Period (<span class="text-info">Optional</span>)</label>
+                                <input type="date" class="form-control" id="start_period" name="start_period" value="{{ old('start_period') }}">
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <label>End Period (<span class="text-info">Optional</span>)</label>
+                                <input type="date" class="form-control" id="end_period" name="end_period" value="{{ old('end_period') }}">
+                            </div>
                         </div>
                         <div class="text-end">
                             <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
@@ -128,12 +156,14 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Origin</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Price</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start Period</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">End Period</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($pricelists as $p)
-                                <tr data-id="{{ $p->id_pricelist }}">
+                                <tr data-id="{{ $p->id_pricelist }}" data-id-customer="{{ $p->id_customer }}" data-id-shipper="{{ $p->id_shipper }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
@@ -152,6 +182,20 @@
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="price-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        @if (!empty($p->start_period))
+                                        <p class="start-period-selected text-sm font-weight-normal mb-0" data-start-period="{{ $p->start_period }}">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $p->start_period)->format('d-M-y') ?? '-' }}</p>
+                                        @else
+                                        <p class="start-period-selected text-sm font-weight-normal mb-0">-</p>
+                                        @endif
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        @if (!empty($p->end_period))
+                                        <p class="end-period-selected text-sm font-weight-normal mb-0" data-end-period="{{ $p->end_period }}">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $p->end_period)->format('d-M-y') ?? '-' }}</p>
+                                        @else
+                                        <p class="end-period-selected text-sm font-weight-normal mb-0">-</p>
+                                        @endif
                                     </td>
                                     <td class="text-end">
                                         <a href="#" class="mx-4 edit-button" data-bs-toggle="modal" data-bs-target="#pricelistEditModal">
@@ -206,8 +250,8 @@
 
                 var row = this.closest("tr");
                 var id = row.getAttribute("data-id");
-                var customer = row.querySelector(".customer-selected").textContent;
-                var shipper = row.querySelector(".shipper-selected").textContent;
+                var customer = row.getAttribute("data-id-customer");
+                var shipper = row.getAttribute("data-id-shipper");
                 var origin = row.querySelector(".origin-selected").textContent;
                 var price = row.querySelector(".price-selected").textContent.trim();
 
@@ -219,6 +263,24 @@
                 document.getElementById("shipper").value = shipper;
                 document.getElementById("origin").value = origin;
                 document.getElementById("price").value = price;
+
+                var startPeriodElement = row.querySelector(".start-period-selected");
+                if (startPeriodElement.hasAttribute("data-start-period")) {
+                    var startPeriod = row.querySelector(".start-period-selected").getAttribute("data-start-period").trim();
+                    document.getElementById("start_period").value = startPeriod;
+
+                } else {
+                    document.getElementById("start_period").value = null;
+                }
+                
+                var endPeriodElement = row.querySelector(".end-period-selected");
+                if (endPeriodElement.hasAttribute("data-end-period")) {
+                    var endPeriod = row.querySelector(".end-period-selected").getAttribute("data-end-period").trim();
+                    document.getElementById("end_period").value = endPeriod;
+
+                } else {
+                    document.getElementById("end_period").value = null;
+                }
             });
         });
 

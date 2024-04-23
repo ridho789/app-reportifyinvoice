@@ -43,32 +43,24 @@ class CasController extends Controller
         $dataCustomer = Customer::where('id_customer', $request->id_customer)->first();
         $dataShipper = Shipper::where('id_shipper', $request->id_shipper)->first();
 
+        $customerName = 'null';
         if ($dataCustomer) {
             $customerName = $dataCustomer->name;
+        } 
 
-        } else {
-            $customerName = 'null';
-        }
-
+        $shipperName = 'null';
         if ($dataShipper) {
             $shipperName = $dataShipper->name;
+        } 
 
-        } else {
-            $shipperName = 'null';
-        }
-
+        $startPeriod = 'null';
         if ($request->new_start_period) {
-            $startPeriod = $request->new_start_period;
-
-        } else {
-            $startPeriod = 'null';
+            $startPeriod = \Carbon\Carbon::createFromFormat('Y-m-d', $request->new_start_period)->format('d-M-y');
         }
 
+        $endPeriod = 'null';
         if ($request->new_end_period) {
-            $endPeriod = $request->new_end_period;
-
-        } else {
-            $endPeriod = 'null';
+            $endPeriod = \Carbon\Carbon::createFromFormat('Y-m-d', $request->new_end_period)->format('d-M-y');
         }
 
         if ($exitingCas) {

@@ -15,8 +15,10 @@ class PricelistController extends Controller
         $pricelists = Pricelist::all();
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');
+        $customers = Customer::orderBy('name')->get();
+        $shippers = Shipper::orderBy('name')->get();
         $logErrors = '';
-        return view('main.pricelist', compact('pricelists', 'customer', 'shipper','logErrors'));
+        return view('main.pricelist', compact('pricelists', 'customer', 'shipper', 'customers',  'shippers','logErrors'));
     }
 
     public function update(Request $request) {
@@ -26,8 +28,12 @@ class PricelistController extends Controller
         }
 
         Pricelist::where('id_pricelist', $request->id)->update([
+            'id_customer' => $request->id_customer,
+            'id_shipper' => $request->id_shipper,
             'origin' => $request->origin,
-            'price' => $numericPrice
+            'price' => $numericPrice,
+            'start_period' => $request->start_period,
+            'end_period' => $request->end_period
         ]);
 
         return redirect()->back();

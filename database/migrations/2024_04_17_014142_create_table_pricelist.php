@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id('id_pricelist');
             $table->string('origin');
             $table->string('price');
-            $table->date('period')->nullable();
+            $table->date('start_period')->nullable();
+            $table->date('end_period')->nullable();
             $table->timestamps();
         });
     }

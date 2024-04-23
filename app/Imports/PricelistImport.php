@@ -19,7 +19,9 @@ class PricelistImport implements ToCollection
     public function collection(Collection $collection)
     {
         $rowNumber = 0;
+        $currentRow = 0;
         foreach ($collection as $row) {
+            $currentRow++;
             if ($rowNumber < 1) {
                 // Header column
                 $headerColumn = $row->toArray();
@@ -57,16 +59,32 @@ class PricelistImport implements ToCollection
                 }
             }
 
+            $startPeriod = null;
+            $endPeriod = null;
+
+            if ($row[4]) {
+                $startPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[4]);
+            }
+
+            if ($row[5]) {
+                $endPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]);
+            }
+
             $dataPricelist = [
                 'id_customer' => $IdCustomer,
                 'id_shipper' => $IdShipper,
                 'origin' => strtoupper($row[2]),
                 'price' => $row[3],
+                'start_period' => $startPeriod,
+                'end_period' => $endPeriod
             ];
 
-            $exitingPricelist = Pricelist::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('origin', strtolower($row[2]))->where('price', $row[3])->first();
+            $exitingPricelist = Pricelist::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('origin', strtolower($row[2]))->where('price', $row[3])
+            ->where('start_period', $startPeriod)->where('end_period', $endPeriod)->first();
+            
             if ($exitingPricelist) {
-                continue;
+                $errorMessage = 'Error importing data: The data in the row ' . $currentRow . ' already exists in the system ';
+                $this->logErrors[] = $errorMessage;
 
             } else {
                 // Create pricelist
