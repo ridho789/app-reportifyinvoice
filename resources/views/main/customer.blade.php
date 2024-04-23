@@ -4,24 +4,16 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12 d-flex ms-auto">
-            @if (count($customers) > 0)
             <div>
                 <button class="btn btn-icon bg-gradient-primary" id="btn-new-customer">
                     new customer
                 </button>
             </div>
             <div>
-                <button class="btn bg-gradient-dark ms-2" type="button" id="dropdownImport" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn bg-gradient-dark ms-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Import
                 </button>
             </div>
-            @else
-            <div>
-                <button class="btn bg-gradient-dark" type="button" id="dropdownImport" data-bs-toggle="dropdown" aria-expanded="false">
-                    Import
-                </button>
-            </div>
-            @endif
         </div>
     </div>
 
@@ -52,7 +44,7 @@
                                 <div class="col-lg-6 mb-4">
                                     <div class="input-group input-group-static">
                                         <label>Enter a customer</label>
-                                        <input type="text" name="customer" class="form-control" required>
+                                        <input type="text" name="customer" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 mb-4">
@@ -96,7 +88,7 @@
                                 <div class="col-lg-6 mb-4">
                                     <div class="input-group input-group-static">
                                         <label>Enter a customer</label>
-                                        <input type="text" name="customer" id="edit-customer" class="form-control" required>
+                                        <input type="text" name="customer" id="edit-customer" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 mb-4">

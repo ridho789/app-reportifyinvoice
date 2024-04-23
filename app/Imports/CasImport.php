@@ -58,13 +58,15 @@ class CasImport implements ToCollection
                 }
             }
         }
-
+        
         $dataCas = [
             'id_customer' => $IdCustomer,
             'id_shipper' => $IdShipper,
             'lts' => strtoupper($row[2]),
             'charge' => $row[3],
             'desc' => $row[4],
+            'start_period' => $row[5],
+            'end_period' => $row[6]
         ];
 
         $exitingCas = Cas::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('lts', $row[2])->where('charge', $row[3])->where('desc', $row[4])->first();

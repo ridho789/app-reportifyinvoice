@@ -72,5 +72,6 @@ Route::post('import-pricelist', [PricelistController::class, 'importPricelist'])
 
 // cas
 Route::get('/cas', [CasController::class, 'index']);
+Route::post('cas-store', [CasController::class, 'store']);
 Route::post('cas-update', [CasController::class, 'update']);
 Route::post('import-cas', [CasController::class, 'importCas']);

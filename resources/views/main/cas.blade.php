@@ -5,7 +5,12 @@
     <div class="row">
         <div class="col-12 d-flex ms-auto">
             <div>
-                <button class="btn bg-gradient-dark" type="button" id="dropdownImport" data-bs-toggle="modal" data-bs-target="#casModal">
+                <button class="btn bg-gradient-primary" type="button" data-bs-toggle="modal" data-bs-target="#casNewModal">
+                    New Cas
+                </button>
+            </div>
+            <div>
+                <button class="btn bg-gradient-dark  ms-2" type="button" data-bs-toggle="modal" data-bs-target="#casModal">
                     Import
                 </button>
             </div>
@@ -41,6 +46,78 @@
         </div>
     </div>
 
+    <!-- Modal - Create New Cas -->
+    <div class="modal fade" id="casNewModal" tabindex="-1" role="dialog" aria-labelledby="casNewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-normal text-md" id="casNewModalLabel"><b>New Cas</b></h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ url('cas-store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+
+                        <div class="input-group input-group-static mb-1">
+                            <label>Customer</label>
+                        </div>
+                        <select class="form-select select-new-cust mb-4" name="id_customer" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                            <option value="">Select a customer</option>
+                            @foreach ($customers as $c)
+                            <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
+                            @endforeach
+                        </select>
+                        
+                        <div class="input-group input-group-static mb-1">
+                            <label>Shipper</label>
+                        </div>
+                        <select class="form-select select-new-shipper mb-4" name="id_shipper" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                            <option value="">Select a shipper</option>
+                            @foreach ($shippers as $s)
+                            <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
+                            @endforeach
+                        </select>
+
+                        <div class="input-group input-group-static mb-4">
+                            <div class="col-5">
+                                <label>LTS <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="new-lts" name="new_lts" value="{{ old('new-lts') }}" oninput="this.value = this.value.toUpperCase()" required>
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <label>Charge <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="new-charge" name="new_charge" value="{{ old('new-charge') }}" required>
+                            </div>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <label>Desc</label>
+                            <input type="text" class="form-control" id="new-desc" name="new_desc" value="{{ old('new-desc') }}">
+                        </div>
+
+                        <div class="input-group input-group-static mb-4">
+                            <div class="col-5">
+                                <label>Start Period</label>
+                                <input type="date" class="form-control" id="new_start_period" name="new_start_period" value="{{ old('new_start_period') }}">
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <label>End Period</label>
+                                <input type="date" class="form-control" id="new_end_period" name="new_end_period" value="{{ old('new_end_period') }}">
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-primary btn-md ms-1">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal - Edit Cas -->
     <div class="modal fade" id="casEditModal" tabindex="-1" role="dialog" aria-labelledby="casEditModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -55,29 +132,57 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="id" name="id">
-                        <div class="input-group input-group-static mb-4">
+                        <div class="input-group input-group-static mb-1">
                             <label>Customer</label>
-                            <input type="text" class="form-control" id="customer" name="customer" value="{{ old('customer') }}" disabled>
                         </div>
-                        <div class="input-group input-group-static mb-4">
+                        <select class="form-select select-new-cust mb-4" id="customer" name="id_customer" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                            <option value="">Select a customer</option>
+                            @foreach ($customers as $c)
+                            <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
+                            @endforeach
+                        </select>
+                        
+                        <div class="input-group input-group-static mb-1">
                             <label>Shipper</label>
-                            <input type="text" class="form-control" id="shipper" name="shipper" value="{{ old('shipper') }}" disabled>
                         </div>
+                        <select class="form-select select-new-shipper mb-4" id="shipper" name="id_shipper" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                            <option value="">Select a shipper</option>
+                            @foreach ($shippers as $s)
+                            <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
+                            @endforeach
+                        </select>
+
                         <div class="input-group input-group-static mb-4">
-                            <label>LTS</label>
-                            <input type="text" class="form-control" id="lts" name="lts" value="{{ old('lts') }}" required>
-                        </div>
-                        <div class="input-group input-group-static mb-4">
-                            <label>Charge</label>
-                            <input type="text" class="form-control" id="charge" name="charge" value="{{ old('charge') }}" required>
+                            <div class="col-5">
+                                <label>LTS <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="lts" name="lts" value="{{ old('lts') }}" oninput="this.value = this.value.toUpperCase()" required>
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <label>Charge <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="charge" name="charge" value="{{ old('charge') }}" required>
+                            </div>
                         </div>
                         <div class="input-group input-group-static mb-4">
                             <label>Desc</label>
-                            <input type="text" class="form-control" id="desc" name="desc" value="{{ old('desc') }}" required>
+                            <input type="text" class="form-control" id="desc" name="desc" value="{{ old('desc') }}">
                         </div>
+
+                        <div class="input-group input-group-static mb-4">
+                            <div class="col-5">
+                                <label>Start Period</label>
+                                <input type="date" class="form-control" id="start_period" name="start_period" value="{{ old('start_period') }}">
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <label>End Period</label>
+                                <input type="date" class="form-control" id="end_period" name="end_period" value="{{ old('end_period') }}">
+                            </div>
+                        </div>
+
                         <div class="text-end">
                             <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn bg-gradient-primary btn-md ms-1">Update</button>
+                            <button type="submit" class="btn bg-gradient-primary btn-md ms-1">Submit</button>
                         </div>
                     </div>
                 </form>
@@ -125,12 +230,14 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Lts</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Charge</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Desc</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start Period</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">End Period</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($cas as $c)
-                                <tr data-id="{{ $c->id_cas }}">
+                                <tr data-id="{{ $c->id_cas }}" data-id-customer="{{ $c->id_customer }}" data-id-shipper="{{ $c->id_shipper }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
@@ -152,6 +259,20 @@
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="desc-selected text-sm font-weight-normal mb-0">{{ $c->desc ?? '-' }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        @if (!empty($c->start_period))
+                                        <p class="start-period-selected text-sm font-weight-normal mb-0">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $c->start_period)->format('d-M-y') ?? '-' }}</p>
+                                        @else
+                                        <p class="start-period-selected text-sm font-weight-normal mb-0">-</p>
+                                        @endif
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        @if (!empty($c->end_period))
+                                        <p class="end-period-selected text-sm font-weight-normal mb-0">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $c->end_period)->format('d-M-y') ?? '-' }}</p>
+                                        @else
+                                        <p class="start-period-selected text-sm font-weight-normal mb-0">-</p>
+                                        @endif
                                     </td>
                                     <td class="text-end">
                                         <a href="#" class="mx-4 edit-button" data-bs-toggle="modal" data-bs-target="#casEditModal">
@@ -178,6 +299,48 @@
 @endsection
 
 <script>
+    // Mengikat event pada elemen di atas modal untuk menangani perubahan pada elemen .select-new-cust
+    document.addEventListener('change', function(event) {
+        var targetElement = event.target;
+        if (targetElement.classList.contains('select-new-cust')) {
+            var selectedCustomerId = targetElement.value;
+            var selectedCustomerShipperIds = targetElement.options[targetElement.selectedIndex].getAttribute('data-shipper-ids');
+
+            var selectShipper = document.querySelector('.select-new-shipper');
+            var options = selectShipper.querySelectorAll('option');
+            selectShipper.value = null;
+            options.forEach(function(option) {
+                option.disabled = true;
+            });
+
+            if (selectedCustomerId === "") {
+                options.forEach(function(option) {
+                    option.disabled = false;
+                });
+
+            } else if (selectedCustomerShipperIds) {
+                if (typeof selectedCustomerShipperIds === 'string') {
+                    var shipperIdsArray = selectedCustomerShipperIds.split(',');
+                    shipperIdsArray.forEach(function(value) {
+                        var shipperName = selectShipper.querySelector('option[value="' + value + '"]').textContent;
+                        var existingOption = selectShipper.querySelector('option[value="' + value + '"]');
+                        if (existingOption) {
+                            existingOption.disabled = false;
+                        }
+                    });
+
+                } else {
+                    var shipperId = selectedCustomerShipperIds;
+                    var shipperName = selectShipper.querySelector('option[value="' + shipperId + '"]').textContent;
+                    var existingOption = selectShipper.querySelector('option[value="' + shipperId + '"]');
+                    if (existingOption) {
+                        existingOption.disabled = false;
+                    }
+                }
+            }
+        }
+    });
+
     function formatCurrency(num) {
         num = num.toString().replace(/[^\d-]/g, '');
 
@@ -199,6 +362,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        let chargeNewCas = document.querySelectorAll("#new-charge");
+        chargeNewCas.forEach(function(newCharge) {
+            newCharge.addEventListener("input", function() {
+                this.value = formatCurrency(this.value);
+            });
+        });
+
         var editButtons = document.querySelectorAll(".edit-button");
         editButtons.forEach(function(button) {
             button.addEventListener("click", function(event) {
@@ -206,8 +376,8 @@
 
                 var row = this.closest("tr");
                 var id = row.getAttribute("data-id");
-                var customer = row.querySelector(".customer-selected").textContent;
-                var shipper = row.querySelector(".shipper-selected").textContent;
+                var customer = row.getAttribute("data-id-customer");
+                var shipper = row.getAttribute("data-id-shipper");
                 var lts = row.querySelector(".lts-selected").textContent;
                 var charge = row.querySelector(".charge-selected").textContent.trim();
                 var desc = row.querySelector(".desc-selected").textContent;

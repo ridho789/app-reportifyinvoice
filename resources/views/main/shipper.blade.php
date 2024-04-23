@@ -4,24 +4,16 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12 d-flex ms-auto">
-            @if (count($shippers) > 0)
             <div>
                 <button class="btn btn-icon bg-gradient-primary" id="btn-new-shipper">
                     new shipper
                 </button>
             </div>
             <div>
-                <button class="btn bg-gradient-dark ms-2" type="button" id="dropdownImport" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn bg-gradient-dark ms-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Import
                 </button>
             </div>
-            @else
-            <div>
-                <button class="btn bg-gradient-dark" type="button" id="dropdownImport" data-bs-toggle="dropdown" aria-expanded="false">
-                    Import
-                </button>
-            </div>
-            @endif
         </div>
     </div>
 
@@ -49,7 +41,7 @@
                         @csrf
                         <div class="input-group input-group-static mb-4">
                             <label>Enter a shipper</label>
-                            <input type="text" name="shipper" class="form-control" required>
+                            <input type="text" name="shipper" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                     </form>
@@ -72,7 +64,7 @@
                         <input type="hidden" id="edit-id" name="id">
                         <div class="input-group input-group-static mb-4">
                             <label>Enter a shipper</label>
-                            <input type="text" name="shipper" id="edit-shipper" class="form-control" required>
+                            <input type="text" name="shipper" id="edit-shipper" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                     </form>

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('lts');
             $table->string('desc')->nullable();
             $table->string('charge');
+            $table->date('start_period')->nullable();
+            $table->date('end_period')->nullable();
             $table->timestamps();
         });
     }

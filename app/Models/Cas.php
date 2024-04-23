@@ -17,5 +17,7 @@ class Cas extends Model
         'lts',
         'desc',
         'charge',
+        'start_period',
+        'end_period'
     ];
 }
