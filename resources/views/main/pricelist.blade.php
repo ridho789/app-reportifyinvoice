@@ -5,7 +5,12 @@
     <div class="row">
         <div class="col-12 d-flex ms-auto">
             <div>
-                <button class="btn bg-gradient-dark" type="button" id="dropdownImport" data-bs-toggle="modal" data-bs-target="#insuranceModal">
+                <button class="btn bg-gradient-primary" type="button" data-bs-toggle="modal" data-bs-target="#pricelistNewModal">
+                    New Pricelist
+                </button>
+            </div>
+            <div>
+                <button class="btn bg-gradient-dark ms-2" type="button" id="dropdownImport" data-bs-toggle="modal" data-bs-target="#insuranceModal">
                     Import
                 </button>
             </div>
@@ -35,6 +40,80 @@
                     <div class="modal-footer">
                         <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn bg-gradient-primary btn-md">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal - new Pricelist -->
+    <div class="modal fade" id="pricelistNewModal" tabindex="-1" role="dialog" aria-labelledby="pricelistNewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-normal text-md" id="pricelistNewModalLabel"><b>New Pricelist</b></h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ url('pricelist-store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="input-group input-group-static mb-1">
+                            <label>Customer (<span class="text-info">Optional</span>)</label>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select select-cust" name="id_customer" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                <option value="">...</option>
+                                @foreach ($customers as $c)
+                                <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="input-group input-group-static mb-1">
+                            <label>Shipper (<span class="text-info">Optional</span>)</label>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select select-shipper" name="id_shipper" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                <option value="">...</option>
+                                @foreach ($shippers as $s)
+                                <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="input-group input-group-static mb-1">
+                            <label>Origin <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select text-left" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                <option value="">...</option>
+                                <option value="BTH-JKT">BTH-JKT</option>
+                                <option value="BTH-SIN">BTH-SIN</option>
+                                <option value="SIN-BTH">SIN-BTH</option>
+                                <option value="SIN-JKT">SIN-JKT</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <label>Price <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="price" value="{{ old('price') }}" placeholder="..." required>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <div class="col-5">
+                                <label>Start Period (<span class="text-info">Optional</span>)</label>
+                                <input type="date" class="form-control" name="start_period" value="{{ old('start_period') }}">
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <label>End Period (<span class="text-info">Optional</span>)</label>
+                                <input type="date" class="form-control" name="end_period" value="{{ old('end_period') }}">
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-primary btn-md ms-1">Submit</button>
+                        </div>
                     </div>
                 </form>
             </div>

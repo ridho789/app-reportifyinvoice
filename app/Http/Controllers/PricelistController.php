@@ -21,6 +21,59 @@ class PricelistController extends Controller
         return view('main.pricelist', compact('pricelists', 'customer', 'shipper', 'customers',  'shippers','logErrors'));
     }
 
+    public function store(Request $request) {
+        $numericNewPrice = preg_replace("/[^0-9]/", "", explode(",", $request->price)[0]);
+        if ($request->price[0] === '-') {
+            $numericNewPrice *= -1;
+        }
+
+        $dataNewPricelist = [
+            'id_customer' => $request->id_customer,
+            'id_shipper' => $request->id_shipper,
+            'origin' => $request->origin,
+            'price' => $numericNewPrice,
+            'start_period' => $request->start_period,
+            'end_period' => $request->end_period
+        ];
+
+        $exitingPricelist = Pricelist::where('id_customer', $request->id_customer)->where('id_shipper', $request->id_shipper)->where('origin', $request->origin)->where('price', $numericNewPrice)
+            ->where('start_period', $request->start_period)->where('end_period', $request->end_period)->first();
+
+        $dataCustomer = Customer::where('id_customer', $request->id_customer)->first();
+        $dataShipper = Shipper::where('id_shipper', $request->id_shipper)->first();
+
+        $customerName = 'null';
+        if ($dataCustomer) {
+            $customerName = $dataCustomer->name;
+        } 
+
+        $shipperName = 'null';
+        if ($dataShipper) {
+            $shipperName = $dataShipper->name;
+        }
+        
+        $startPeriod = 'null';
+        if ($request->start_period) {
+            $startPeriod = \Carbon\Carbon::createFromFormat('Y-m-d', $request->start_period)->format('d-M-y');
+        }
+
+        $endPeriod = 'null';
+        if ($request->end_period) {
+            $endPeriod = \Carbon\Carbon::createFromFormat('Y-m-d', $request->end_period)->format('d-M-y');
+        }
+
+        if ($exitingPricelist) {
+            $logErrors = 'Customer: ' . $customerName . ' - ' . 'Shipper: ' . $shipperName . ' - ' . 'Origin: ' . $request->origin . ' - ' . 'Price: ' . 
+            $request->price . ' - ' . 'Start Period: ' . $startPeriod . ' - ' . 'End Period: ' . $endPeriod . ', already in the system';
+            
+            return redirect('pricelist')->with('logErrors', $logErrors);
+
+        } else {
+            Pricelist::create($dataNewPricelist);
+            return redirect('pricelist');
+        }
+    }
+
     public function update(Request $request) {
         $numericPrice = preg_replace("/[^0-9]/", "", explode(",", $request->price)[0]);
         if ($request->price[0] === '-') {
@@ -36,7 +89,7 @@ class PricelistController extends Controller
             'end_period' => $request->end_period
         ]);
 
-        return redirect()->back();
+        return redirect('pricelist');
     }
 
     public function importPricelist(Request $request) {
