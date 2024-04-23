@@ -19,7 +19,9 @@ class CasImport implements ToCollection
     public function collection(Collection $collection)
     {
         $rowNumber = 0;
+        $currentRow = 0;
         foreach ($collection as $row) {
+            $currentRow++;
             if ($rowNumber < 1) {
                 // Header column
                 $headerColumn = $row->toArray();
@@ -65,13 +67,18 @@ class CasImport implements ToCollection
             'lts' => strtoupper($row[2]),
             'charge' => $row[3],
             'desc' => $row[4],
-            'start_period' => $row[5],
-            'end_period' => $row[6]
+            'start_period' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]),
+            'end_period' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6])
         ];
 
-        $exitingCas = Cas::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('lts', $row[2])->where('charge', $row[3])->where('desc', $row[4])->first();
+        $exitingCas = Cas::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('lts', $row[2])->where('charge', $row[3])->where('desc', $row[4])
+        ->where('start_period', \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]))->where('end_period', \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]))->first();
         
-        if (!$exitingCas) {
+        if ($exitingCas) {
+            $errorMessage = 'Error importing data: The data in the row ' . $currentRow . ' already exists in the system ';
+            $this->logErrors[] = $errorMessage;
+
+        } else {
             Cas::create($dataCas);
         }
     }
