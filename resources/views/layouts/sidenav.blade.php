@@ -9,12 +9,6 @@
     <hr class="horizontal light mt-0 mb-2">
     <div class="collapse navbar-collapse w-auto h-auto ps" id="sidenav-collapse-main">
         <ul class="navbar-nav">
-            <li class="nav-item">
-                <a href="{{ url('/dashboard') }}" class="nav-link text-white {{ request()->is('dashboard') ? 'active bg-gradient-primary' : '' }}">
-                    <i class="material-icons-round opacity-10">dashboard</i>
-                    <span class="nav-link-text ms-2 ps-1">Dashboard</span>
-                </a>
-            </li>
             <li class="nav-item mt-3">
                 <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MGMT</h6>
             </li>

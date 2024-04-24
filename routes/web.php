@@ -11,6 +11,8 @@ use App\Http\Controllers\BillRecapController;
 use App\Http\Controllers\PricelistController;
 use App\Http\Controllers\CasController;
 
+use App\Http\Controllers\LoginController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,56 +25,62 @@ use App\Http\Controllers\CasController;
 */
 
 Route::get('/', function () {
-    return view('dashboard');
+    return view('auth.login');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::get('login', [LoginController::class, 'index'])->name('login');
+Route::get('login-auth', [LoginController::class, 'authenticate']);
+Route::get('logout', [LoginController::class, 'logout']);
 
-// shipment
-Route::get('/list_shipments', [shipmentController::class, 'index']);
+// Route::get('/dashboard', [DashboardController::class, 'index']);
 
-// sea shipment
-Route::get('/form_sea_shipment', [shipmentController::class, 'createSeaShipment']);
-Route::get('/list_sea_shipment', [shipmentController::class, 'listSeaShipment']);
-Route::get('sea_shipment-edit/{id_sea_shipment_line}', [shipmentController::class, 'editSeaShipment']);
-Route::post('sea_shipment-update', [shipmentController::class, 'updateSeaShipment']);
-Route::post('import-sea-shipment', [shipmentController::class, 'importSeaShipment']);
+Route::group(['middleware' => ['auth', 'check.role.user:0']], function () {
+    // shipment
+    Route::get('/list_shipments', [shipmentController::class, 'index']);
 
-// bill recaps
-Route::get('/list_bill_recap', [BillRecapController::class, 'index']);
-Route::get('/form_bill_recap', [BillRecapController::class, 'create']);
-Route::post('bill_recap-store', [BillRecapController::class, 'store']);
-Route::get('bill_recap-edit/{id_bill_recap}', [BillRecapController::class, 'edit']);
-Route::post('bill_recap-update', [BillRecapController::class, 'update']);
+    // sea shipment
+    Route::get('/form_sea_shipment', [shipmentController::class, 'createSeaShipment']);
+    Route::get('/list_sea_shipment', [shipmentController::class, 'listSeaShipment']);
+    Route::get('sea_shipment-edit/{id_sea_shipment_line}', [shipmentController::class, 'editSeaShipment']);
+    Route::post('sea_shipment-update', [shipmentController::class, 'updateSeaShipment']);
+    Route::post('import-sea-shipment', [shipmentController::class, 'importSeaShipment']);
 
-// customer
-Route::get('/customer', [CustomerController::class, 'index']);
-Route::post('customer-store', [CustomerController::class, 'store']);
-Route::post('customer-update', [CustomerController::class, 'update']);
+    // bill recaps
+    Route::get('/list_bill_recap', [BillRecapController::class, 'index']);
+    Route::get('/form_bill_recap', [BillRecapController::class, 'create']);
+    Route::post('bill_recap-store', [BillRecapController::class, 'store']);
+    Route::get('bill_recap-edit/{id_bill_recap}', [BillRecapController::class, 'edit']);
+    Route::post('bill_recap-update', [BillRecapController::class, 'update']);
 
-// shipper
-Route::get('/shipper', [ShipperController::class, 'index']);
-Route::post('shipper-store', [ShipperController::class, 'store']);
-Route::post('shipper-update', [ShipperController::class, 'update']);
+    // customer
+    Route::get('/customer', [CustomerController::class, 'index']);
+    Route::post('customer-store', [CustomerController::class, 'store']);
+    Route::post('customer-update', [CustomerController::class, 'update']);
 
-// ship
-Route::get('/ship', [ShipController::class, 'index']);
-Route::post('ship-store', [ShipController::class, 'store']);
-Route::post('ship-update', [ShipController::class, 'update']);
+    // shipper
+    Route::get('/shipper', [ShipperController::class, 'index']);
+    Route::post('shipper-store', [ShipperController::class, 'store']);
+    Route::post('shipper-update', [ShipperController::class, 'update']);
 
-// insurance
-Route::get('/insurance', [InsuranceController::class, 'index']);
-Route::post('insurance-update', [InsuranceController::class, 'update']);
-Route::post('import-insurances', [InsuranceController::class, 'importInsurances']);
+    // ship
+    Route::get('/ship', [ShipController::class, 'index']);
+    Route::post('ship-store', [ShipController::class, 'store']);
+    Route::post('ship-update', [ShipController::class, 'update']);
 
-// pricelist
-Route::get('/pricelist', [PricelistController::class, 'index']);
-Route::post('pricelist-store', [PricelistController::class, 'store']);
-Route::post('pricelist-update', [PricelistController::class, 'update']);
-Route::post('import-pricelist', [PricelistController::class, 'importPricelist']);
+    // insurance
+    Route::get('/insurance', [InsuranceController::class, 'index']);
+    Route::post('insurance-update', [InsuranceController::class, 'update']);
+    Route::post('import-insurances', [InsuranceController::class, 'importInsurances']);
 
-// cas
-Route::get('/cas', [CasController::class, 'index']);
-Route::post('cas-store', [CasController::class, 'store']);
-Route::post('cas-update', [CasController::class, 'update']);
-Route::post('import-cas', [CasController::class, 'importCas']);
+    // pricelist
+    Route::get('/pricelist', [PricelistController::class, 'index']);
+    Route::post('pricelist-store', [PricelistController::class, 'store']);
+    Route::post('pricelist-update', [PricelistController::class, 'update']);
+    Route::post('import-pricelist', [PricelistController::class, 'importPricelist']);
+
+    // cas
+    Route::get('/cas', [CasController::class, 'index']);
+    Route::post('cas-store', [CasController::class, 'store']);
+    Route::post('cas-update', [CasController::class, 'update']);
+    Route::post('import-cas', [CasController::class, 'importCas']);
+});

@@ -16,11 +16,14 @@
                 </div> -->
             </div>
             <ul class="navbar-nav  justify-content-end">
-                <li class="nav-item d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
+                <li class="nav-item dropdown d-flex align-items-center">
+                    <a href="#" class="nav-link text-body font-weight-bold p-0" id="dropdownLogoutButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-user me-sm-1"></i>
-                        <span class="d-sm-inline d-none">Sign In</span>
+                        <span class="d-sm-inline d-none">{{ auth()->user()->name }}</span>
                     </a>
+                    <ul class="dropdown-menu dropdown-menu-end px-2 py-2 me-sm-n4" aria-labelledby="dropdownLogoutButton">
+                        <li><a class="dropdown-item" href="{{ url('logout') }}">Logout</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
@@ -40,7 +43,7 @@
                     <a href="#" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-bell cursor-pointer"></i>
                     </a>
-                    <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                    <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                         <li class="mb-2">
                             <a class="dropdown-item border-radius-md" href="#">
                                 <div class="d-flex py-1">
