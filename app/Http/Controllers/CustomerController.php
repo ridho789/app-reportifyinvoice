@@ -16,42 +16,38 @@ class CustomerController extends Controller
     }
 
     public function store(Request $request) {
-        $existingCustomer = Customer::where('name', $request->customer)->first();
+        $shipperIds = $request->id_shipper ?? [];
+    
+        $customer = Customer::updateOrCreate(
+            ['name' => $request->customer],
+            ['shipper_ids' => implode(',', $shipperIds)]
+        );
+    
+        if ($customer->wasRecentlyCreated) {
+            return redirect()->back();
 
-        $shipperIds = null;
-        if ($request->id_shipper) {
-            $shipperIds = implode(',', $request->id_shipper);
-        }
-        
-        if ($existingCustomer) {
+        } else {
             return redirect()->back()->with([
-                'error' => $request->customer . ' already in the system',
+                'error' => $request->customer . ' already exists in the system',
                 'error_type' => 'duplicate-alert',
                 'input' => $request->all(),
             ]);
-
-        } else {
-            
-            $customer = $request->customer;
-            $shipper_ids = $shipperIds;
-            Customer::insert(['name'=> $customer, 'shipper_ids' => $shipper_ids]);
-            
-            return redirect()->back();
         }
     }
+    
 
     public function update(Request $request) {
-        $existingCustomer = Customer::where('id_customer', $request->id)->first();
+        $existingCustomer = Customer::where('id_customer', $request->id)->firstOrFail();
         $currentCustomer = $existingCustomer->name;
-
+    
         $shipperIds = null;
         if ($request->id_shipper) {
             $shipperIds = implode(',', $request->id_shipper);
         }
-
+    
         if ($currentCustomer != $request->customer) {
-            $checkCustomer = Customer::where('name', $request->customer)->first();
-
+            $checkCustomer = Customer::where('name', $request->customer)->exists();
+    
             if ($checkCustomer) {
                 return redirect()->back()->with([
                     'error' => $request->customer . ' already in the system',
@@ -60,20 +56,18 @@ class CustomerController extends Controller
                 ]);
 
             } else {
-                customer::where('id_customer', $request->id)->update([
-                    'name' => $request->customer,
-                    'shipper_ids' => $shipperIds
-                ]);
-        
+                $existingCustomer->name = $request->customer;
+                $existingCustomer->shipper_ids = $shipperIds;
+                $existingCustomer->save();
+    
                 return redirect()->back();
             }
 
         } else {
-            customer::where('id_customer', $request->id)->update([
-                'shipper_ids' => $shipperIds
-            ]);
+            $existingCustomer->shipper_ids = $shipperIds;
+            $existingCustomer->save();
     
             return redirect()->back();
         }
-    } 
+    }
 }
