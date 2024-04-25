@@ -22,7 +22,7 @@
                         <span class="d-sm-inline d-none">{{ auth()->user()->name }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end px-2 py-2 me-sm-n4" aria-labelledby="dropdownLogoutButton">
-                        <li><a class="dropdown-item" href="{{ url('logout') }}">Logout</a></li>
+                        <li><a class="dropdown-item font-weight-bold text-primary text-center" href="{{ url('logout') }}">Logout <i class="fa fa-sign-out"></i></a></li>
                     </ul>
                 </li>
                 <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
@@ -43,8 +43,8 @@
                     <a href="#" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-bell cursor-pointer"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                        <li class="mb-2">
+                    <ul class="dropdown-menu dropdown-menu-end px-2 py-2 me-sm-n4 notification" aria-labelledby="dropdownMenuButton">
+                        <li class="mb-1">
                             <a class="dropdown-item border-radius-md" href="#">
                                 <div class="d-flex py-1">
                                     <div class="d-flex flex-column justify-content-center">
@@ -65,4 +65,16 @@
         </div>
     </div>
 </nav>
+<style>
+    @media (max-width: 767.98px) {
+        .navbar-collapse .navbar-nav .nav-item.dropdown .dropdown-menu {
+            right: -15.5px !important;
+        }
+    }
+
+    .dropdown .dropdown-menu.dropdown-menu-end {
+        right: 8px !important;
+        left: auto !important;
+    }
+</style>
 <!-- End Navbar -->
