@@ -220,14 +220,14 @@
                                             <input type="date" class="form-control text-center" name="bldate[]" value="{{ $ssl->date }}" style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <input type="text" class="form-control text-center" name="code[]" value="{{ $ssl->code ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="code[]" value="{{ $ssl->code }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=10%>
                                             <input type="text" class="form-control text-center" name="marking[]" value="{{ $ssl->marking ?? '-' }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="qty_pkgs[]" value="{{ $ssl->qty_pkgs ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="qty_pkgs[]" value="{{ $ssl->qty_pkgs }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
@@ -239,7 +239,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="qty_loose[]" value="{{ $ssl->qty_loose ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="qty_loose[]" value="{{ $ssl->qty_loose }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
@@ -252,7 +252,7 @@
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="weight[]" value="{{ $ssl->weight ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="weight[]" value="{{ $ssl->weight }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
@@ -267,17 +267,17 @@
                                         <!-- ### -->
                                         <!-- total cbm -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="cbm1[]" value="{{ $ssl->tot_cbm_1 ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="cbm1[]" value="{{ $ssl->tot_cbm_1 }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="cbm2[]" value="{{ $ssl->tot_cbm_2 ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="cbm2[]" value="{{ $ssl->tot_cbm_2 }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="lts[]" value="{{ $ssl->lts ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="lts[]" value="{{ $ssl->lts }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="desc[]" value="{{ $ssl->desc ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="desc[]" value="{{ $ssl->desc }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=7.5%>
                                             <select class="form-select text-center text-xs" name="state[]" style="border: 0px;">
