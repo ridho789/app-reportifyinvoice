@@ -83,36 +83,44 @@ class ShipmentController extends Controller
             ]);
         }
 
-        SeaShipment::where('id_sea_shipment', $request->id_sea_shipment)->update([
-            'no_aju' => strtoupper($request->no_aju),
-            'date' => $request->date,
-            'id_customer' => $request->id_customer,
-            'id_shipper' => $request->id_shipper,
-            'id_ship' => $request->id_ship,
-            'origin' => strtoupper($request->origin),
-            'etd' => $request->etd,
-            'eta' => $request->eta,
-        ]);
+        $SeaShipment = SeaShipment::find($request->id_sea_shipment);
+
+        if ($SeaShipment) {
+            $SeaShipment->no_aju = strtoupper($request->no_aju);
+            $SeaShipment->date = $request->date;
+            $SeaShipment->id_customer = $request->id_customer;
+            $SeaShipment->id_shipper = $request->id_shipper;
+            $SeaShipment->id_ship = $request->id_ship;
+            $SeaShipment->origin = strtoupper($request->origin);
+            $SeaShipment->etd = $request->etd;
+            $SeaShipment->eta = $request->eta;
+
+            $SeaShipment->save();
+        }
 
         foreach ($request->id_sea_shipment_line as $index => $idSeaShipmentLine) {
-            SeaShipmentLine::where('id_sea_shipment_line', $idSeaShipmentLine)->update([
-                'date' => $request->bldate[$index],
-                'code' => strtoupper($request->code[$index]),
-                'marking' => strtoupper($request->marking[$index]),
-                'qty_pkgs' => $request->qty_pkgs[$index],
-                'qty_loose' => $request->qty_loose[$index],
-                'unit_qty_pkgs' => $request->unit_qty_pkgs[$index],
-                'unit_qty_loose' => $request->unit_qty_loose[$index],
-                'weight' => $request->weight[$index],
-                'dimension_p' => $request->p[$index],
-                'dimension_l' => $request->l[$index],
-                'dimension_t' => $request->t[$index],
-                'tot_cbm_1' => $request->cbm1[$index],
-                'tot_cbm_2' => $request->cbm2[$index],
-                'lts' => strtoupper($request->lts[$index]),
-                'desc' => strtoupper($request->desc[$index]),
-                'state' => $request->state[$index],
-            ]);
+            $seaShipmentLine = SeaShipmentLine::find($idSeaShipmentLine);
+            
+            if ($seaShipmentLine) {
+                $seaShipmentLine->update([
+                    'date' => $request->bldate[$index],
+                    'code' => strtoupper($request->code[$index]),
+                    'marking' => strtoupper($request->marking[$index]),
+                    'qty_pkgs' => $request->qty_pkgs[$index],
+                    'qty_loose' => $request->qty_loose[$index],
+                    'unit_qty_pkgs' => $request->unit_qty_pkgs[$index],
+                    'unit_qty_loose' => $request->unit_qty_loose[$index],
+                    'weight' => $request->weight[$index],
+                    'dimension_p' => $request->p[$index],
+                    'dimension_l' => $request->l[$index],
+                    'dimension_t' => $request->t[$index],
+                    'tot_cbm_1' => $request->cbm1[$index],
+                    'tot_cbm_2' => $request->cbm2[$index],
+                    'lts' => strtoupper($request->lts[$index]),
+                    'desc' => strtoupper($request->desc[$index]),
+                    'state' => $request->state[$index],
+                ]);
+            }
         }
 
         return redirect()->back();

@@ -4,11 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Observers\HistorySeaShipmentObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+#[ObservedBy([HistorySeaShipmentObserver::class])]
 class SeaShipment extends Model
 {
     use HasFactory;
     protected $table = 'tbl_sea_shipment';
+    protected $primaryKey = 'id_sea_shipment';
 
     protected $fillable = [
         'no_aju',

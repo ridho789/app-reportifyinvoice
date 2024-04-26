@@ -28,6 +28,7 @@ class HistoryCustomerObserver implements ShouldHandleEventsAfterCommit
                 'older_data' => json_encode($customer->getOriginal()),
                 'changed_data' => json_encode($customer->getChanges()),
                 'user_id' => auth()->id(),
+                'revcount' => ++$extingHistoryCustomer->revcount
             ]);
 
         } else {
@@ -38,6 +39,7 @@ class HistoryCustomerObserver implements ShouldHandleEventsAfterCommit
                 'changed_data' => json_encode($customer->getChanges()),
                 'action' => 'update',
                 'user_id' => auth()->id(),
+                'revcount' => 1
             ]);
         }
     }

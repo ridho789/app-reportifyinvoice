@@ -81,17 +81,19 @@ class CasController extends Controller
             $numericCharge *= -1;
         }
 
-        $dataCas = [
-            'id_customer' => $request->id_customer,
-            'id_shipper' => $request->id_shipper,
-            'lts' => $request->lts,
-            'charge' => $numericCharge,
-            'desc' => $request->desc,
-            'start_period' => $request->start_period,
-            'end_period' => $request->end_period
-        ];
+        $cas = Cas::find($request->id);
 
-        Cas::where('id_cas', $request->id)->update($dataCas);
+        if ($cas) {
+            $cas->id_customer = $request->id_customer;
+            $cas->id_shipper = $request->id_shipper;
+            $cas->lts = $request->lts;
+            $cas->charge = $numericCharge;
+            $cas->desc = $request->desc;
+            $cas->start_period = $request->start_period;
+            $cas->end_period = $request->end_period;
+
+            $cas->save();
+        }
 
         return redirect('cas');
     }

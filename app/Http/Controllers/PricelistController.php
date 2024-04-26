@@ -80,14 +80,18 @@ class PricelistController extends Controller
             $numericPrice *= -1;
         }
 
-        Pricelist::where('id_pricelist', $request->id)->update([
-            'id_customer' => $request->id_customer,
-            'id_shipper' => $request->id_shipper,
-            'origin' => $request->origin,
-            'price' => $numericPrice,
-            'start_period' => $request->start_period,
-            'end_period' => $request->end_period
-        ]);
+        $pricelist = Pricelist::find($request->id);
+
+        if ($pricelist) {
+            $pricelist->id_customer = $request->id_customer;
+            $pricelist->id_shipper = $request->id_shipper;
+            $pricelist->origin = $request->origin;
+            $pricelist->price = $numericPrice;
+            $pricelist->start_period = $request->start_period;
+            $pricelist->end_period = $request->end_period;
+
+            $pricelist->save();
+        }
 
         return redirect('pricelist');
     }

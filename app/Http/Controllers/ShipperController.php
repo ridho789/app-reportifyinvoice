@@ -32,28 +32,26 @@ class ShipperController extends Controller
     }
 
     public function update(Request $request) {
-        $existingShipper = Shipper::where('id_shipper', $request->id)->first();
+        $existingShipper = Shipper::where('id_shipper', $request->id)->firstOrFail();
         $currentShipper = $existingShipper->name;
-
+    
         if ($currentShipper != $request->shipper) {
-            $checkShipper = Shipper::where('name', $request->shipper)->first();
-
+            $checkShipper = Shipper::where('name', $request->shipper)->exists();
+    
             if ($checkShipper) {
                 return redirect()->back()->with([
                     'error' => $request->shipper . ' already in the system',
                     'error_type' => 'duplicate-alert',
                     'input' => $request->all(),
                 ]);
-
-            } else {
-                Shipper::where('id_shipper', $request->id)->update([
-                    'name' => $request->shipper,
-                ]);
-        
-                return redirect()->back();
             }
         }
-
+    
+        $existingShipper->update([
+            'name' => $request->shipper,
+        ]);
+    
         return redirect()->back();
     }
+    
 }

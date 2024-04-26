@@ -17,6 +17,7 @@ class History extends Model
         'older_data',
         'changed_data',
         'action',
-        'user_id'
+        'user_id',
+        'revcount'
     ];
 }

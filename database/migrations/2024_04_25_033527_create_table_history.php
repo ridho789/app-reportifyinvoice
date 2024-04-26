@@ -19,6 +19,7 @@ return new class extends Migration
             $table->longText('changed_data')->nullable();
             $table->string('action');
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->integer('revcount')->nullable();
             $table->timestamps();
         });
     }

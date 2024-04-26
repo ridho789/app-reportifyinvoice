@@ -32,11 +32,11 @@ class ShipController extends Controller
     }
 
     public function update(Request $request) {
-        $existingShip = Ship::where('id_ship', $request->id)->first();
+        $existingShip = Ship::where('id_ship', $request->id)->firstOrFail();
         $currentShip = $existingShip->name;
 
         if ($currentShip != $request->ship) {
-            $checkShip = Ship::where('name', $request->ship)->first();
+            $checkShip = Ship::where('name', $request->ship)->exists();
 
             if ($checkShip) {
                 return redirect()->back()->with([
@@ -44,15 +44,12 @@ class ShipController extends Controller
                     'error_type' => 'duplicate-alert',
                     'input' => $request->all(),
                 ]);
-
-            } else {
-                Ship::where('id_ship', $request->id)->update([
-                    'name' => $request->ship,
-                ]);
-        
-                return redirect()->back();
             }
         }
+
+        $existingShip->update([
+            'name' => $request->ship,
+        ]);
 
         return redirect()->back();
     }
