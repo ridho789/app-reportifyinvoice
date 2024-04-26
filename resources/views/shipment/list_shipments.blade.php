@@ -56,7 +56,7 @@
 
     @if(session()->has('logErrors'))
     <div class="row">
-        <div class="col-md-12 mb-4">
+        <div class="col-md-12 mb-4" style="max-height: 350px; overflow-y: auto;">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title text-sm text-danger">Error Log</h5>

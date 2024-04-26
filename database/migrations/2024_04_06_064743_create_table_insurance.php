@@ -13,14 +13,9 @@ return new class extends Migration
     {
         Schema::create('tbl_insurances', function (Blueprint $table) {
             $table->id('id_insurance');
-            $table->string('quantity')->nullable();
-            $table->string('unit')->nullable();
-            $table->string('description')->nullable();
-            $table->string('currency')->nullable();
-            $table->string('original_price')->nullable();
-            $table->string('exchange_rate')->nullable();
-            $table->string('idr')->nullable();
-            $table->string('premi')->nullable();
+            $table->string('nopolis')->nullable();
+            $table->string('charge')->nullable();
+            $table->date('etd')->nullable();
             $table->timestamps();
         });
     }

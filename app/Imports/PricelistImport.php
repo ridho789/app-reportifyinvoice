@@ -30,14 +30,16 @@ class PricelistImport implements ToCollection
             }
 
             // Shipper
+            $IdShipper = null;
             if ($row[1]) {
                 $checkShipper = Shipper::where('name', 'like', '%' . $row[1] . '%')->first();
                 if (empty($checkShipper)) {
                     $checkShipper = Shipper::create(['name' => strtoupper($row[1])]);
-                    $IdShipper = $checkShipper->id;
-                } else {
-                    $IdShipper = $checkShipper->id_shipper;
                 }
+                
+                // IdShipper
+                $IdShipper = $checkShipper->id_shipper;
+
             }
 
             // Customer
@@ -46,10 +48,11 @@ class PricelistImport implements ToCollection
                 $checkCustomer = Customer::where('name', 'like', '%' . $row[0] . '%')->first();
                 if (empty($checkCustomer)) {
                     $checkCustomer = Customer::create(['name' => strtoupper($row[0]), 'shipper_ids' => $IdShipper]);
-                    $IdCustomer = $checkCustomer->id;
-                } else {
-                    $IdCustomer = $checkCustomer->id_customer;
                 }
+                
+                // IdCustomer
+                $IdCustomer = $checkCustomer->id_customer;
+
 
                 $checkShipperIds = $checkCustomer->shipper_ids;
                 if ($checkShipperIds && strpos($checkShipperIds, $IdShipper) === false) {

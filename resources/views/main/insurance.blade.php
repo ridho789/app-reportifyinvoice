@@ -75,7 +75,7 @@
 
     @if(session()->has('logErrors'))
     <div class="row">
-        <div class="col-md-12 mb-4">
+        <div class="col-md-12 mb-4" style="max-height: 350px; overflow-y: auto;">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title text-sm text-danger">Error Log</h5>
@@ -108,7 +108,9 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">#</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Marking</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Customer</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Marking</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Charge</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
@@ -124,10 +126,16 @@
                                         </div>
                                     </td>
                                     <td>
+                                        <p class="customer-selected text-sm font-weight-normal mb-0">{{ $customer[$i->id_customer] ?? '-' }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="shipper-selected text-sm font-weight-normal mb-0">{{ $shipper[$i->id_shipper] ?? '-' }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
                                         <p class="marking-selected text-sm font-weight-normal mb-0">{{ $seaShipmentLine[$i->id_sea_shipment_line] ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="charge-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($i->idr ?? 0, 0, ',', '.') }}</p>
+                                        <p class="charge-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($i->charge ?? 0, 0, ',', '.') }}</p>
                                     </td>
                                     <td class="text-end">
                                         <a href="#" class="mx-4 edit-button" data-bs-toggle="modal" data-bs-target="#insuranceEditModal">

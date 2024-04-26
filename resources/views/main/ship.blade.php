@@ -118,7 +118,7 @@
                 @else
                 <div class="card-body px-0 pt-0 pb-0">
                     <div class="d-flex justify-content-center mb-3">
-                        <button type="button" class="btn bg-gradient-dark" id="btn-new-ship">New Ship</button>
+                        <span class="text-xs mb-3"><i>No available data to display..</i></span>
                     </div>
                 </div>
                 @endif

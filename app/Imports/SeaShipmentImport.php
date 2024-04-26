@@ -69,27 +69,28 @@ class SeaShipmentSheetImport implements ToCollection
                 // Shipper
                 if ($row[3]) {
                     $checkShipper = Shipper::where('name', 'like', '%' . $row[3] . '%')->first();
-                    if (empty($checkShipper)) {
+                    if (!$checkShipper) {
                         $checkShipper = Shipper::create(['name' => strtoupper($row[3])]);
-                        $IdShipper = $checkShipper->id;
-                    } else {
-                        $IdShipper = $checkShipper->id_shipper;
                     }
+
+                    // IdShipper
+                    $IdShipper = $checkShipper->id_shipper;
                 }
 
                 // Customer
                 if ($row[2]) {
                     $checkCustomer = Customer::where('name', 'like', '%' . $row[2] . '%')->first();
-                    if (empty($checkCustomer)) {
+                    if (!$checkCustomer) {
                         $checkCustomer = Customer::create(['name' => strtoupper($row[2]), 'shipper_ids' => $IdShipper]);
-                        $IdCustomer = $checkCustomer->id;
-                    } else {
-                        $IdCustomer = $checkCustomer->id_customer;
                     }
+                    
+                    // IdCustomer
+                    $IdCustomer = $checkCustomer->id_customer;
 
                     $checkShipperIds = $checkCustomer->shipper_ids;
                     if ($checkShipperIds && strpos($checkShipperIds, $IdShipper) === false) {
                         $checkShipperIds .= ",$IdShipper";
+
                         // Update shipper_ids in customer
                         Customer::where('id_customer', $IdCustomer)->update(['shipper_ids' => $checkShipperIds]);
                     }
@@ -98,12 +99,12 @@ class SeaShipmentSheetImport implements ToCollection
                 // Ship
                 if ($row[4]) {
                     $checkShip = Ship::where('name', 'like', '%' . $row[4] . '%')->first();
-                    if (empty($checkShip)) {
+                    if (!$checkShip) {
                         $checkShip = Ship::create(['name' => strtoupper($row[4])]);
-                        $IdShip = $checkShip->id;
-                    } else {
-                        $IdShip = $checkShip->id_ship;
                     }
+                    
+                    // IdShip
+                    $IdShip = $checkShip->id_ship;
                 }
 
                 $valueKey = $row[0] . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1])->format('Y-m-d') . $IdShipper . $IdCustomer;
@@ -138,7 +139,7 @@ class SeaShipmentSheetImport implements ToCollection
                 }
 
                 $dataShipmentLine = [
-                    'id_sea_shipment' => $seaShipment->id,
+                    'id_sea_shipment' => $seaShipment->id_sea_shipment,
                     'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]),
                     'code' => strtoupper($row[1]),
                     'marking' => strtoupper($row[2]),

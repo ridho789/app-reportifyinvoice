@@ -58,7 +58,7 @@
                                             </select>
                                         @else
                                             <label style="margin-bottom: 4.5px;">Select a shipper (<span class="text-info">Optional</span>)</label>
-                                            <select class="form-control" disabled>
+                                            <select class="form-control text-xs" disabled>
                                                 <option value="">No data available</option>
                                             </select>
                                         @endif
@@ -181,7 +181,7 @@
                 @else
                 <div class="card-body px-0 pt-0 pb-0">
                     <div class="d-flex justify-content-center mb-3">
-                        <button type="button" class="btn bg-gradient-dark" id="btn-new-customer">New Customer</button>
+                        <span class="text-xs mb-3"><i>No available data to display..</i></span>
                     </div>
                 </div>
                 @endif
