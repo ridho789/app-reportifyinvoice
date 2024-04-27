@@ -51,7 +51,7 @@
                                     <div class="input-group input-group-static text-xs">
                                         @if (count($companies) > 0)
                                             <label style="margin-left: -1px; margin-bottom: 11px;">Select a company</label>
-                                            <select class="form-control select2" name="id_company" multiple style="width: 100%;" required>
+                                            <select class="form-control company" name="id_company" multiple style="width: 100%;" required>
                                                 @foreach ($companies as $c)
                                                     <option value="{{ $c->id_company }}">{{ $c->name }}</option>
                                                 @endforeach
@@ -111,8 +111,8 @@
                                 <div class="col-lg-6 mb-4">
                                     <div class="input-group input-group-static text-xs">
                                         @if (count($companies) > 0)
-                                            <label style="margin-left: -1px; margin-bottom: 12px;">Select a company</label>
-                                            <select class="form-control select2" name="id_company" id="edit-company" multiple style="width: 100%;" required>
+                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select a company</label>
+                                            <select class="form-control company" name="id_company" id="edit-company" multiple style="width: 100%;" required>
                                                 @foreach ($companies as $c)
                                                     <option value="{{ $c->id_company }}">{{ $c->name }}</option>
                                                 @endforeach
@@ -233,6 +233,11 @@
         $('.select2').select2({
             placeholder: "Please choose.."
         });
+
+        $('.company').select2({
+            placeholder: "Please choose..",
+            maximumSelectionLength: 1
+        });
     });
 
     setTimeout(function() {
@@ -287,7 +292,9 @@
                 document.getElementById("edit-id").value = id;
                 document.getElementById("edit-customer").value = customer.trim();
                 $("#edit-company").val(company);
-                $("#edit-company").select2();
+                $("#edit-company").select2({
+                    maximumSelectionLength: 1
+                });
 
                 if (myEditForm.style.display === 'none') {
                     myEditForm.style.display = 'block';
