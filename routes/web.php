@@ -10,6 +10,7 @@ use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\BillRecapController;
 use App\Http\Controllers\PricelistController;
 use App\Http\Controllers\CasController;
+use App\Http\Controllers\HistoryController;
 
 use App\Http\Controllers\LoginController;
 
@@ -83,4 +84,7 @@ Route::group(['middleware' => ['auth', 'check.role.user:0']], function () {
     Route::post('cas-store', [CasController::class, 'store']);
     Route::post('cas-update', [CasController::class, 'update']);
     Route::post('import-cas', [CasController::class, 'importCas']);
+
+    // history
+    Route::get('/history', [HistoryController::class, 'index']);
 });

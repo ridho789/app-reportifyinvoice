@@ -84,6 +84,17 @@
                     <span class="nav-link-text ms-1">Pricelists</span>
                 </a>
             </li>
+
+            <li class="nav-item">
+                <hr class="horizontal light">
+                <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Misc</h6>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->is('history') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/history') }}">
+                    <span class="sidenav-mini-icon"> H </span>
+                    <span class="nav-link-text ms-1">Histories</span>
+                </a>
+            </li>
         </ul>
     </div>
 </aside>
