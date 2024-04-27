@@ -5,22 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Shipper;
+use App\Models\Company;
 
 class CustomerController extends Controller
 {
     public function index() {
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
+        $companies = Company::orderBy('name')->get();
         $shipperName = Shipper::pluck('name', 'id_shipper');
-        return view('main.customer', compact('customers', 'shippers', 'shipperName'));
+        $companyName = Company::pluck('name', 'id_company');
+        return view('main.customer', compact('customers', 'shippers', 'shipperName', 'companies', 'companyName'));
     }
 
     public function store(Request $request) {
         $shipperIds = $request->id_shipper ?? [];
-    
+        
         $customer = Customer::updateOrCreate(
             ['name' => $request->customer],
-            ['shipper_ids' => implode(',', $shipperIds)]
+            ['shipper_ids' => implode(',', $shipperIds)],
+            ['id_company' => $request->id_company]
         );
     
         if ($customer->wasRecentlyCreated) {
@@ -57,6 +61,7 @@ class CustomerController extends Controller
 
             } else {
                 $existingCustomer->name = $request->customer;
+                $existingCustomer->id_company = $request->id_company;
                 $existingCustomer->shipper_ids = $shipperIds;
                 $existingCustomer->save();
     
@@ -64,6 +69,7 @@ class CustomerController extends Controller
             }
 
         } else {
+            $existingCustomer->id_company = $request->id_company;
             $existingCustomer->shipper_ids = $shipperIds;
             $existingCustomer->save();
     

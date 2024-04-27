@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\shipmentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ShipperController;
 use App\Http\Controllers\ShipController;
@@ -52,6 +53,11 @@ Route::group(['middleware' => ['auth', 'check.role.user:0']], function () {
     Route::post('bill_recap-store', [BillRecapController::class, 'store']);
     Route::get('bill_recap-edit/{id_bill_recap}', [BillRecapController::class, 'edit']);
     Route::post('bill_recap-update', [BillRecapController::class, 'update']);
+
+    // company
+    Route::get('/company', [CompanyController::class, 'index']);
+    Route::post('company-store', [CompanyController::class, 'store']);
+    Route::post('company-update', [CompanyController::class, 'update']);
 
     // customer
     Route::get('/customer', [CustomerController::class, 'index']);

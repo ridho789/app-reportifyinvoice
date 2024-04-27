@@ -49,6 +49,23 @@
                                 </div>
                                 <div class="col-lg-6 mb-4">
                                     <div class="input-group input-group-static text-xs">
+                                        @if (count($companies) > 0)
+                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select a company</label>
+                                            <select class="form-control select2" name="id_company" multiple style="width: 100%;" required>
+                                                @foreach ($companies as $c)
+                                                    <option value="{{ $c->id_company }}">{{ $c->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <label style="margin-bottom: 4.5px;">Select a company</label>
+                                            <select class="form-control text-xs" disabled>
+                                                <option value="">No data available</option>
+                                            </select>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 mb-4">
+                                    <div class="input-group input-group-static text-xs">
                                         @if (count($shippers) > 0)
                                             <label style="margin-left: -1px; margin-bottom: 11px;">Select a shipper (<span class="text-info">Optional</span>)</label>
                                             <select class="form-control select2" name="id_shipper[]" multiple style="width: 100%;">
@@ -93,6 +110,23 @@
                                 </div>
                                 <div class="col-lg-6 mb-4">
                                     <div class="input-group input-group-static text-xs">
+                                        @if (count($companies) > 0)
+                                            <label style="margin-left: -1px; margin-bottom: 12px;">Select a company</label>
+                                            <select class="form-control select2" name="id_company" id="edit-company" multiple style="width: 100%;" required>
+                                                @foreach ($companies as $c)
+                                                    <option value="{{ $c->id_company }}">{{ $c->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <label style="margin-bottom: 4.5px;">Select a company</label>
+                                            <select class="form-control" disabled>
+                                                <option value="">No data available</option>
+                                            </select>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 mb-4">
+                                    <div class="input-group input-group-static text-xs">
                                         @if (count($shippers) > 0)
                                             <label style="margin-left: -1px; margin-bottom: 12px;">Select a shipper (<span class="text-info">Optional</span>)</label>
                                             <select class="form-control select2" name="id_shipper[]" multiple style="width: 100%;" id="edit-shipper">
@@ -131,12 +165,13 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">#</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Customer</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($customers as $c)
-                                <tr data-id="{{ $c->id_customer }}" data-shipper="{{ implode(',', explode(',', $c->shipper_ids)) }}">
+                                <tr data-id="{{ $c->id_customer }}" data-id-company="{{ $c->id_company }}" data-shipper="{{ implode(',', explode(',', $c->shipper_ids)) }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
@@ -166,6 +201,9 @@
                                         @endphp
 
                                         <p class="text-sm font-weight-normal mb-0">{{ $shipperNamesString ?? '-' }}</p>
+                                    </td>
+                                    <td class="company-selected align-middle text-center text-sm">
+                                        <p class="text-sm font-weight-normal mb-0">{{ $companyName[$c->id_company] ?? '-' }}</p>
                                     </td>
                                     <td class="text-end">
                                         <a href="#" class="mx-4 btn-edit-customer" id="btn-edit-customer">
@@ -231,6 +269,7 @@
                 var row = this.closest("tr");
                 var id = row.getAttribute("data-id");
                 var customer = row.querySelector(".name-customer-selected").textContent;
+                var company = row.getAttribute("data-id-company");
                 var shipperIds = row.getAttribute("data-shipper").split(',');
                 $('#edit-shipper').val(shipperIds).trigger('change');
 
@@ -247,6 +286,8 @@
 
                 document.getElementById("edit-id").value = id;
                 document.getElementById("edit-customer").value = customer.trim();
+                $("#edit-company").val(company);
+                $("#edit-company").select2();
 
                 if (myEditForm.style.display === 'none') {
                     myEditForm.style.display = 'block';
