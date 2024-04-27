@@ -171,6 +171,13 @@
                     </div>
                     @endif
                 </div>
+                @if (count($bills) == 0)
+                <div class="card-body px-0 pt-0 pb-0 mt-4">
+                    <div class="d-flex justify-content-center mb-3">
+                        <span class="text-xs mb-3"><i>No available data to display..</i></span>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
 
