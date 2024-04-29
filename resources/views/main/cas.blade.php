@@ -182,7 +182,7 @@
 
                         <div class="text-end">
                             <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn bg-gradient-primary btn-md ms-1">Submit</button>
+                            <button type="submit" class="btn bg-gradient-primary btn-md ms-1">Update</button>
                         </div>
                     </div>
                 </form>
@@ -390,7 +390,10 @@
                 document.getElementById("shipper").value = shipper;
                 document.getElementById("lts").value = lts;
                 document.getElementById("charge").value = charge;
-                document.getElementById("desc").value = desc;
+
+                if (desc && desc != '-') {
+                    document.getElementById("desc").value = desc;
+                }
                 
                 var startPeriodElement = row.querySelector(".start-period-selected");
                 if (startPeriodElement.hasAttribute("data-start-period")) {

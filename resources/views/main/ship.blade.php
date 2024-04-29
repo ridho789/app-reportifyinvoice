@@ -66,7 +66,7 @@
                             <label>Enter a ship</label>
                             <input type="text" name="ship" id="edit-ship" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Update</button>
                     </form>
                 </div>
             </div>

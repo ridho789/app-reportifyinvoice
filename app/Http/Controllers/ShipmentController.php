@@ -33,7 +33,7 @@ class ShipmentController extends Controller
     }
 
     public function listSeaShipment() {
-        $allSeaShipment = SeaShipment::all();
+        $allSeaShipment = SeaShipment::orderBy('date')->get();
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');
         $ship = Ship::pluck('name', 'id_ship');
@@ -45,7 +45,7 @@ class ShipmentController extends Controller
         $id = Crypt::decrypt($id);
 
         $seaShipment = SeaShipment::where('id_sea_shipment', $id)->first();
-        $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->get();
+        $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
 
         $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
             return $item->date;

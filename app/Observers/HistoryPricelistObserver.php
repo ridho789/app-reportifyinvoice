@@ -21,7 +21,7 @@ class HistoryPricelistObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(Pricelist $pricelist): void
     {
-        $extingHistoryPricelist = History::where('id_changed_data', $pricelist->id_pricelist)->first();
+        $extingHistoryPricelist = History::where('id_changed_data', $pricelist->id_pricelist)->where('scope', 'pricelist')->first();
 
         if ($extingHistoryPricelist) {
             $extingHistoryPricelist->update([

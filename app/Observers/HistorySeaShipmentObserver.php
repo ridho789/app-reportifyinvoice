@@ -21,7 +21,7 @@ class HistorySeaShipmentObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(SeaShipment $seaShipment): void
     {
-        $extingHistorySeaShipment = History::where('id_changed_data', $seaShipment->id_sea_shipment)->first();
+        $extingHistorySeaShipment = History::where('id_changed_data', $seaShipment->id_sea_shipment)->where('scope', 'seaShipment')->first();
 
         if ($extingHistorySeaShipment) {
             $extingHistorySeaShipment->update([

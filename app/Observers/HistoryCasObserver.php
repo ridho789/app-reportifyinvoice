@@ -21,7 +21,7 @@ class HistoryCasObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(Cas $cas): void
     {
-        $extingHistoryCas = History::where('id_changed_data', $cas->id_cas)->first();
+        $extingHistoryCas = History::where('id_changed_data', $cas->id_cas)->where('scope', 'cas')->first();
 
         if ($extingHistoryCas) {
             $extingHistoryCas->update([

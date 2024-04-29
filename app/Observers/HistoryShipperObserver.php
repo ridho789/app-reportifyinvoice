@@ -21,7 +21,7 @@ class HistoryShipperObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(Shipper $shipper): void
     {
-        $extingHistoryShipper = History::where('id_changed_data', $shipper->id_shipper)->first();
+        $extingHistoryShipper = History::where('id_changed_data', $shipper->id_shipper)->where('scope', 'shipper')->first();
 
         if ($extingHistoryShipper) {
             $extingHistoryShipper->update([

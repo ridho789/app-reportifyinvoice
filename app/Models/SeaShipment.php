@@ -23,6 +23,9 @@ class SeaShipment extends Model
         'id_shipper',
         'id_customer',
         'id_ship',
-        'value_key'
+        'value_key',
+        'is_printed',
+        'printcount',
+        'printdate'
     ];
 }

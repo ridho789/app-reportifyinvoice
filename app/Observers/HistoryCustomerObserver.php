@@ -21,7 +21,7 @@ class HistoryCustomerObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(Customer $customer): void
     {
-        $extingHistoryCustomer = History::where('id_changed_data', $customer->id_customer)->first();
+        $extingHistoryCustomer = History::where('id_changed_data', $customer->id_customer)->where('scope', 'customer')->first();
 
         if ($extingHistoryCustomer) {
             $extingHistoryCustomer->update([
