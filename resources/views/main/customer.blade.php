@@ -293,6 +293,7 @@
                 document.getElementById("edit-customer").value = customer.trim();
                 $("#edit-company").val(company);
                 $("#edit-company").select2({
+                    placeholder: "Please choose..",
                     maximumSelectionLength: 1
                 });
 
