@@ -13,7 +13,10 @@ use Maatwebsite\Excel\Facades\Excel;
 class InsuranceController extends Controller
 {
     public function index() {
-        $insurances = Insurance::all();
+        $insurances = Insurance::join('tbl_customers', 'tbl_insurances.id_customer', '=', 'tbl_customers.id_customer')
+           ->orderBy('tbl_customers.name')
+           ->get();
+
         $seaShipmentLine = SeaShipmentLine::pluck('marking', 'id_sea_shipment_line');
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');

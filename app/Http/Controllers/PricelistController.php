@@ -12,7 +12,12 @@ use Maatwebsite\Excel\Facades\Excel;
 class PricelistController extends Controller
 {
     public function index() {
-        $pricelists = Pricelist::all();
+        $pricelists = Pricelist::leftJoin('tbl_customers', 'tbl_pricelists.id_customer', '=', 'tbl_customers.id_customer')
+            ->orderBy('tbl_customers.name')
+            ->orderByRaw("CASE WHEN tbl_pricelists.start_period IS NULL THEN 0 ELSE 1 END")
+            ->orderBy('tbl_pricelists.start_period')
+            ->get();
+
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');
         $customers = Customer::orderBy('name')->get();

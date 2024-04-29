@@ -97,7 +97,7 @@
                         </div>
                         <div class="input-group input-group-static mb-4">
                             <label>Price <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="price" value="{{ old('price') }}" placeholder="..." required>
+                            <input type="text" class="form-control" name="price" id="new-price" value="{{ old('price') }}" placeholder="..." required>
                         </div>
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
@@ -322,6 +322,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        let priceNewPricelist = document.querySelectorAll("#new-price");
+        priceNewPricelist.forEach(function(newPrice) {
+            newPrice.addEventListener("input", function() {
+                this.value = formatCurrency(this.value);
+            });
+        });
+
         var editButtons = document.querySelectorAll(".edit-button");
         editButtons.forEach(function(button) {
             button.addEventListener("click", function(event) {

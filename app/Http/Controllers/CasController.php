@@ -12,7 +12,12 @@ use Maatwebsite\Excel\Facades\Excel;
 class CasController extends Controller
 {
     public function index() {
-        $cas = Cas::all();
+        $cas = Cas::leftJoin('tbl_customers', 'tbl_cas.id_customer', '=', 'tbl_customers.id_customer')
+            ->orderBy('tbl_customers.name')
+            ->orderByRaw("CASE WHEN tbl_cas.start_period IS NULL THEN 0 ELSE 1 END")
+            ->orderBy('tbl_cas.start_period')
+            ->get();
+
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');
         $customers = Customer::orderBy('name')->get();
