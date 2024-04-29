@@ -19,6 +19,9 @@ return new class extends Migration
             $table->date('etd')->nullable();
             $table->date('eta')->nullable();
             $table->string('value_key')->nullable()->unique();
+            $table->boolean('is_printed')->default(false);
+            $table->integer('printcount')->nullable();
+            $table->timestamp('printdate')->nullable();
             $table->timestamps();
         });
     }
