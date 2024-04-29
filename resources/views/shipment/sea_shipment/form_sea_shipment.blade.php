@@ -114,7 +114,7 @@
                                         <td width=10%>
                                             <div class="d-flex px-3 py-1">
                                                 <input type="hidden" name="id_sea_shipment" value="{{ $seaShipment->id_sea_shipment }}">
-                                                <input type="text" class="form-control" name="no_aju" value="{{ $seaShipment->no_aju ?? '-' }}" placeholder="...">
+                                                <input type="text" class="form-control" name="no_aju" value="{{ $seaShipment->no_aju ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="...">
                                             </div>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
@@ -151,7 +151,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
-                                            <input type="text" class="form-control text-center" name="origin" value="{{ $seaShipment->origin ?? '-' }}" placeholder="...">
+                                            <input type="text" class="form-control text-center" name="origin" value="{{ $seaShipment->origin ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="...">
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." disabled>
@@ -220,14 +220,14 @@
                                             <input type="date" class="form-control text-center" name="bldate[]" value="{{ $ssl->date }}" style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <input type="text" class="form-control text-center" name="code[]" value="{{ $ssl->code }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="code[]" value="{{ $ssl->code }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=10%>
-                                            <input type="text" class="form-control text-center" name="marking[]" value="{{ $ssl->marking ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="marking[]" value="{{ $ssl->marking ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="qty_pkgs[]" value="{{ $ssl->qty_pkgs }}" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="qty_pkgs[]" value="{{ $ssl->qty_pkgs }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
@@ -239,7 +239,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="qty_loose[]" value="{{ $ssl->qty_loose }}" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="qty_loose[]" value="{{ $ssl->qty_loose }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
@@ -256,13 +256,13 @@
                                         </td>
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="p[]" value="{{ $ssl->dimension_p ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="p[]" value="{{ $ssl->dimension_p ?? '-' }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="l[]" value="{{ $ssl->dimension_l ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="l[]" value="{{ $ssl->dimension_l ?? '-' }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="t[]" value="{{ $ssl->dimension_t ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="t[]" value="{{ $ssl->dimension_t ?? '-' }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- ### -->
                                         <!-- total cbm -->
@@ -274,7 +274,7 @@
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="lts[]" value="{{ $ssl->lts }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="lts[]" value="{{ $ssl->lts }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="desc[]" value="{{ $ssl->desc }}" placeholder="..." style="border: 0px;">
@@ -321,7 +321,7 @@
                                     <tr>
                                         <td width=10%>
                                             <div class="d-flex px-3 py-1">
-                                                <input type="text" class="form-control" name="number" placeholder="...">
+                                                <input type="text" class="form-control" name="number" oninput="this.value = this.value.toUpperCase()" placeholder="...">
                                             </div>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
@@ -352,7 +352,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
-                                            <input type="text" class="form-control text-center" name="origin" placeholder="...">
+                                            <input type="text" class="form-control text-center" name="origin" oninput="this.value = this.value.toUpperCase()" placeholder="...">
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." readonly>
@@ -419,14 +419,14 @@
                                             <input type="date" class="form-control text-center" name="bldate[]" style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <input type="text" class="form-control text-center" name="code[]" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="code[]" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=10%>
-                                            <input type="text" class="form-control text-center" name="marking[]" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="marking[]" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="qty_pkgs[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="qty_pkgs[]" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
@@ -438,7 +438,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="qty_loose[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="qty_loose[]" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
@@ -455,13 +455,13 @@
                                         </td>
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="p[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="p[]" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="l[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="l[]" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="t[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="t[]" placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- ### -->
                                         <!-- total cbm -->
@@ -473,7 +473,7 @@
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="lts[]" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="lts[]" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="desc[]" placeholder="..." style="border: 0px;">

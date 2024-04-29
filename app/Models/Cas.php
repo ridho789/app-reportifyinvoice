@@ -22,6 +22,7 @@ class Cas extends Model
         'desc',
         'charge',
         'start_period',
-        'end_period'
+        'end_period',
+        'id_history'
     ];
 }

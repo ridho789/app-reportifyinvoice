@@ -14,5 +14,6 @@ class Company extends Model
     protected $fillable = [
         'name',
         'shorter',
+        'id_history'
     ];
 }

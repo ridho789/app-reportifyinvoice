@@ -32,5 +32,6 @@ class SeaShipmentLine extends Model
         'lts',
         'desc',
         'state',
+        'id_history'
     ];
 }

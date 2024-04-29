@@ -21,7 +21,7 @@ class HistorySeaShipmentLineObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(SeaShipmentLine $seaShipmentLine): void
     {
-        $extingHistorySeaShipmentLine = History::where('id_changed_data', $seaShipmentLine->id_sea_shipment_line)->where('scope', 'seaShipmentLine')->first();
+        $extingHistorySeaShipmentLine = History::where('id_history', $seaShipmentLine->id_history)->first();
 
         if ($extingHistorySeaShipmentLine) {
             $extingHistorySeaShipmentLine->update([
@@ -32,7 +32,7 @@ class HistorySeaShipmentLineObserver implements ShouldHandleEventsAfterCommit
             ]);
 
         } else {
-            History::create([
+            $newSeaShipmentLineHistory = History::create([
                 'id_changed_data' => $seaShipmentLine->id_sea_shipment_line,
                 'scope' => 'seaShipmentLine',
                 'older_data' => json_encode($seaShipmentLine->getOriginal()),
@@ -40,6 +40,11 @@ class HistorySeaShipmentLineObserver implements ShouldHandleEventsAfterCommit
                 'action' => 'update',
                 'user_id' => auth()->id(),
                 'revcount' => 1
+            ]);
+
+            $id_history = $newSeaShipmentLineHistory->id_history;
+            SeaShipmentLine::where('id_sea_shipment_line', $seaShipmentLine->id_sea_shipment_line)->update([
+                'id_history' => $id_history
             ]);
         }
     }

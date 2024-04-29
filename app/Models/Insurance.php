@@ -21,5 +21,6 @@ class Insurance extends Model
         'exchange_rate',
         'idr',
         'premi',
+        'id_history'
     ];
 }

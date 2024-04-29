@@ -21,7 +21,7 @@ class HistoryCustomerObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(Customer $customer): void
     {
-        $extingHistoryCustomer = History::where('id_changed_data', $customer->id_customer)->where('scope', 'customer')->first();
+        $extingHistoryCustomer = History::where('id_history', $customer->id_history)->first();
 
         if ($extingHistoryCustomer) {
             $extingHistoryCustomer->update([
@@ -32,7 +32,7 @@ class HistoryCustomerObserver implements ShouldHandleEventsAfterCommit
             ]);
 
         } else {
-            History::create([
+            $newCustomerHistory = History::create([
                 'id_changed_data' => $customer->id_customer,
                 'scope' => 'customer',
                 'older_data' => json_encode($customer->getOriginal()),
@@ -40,6 +40,11 @@ class HistoryCustomerObserver implements ShouldHandleEventsAfterCommit
                 'action' => 'update',
                 'user_id' => auth()->id(),
                 'revcount' => 1
+            ]);
+
+            $id_history = $newCustomerHistory->id_history;
+            Customer::where('id_customer', $customer->id_customer)->update([
+                'id_history' => $id_history
             ]);
         }
     }

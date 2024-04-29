@@ -17,6 +17,7 @@ class Customer extends Model
     protected $fillable = [
         'name',
         'shipper_ids',
-        'id_company'
+        'id_company',
+        'id_history'
     ];
 }

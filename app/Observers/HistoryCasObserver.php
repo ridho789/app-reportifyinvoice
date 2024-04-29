@@ -21,7 +21,7 @@ class HistoryCasObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(Cas $cas): void
     {
-        $extingHistoryCas = History::where('id_changed_data', $cas->id_cas)->where('scope', 'cas')->first();
+        $extingHistoryCas = History::where('id_history', $cas->id_history)->first();
 
         if ($extingHistoryCas) {
             $extingHistoryCas->update([
@@ -32,7 +32,7 @@ class HistoryCasObserver implements ShouldHandleEventsAfterCommit
             ]);
 
         } else {
-            History::create([
+            $newCasHistory = History::create([
                 'id_changed_data' => $cas->id_cas,
                 'scope' => 'cas',
                 'older_data' => json_encode($cas->getOriginal()),
@@ -40,6 +40,11 @@ class HistoryCasObserver implements ShouldHandleEventsAfterCommit
                 'action' => 'update',
                 'user_id' => auth()->id(),
                 'revcount' => 1
+            ]);
+
+            $id_history = $newCasHistory->id_history;
+            Cas::where('id_cas', $cas->id_cas)->update([
+                'id_history' => $id_history
             ]);
         }
     }

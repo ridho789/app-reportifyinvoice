@@ -21,7 +21,7 @@ class HistoryPricelistObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(Pricelist $pricelist): void
     {
-        $extingHistoryPricelist = History::where('id_changed_data', $pricelist->id_pricelist)->where('scope', 'pricelist')->first();
+        $extingHistoryPricelist = History::where('id_history', $pricelist->id_history)->first();
 
         if ($extingHistoryPricelist) {
             $extingHistoryPricelist->update([
@@ -32,7 +32,7 @@ class HistoryPricelistObserver implements ShouldHandleEventsAfterCommit
             ]);
 
         } else {
-            History::create([
+            $newPricelistHistory = History::create([
                 'id_changed_data' => $pricelist->id_pricelist,
                 'scope' => 'pricelist',
                 'older_data' => json_encode($pricelist->getOriginal()),
@@ -40,6 +40,11 @@ class HistoryPricelistObserver implements ShouldHandleEventsAfterCommit
                 'action' => 'update',
                 'user_id' => auth()->id(),
                 'revcount' => 1
+            ]);
+
+            $id_history = $newPricelistHistory->id_history;
+            Pricelist::where('id_pricelist', $pricelist->id_pricelist)->update([
+                'id_history' => $id_history
             ]);
         }
     }

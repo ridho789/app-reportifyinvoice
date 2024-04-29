@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::table('tbl_customers', function (Blueprint $table) {
             $table->unsignedBigInteger('id_company')->nullable()->after('id_customer');
             $table->foreign('id_company')->references('id_company')->on('tbl_companies');
+
+            $table->unsignedBigInteger('id_history')->nullable()->after('id_company');
+            $table->foreign('id_history')->references('id_history')->on('tbl_histories');
         });
     }
 
@@ -25,6 +28,9 @@ return new class extends Migration
         Schema::table('tbl_customers', function (Blueprint $table) {
             $table->dropForeign(['id_company']);
             $table->dropColumn('id_company');
+
+            $table->dropForeign(['id_history']);
+            $table->dropColumn('id_history');
         });
     }
 };

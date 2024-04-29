@@ -21,7 +21,7 @@ class HistoryShipObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(Ship $ship): void
     {
-        $extingHistoryShip = History::where('id_changed_data', $ship->id_ship)->where('scope', 'ship')->first();
+        $extingHistoryShip = History::where('id_history', $ship->id_history)->first();
 
         if ($extingHistoryShip) {
             $extingHistoryShip->update([
@@ -32,7 +32,7 @@ class HistoryShipObserver implements ShouldHandleEventsAfterCommit
             ]);
 
         } else {
-            History::create([
+            $newShipHistory = History::create([
                 'id_changed_data' => $ship->id_ship,
                 'scope' => 'ship',
                 'older_data' => json_encode($ship->getOriginal()),
@@ -40,6 +40,11 @@ class HistoryShipObserver implements ShouldHandleEventsAfterCommit
                 'action' => 'update',
                 'user_id' => auth()->id(),
                 'revcount' => 1
+            ]);
+
+            $id_history = $newShipHistory->id_history;
+            Ship::where('id_ship', $ship->id_ship)->update([
+                'id_history' => $id_history
             ]);
         }
     }

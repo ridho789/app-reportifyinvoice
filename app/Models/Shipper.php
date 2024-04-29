@@ -16,5 +16,6 @@ class Shipper extends Model
 
     protected $fillable = [
         'name',
+        'id_history'
     ];
 }

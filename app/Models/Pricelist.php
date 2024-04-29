@@ -21,6 +21,7 @@ class Pricelist extends Model
         'origin',
         'price',
         'start_period',
-        'end_period'
+        'end_period',
+        'id_history'
     ];
 }

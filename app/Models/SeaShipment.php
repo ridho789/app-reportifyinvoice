@@ -26,6 +26,7 @@ class SeaShipment extends Model
         'value_key',
         'is_printed',
         'printcount',
-        'printdate'
+        'printdate',
+        'id_history'
     ];
 }
