@@ -45,7 +45,7 @@ class CompanyController extends Controller
                 ]);
 
             } else {
-                $existingCompany->name = $request->customer;
+                $existingCompany->name = $request->company;
                 $existingCompany->shorter = $request->shorter_company;
                 $existingCompany->save();
     
