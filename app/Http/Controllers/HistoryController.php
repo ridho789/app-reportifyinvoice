@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\History;
 use App\Models\User;
 use App\Models\SeaShipment;
-use App\Models\SeaShipmentLine;
 
 class HistoryController extends Controller
 {
@@ -43,8 +42,8 @@ class HistoryController extends Controller
                 }
             
                 if ($existingHistoryIndex !== null) {
-                    $historyData[$existingHistoryIndex]['older_data'] .= "\n" . json_encode($resultFilterOlderData);
-                    $historyData[$existingHistoryIndex]['changed_data'] .= "\n" . json_encode($ObjChangedData);
+                    $historyData[$existingHistoryIndex]['older_data'] .= ', ' . json_encode($resultFilterOlderData);
+                    $historyData[$existingHistoryIndex]['changed_data'] .= ', ' . json_encode($ObjChangedData);
                     $historyData[$existingHistoryIndex]['scope'] = 'seashipment';
                     $historyData[$existingHistoryIndex]['revcount'] += $hist->revcount;
 
