@@ -27,7 +27,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($historyData as $h)
+                            @foreach($historyData as $h)
                                 <tr>
                                     <td>
                                         <div class="d-flex px-3 py-1">
@@ -52,16 +52,16 @@
                                         <p class="text-sm font-weight-normal mb-0">{{ $h['updated_time'] }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $h['older_data'] }}</p>
+                                        <p class="text-sm font-weight-normal mb-0">{{ $historyData[$loop->index]['older_data'] }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $h['changed_data'] }}</p>
+                                        <p class="text-sm font-weight-normal mb-0">{{ $historyData[$loop->index]['changed_data'] }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $h['revcount'] }}</p>
+                                        <p class="text-sm font-weight-normal mb-0">{{ $historyData[$loop->index]['revcount'] }}</p>
                                     </td>
                                 </tr>
-                                @endforeach
+                            @endforeach
                             </tbody>
                         </table>
                     </div>

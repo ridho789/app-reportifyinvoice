@@ -20,9 +20,6 @@ return new class extends Migration
 
             $table->unsignedBigInteger('id_customer')->nullable()->after('id_shipper');
             $table->foreign('id_customer')->references('id_customer')->on('tbl_customers');
-
-            $table->unsignedBigInteger('id_history')->nullable()->after('id_customer');
-            $table->foreign('id_history')->references('id_history')->on('tbl_histories');
         });
     }
 
@@ -40,9 +37,6 @@ return new class extends Migration
 
             $table->dropForeign(['id_customer']);
             $table->dropColumn('id_customer');
-
-            $table->dropForeign(['id_history']);
-            $table->dropColumn('id_history');
         });
     }
 };

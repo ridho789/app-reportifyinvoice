@@ -14,9 +14,6 @@ return new class extends Migration
         Schema::table('tbl_sea_shipment_line', function (Blueprint $table) {
             $table->unsignedBigInteger('id_sea_shipment')->after('id_sea_shipment_line');
             $table->foreign('id_sea_shipment')->references('id_sea_shipment')->on('tbl_sea_shipment');
-
-            $table->unsignedBigInteger('id_history')->nullable()->after('id_sea_shipment');
-            $table->foreign('id_history')->references('id_history')->on('tbl_histories');
         });
     }
 
@@ -28,9 +25,6 @@ return new class extends Migration
         Schema::table('tbl_sea_shipment_line', function (Blueprint $table) {
             $table->dropForeign(['id_sea_shipment']);
             $table->dropColumn('id_sea_shipment');
-
-            $table->dropForeign(['id_history']);
-            $table->dropColumn('id_history');
         });
     }
 };

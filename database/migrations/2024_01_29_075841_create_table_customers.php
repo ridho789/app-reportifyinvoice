@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tbl_customers', function (Blueprint $table) {
             $table->id('id_customer');
+            $table->unsignedBigInteger('id_history')->nullable();
             $table->string('name');
             $table->string('shipper_ids')->nullable();
             $table->timestamps();

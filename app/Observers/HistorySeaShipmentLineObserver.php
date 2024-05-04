@@ -33,7 +33,7 @@ class HistorySeaShipmentLineObserver implements ShouldHandleEventsAfterCommit
 
         } else {
             $newSeaShipmentLineHistory = History::create([
-                'id_changed_data' => $seaShipmentLine->id_sea_shipment_line,
+                'id_changed_data' => $seaShipmentLine->id_sea_shipment,
                 'scope' => 'seaShipmentLine',
                 'older_data' => json_encode($seaShipmentLine->getOriginal()),
                 'changed_data' => json_encode($seaShipmentLine->getChanges()),

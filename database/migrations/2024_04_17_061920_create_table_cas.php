@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tbl_cas', function (Blueprint $table) {
             $table->id('id_cas');
+            $table->unsignedBigInteger('id_history')->nullable();
             $table->string('lts');
             $table->string('desc')->nullable();
             $table->string('charge');

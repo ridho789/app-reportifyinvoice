@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tbl_companies', function (Blueprint $table) {
             $table->id('id_company');
+            $table->unsignedBigInteger('id_history')->nullable();
             $table->string('name');
             $table->string('shorter');
             $table->timestamps();

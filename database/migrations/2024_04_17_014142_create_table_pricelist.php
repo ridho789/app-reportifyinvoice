@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tbl_pricelists', function (Blueprint $table) {
             $table->id('id_pricelist');
+            $table->unsignedBigInteger('id_history')->nullable();
             $table->string('origin');
             $table->string('price');
             $table->date('start_period')->nullable();
