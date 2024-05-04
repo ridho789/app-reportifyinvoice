@@ -91,7 +91,7 @@
             <tr>
                 <td class="space_content" colspan="2"></td>
                 <td style="padding-left: 70px;" class="bold" colspan="2">Freight Type</td>
-                <td class="bold" colspan="2">: <span class="space_content2">AIR FREIGHT</span></td>
+                <td class="bold" colspan="2">: <span class="space_content2">SEA FREIGHT</span></td>
             </tr>
             <tr>
                 <td class="space_content" colspan="2"></td>
@@ -140,9 +140,9 @@
                     <td width="5%" class="border_left_right"></td>
                     <td width="30%" class="border_left_right text_center">{{ $ssl->marking }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $ssl->date)->format('d-M-y') }}</td>
                     @if ($ssl->qty_pkgs)
-                        <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $ssl->qty_pkgs }} {{ $ssl->unit_qty_pkgs }}</td>
+                        <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $ssl->qty_pkgs }} PKG</td>
                     @else
-                        <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $ssl->qty_loose }} {{ $ssl->unit_qty_loose }} (<span>L</span>)</td>
+                        <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $ssl->qty_loose }} PKG (<span>L</span>)</td>
                     @endif
                     <td width="10%" class="border_left_right text_center text_uppercase">{{ $ssl->weight }} KG</td>
                     <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($pricelist ?? 0, 0, ',', '.') }}</td>
