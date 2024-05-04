@@ -223,11 +223,11 @@
                                             <input type="text" class="form-control text-center" name="code[]" value="{{ $ssl->code }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=10%>
-                                            <input type="text" class="form-control text-center" name="marking[]" value="{{ $ssl->marking ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="marking[]" value="{{ $ssl->marking ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;" required>
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="qty_pkgs[]" value="{{ $ssl->qty_pkgs }}" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="qty_pkgs[]" value="{{ $ssl->qty_pkgs }}" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
@@ -239,7 +239,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="qty_loose[]" value="{{ $ssl->qty_loose }}" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="qty_loose[]" value="{{ $ssl->qty_loose }}" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
@@ -256,13 +256,13 @@
                                         </td>
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="p[]" value="{{ $ssl->dimension_p ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="p[]" value="{{ $ssl->dimension_p ?? '-' }}" placeholder="..." style="border: 0px;" min="1" required>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="l[]" value="{{ $ssl->dimension_l ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="l[]" value="{{ $ssl->dimension_l ?? '-' }}" placeholder="..." style="border: 0px;" min="1" required>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="t[]" value="{{ $ssl->dimension_t ?? '-' }}" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="t[]" value="{{ $ssl->dimension_t ?? '-' }}" placeholder="..." style="border: 0px;" min="1" required>
                                         </td>
                                         <!-- ### -->
                                         <!-- total cbm -->
@@ -294,6 +294,7 @@
 
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                            <button type="button" class="btn btn-secondary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#setPrintModal">Print</button>
                         </div>
                     </form>
                     @else
@@ -496,6 +497,67 @@
         </div>
     </div>
 </div>
+<!-- Modal - SetPrint -->
+<div class="modal fade" id="setPrintModal" tabindex="-1" role="dialog" aria-labelledby="setPrintModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-normal text-sm" id="setPrintModalLabel"><b>Please fill in the required data before printing the document</b></h5>
+            </div>
+            <form action="{{ url('print-sea-shipment') }}" method="POST" enctype="multipart/form-data" target="_blank">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="{{ $seaShipment->id_sea_shipment }}">
+                    <div class="input-group input-group-static mb-4">
+                        <label>Invoice No. <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->id_sea_shipment) }}" placeholder="..." required>
+                    </div>
+
+                    <div class="input-group input-group-static mb-1">
+                        <label class="text-sm">Company <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="input-group input-group-static mb-4">
+                        <select class="form-select select-company" name="id_company" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                            <option value="">...</option>
+                            @foreach ($companies as $c)
+                            <option value="{{ $c->id_company }}" {{ old('id_company', $customer->id_company) == $c->id_company ? 'selected' : '' }}>{{ $c->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div class="input-group input-group-static mb-4">
+                        <div class="col-5">
+                            <label>Term <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="term" name="term" min="1" value="{{ old('term') }}" placeholder="..." required>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-6">
+                            <label>Payment Due</label>
+                            <input type="date" class="form-control" id="payment_due" name="payment_due" value="{{ old('payment_due', $seaShipment->date) }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="input-group input-group-static mb-4">
+                        <div class="col-5">
+                            <label>Banker (<span class="text-info">Optional</span>)</label>
+                            <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-6">
+                            <label>Account No. (<span class="text-info">Optional</span>)</label>
+                            <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
+                        </div>
+                    </div>
+                    
+                    <div class="text-end">
+                        <button type="button" class="btn bg-gradient-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn bg-gradient-primary btn-sm ms-1">Process</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     // select2
     $(document).ready(function() {
@@ -605,7 +667,6 @@
     var inputsP = document.querySelectorAll('input[name="p[]"]');
     var inputsL = document.querySelectorAll('input[name="l[]"]');
     var inputsT = document.querySelectorAll('input[name="t[]"]');
-    var inputsCBM1 = document.querySelectorAll('input[name="cbm1[]"]');
 
     inputsP.forEach(function(input, index) {
         input.addEventListener('input', function() {
@@ -631,7 +692,7 @@
         var l = parseFloat(inputsL[index].value);
         var t = parseFloat(inputsT[index].value);
 
-        var volume = (p * l * t) / 1000;
+        var volume = (p * l * t) / 1000000;
 
         var inputCBM1 = row.querySelector('input[name="cbm1[]"]');
         var inputCBM2 = row.querySelector('input[name="cbm2[]"]');
@@ -641,12 +702,74 @@
 
         if (inputQtyPkgs.value && inputQtyPkgs.value != '-') {
             inputCBM1.value = volume;
+        } else {
+            inputCBM1.value = '';
         }
 
         if (inputQtyLoose.value && inputQtyLoose.value != '-') {
             inputCBM2.value = volume;
+        } else {
+            inputCBM2.value = '';
         }
     }
 
+    // set value unit qty pkgs and unit qty looose
+    var QtyPkgs = document.querySelectorAll('input[name="qty_pkgs[]"]');
+    QtyPkgs.forEach(function(input, index) {
+        input.addEventListener('change', function() {
+            var row = input.closest('tr');
+            var unitQtyPkgs = row.querySelector('select[name="unit_qty_pkgs[]"]');
+
+            if (!input.value || input.value === '0') {
+                unitQtyPkgs.value = '';
+                unitQtyPkgs.removeAttribute('required');
+
+            } else {
+                unitQtyPkgs.setAttribute('required', 'required');
+            }
+        });
+    });
+
+    var QtyLoose = document.querySelectorAll('input[name="qty_loose[]"]');
+    QtyLoose.forEach(function(input, index) {
+        input.addEventListener('change', function() {
+            var row = QtyLoose[index].closest('tr');
+            var unitQtyLoose = row.querySelector('select[name="unit_qty_loose[]"]');
+
+            if (!input.value || input.value === '0') {
+                unitQtyLoose.value = '';
+                unitQtyLoose.removeAttribute('required');
+
+            }else {
+                unitQtyLoose.setAttribute('required', 'required');
+            }
+        });
+    });
+
+    // Function to add days to a date
+    function addDays(date, days) {
+        var result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
+    // Original payment due date
+    var originalPaymentDue = document.getElementById('payment_due').value;
+
+    // Function to update payment due date based on term
+    function updatePaymentDue() {
+        var term = parseInt(document.getElementById('term').value);
+
+        if (!isNaN(term) && term > 0) {
+            var newPaymentDue = addDays(originalPaymentDue, term);
+            document.getElementById('payment_due').valueAsDate = newPaymentDue;
+
+        } else {
+            document.getElementById('payment_due').valueAsDate = new Date(originalPaymentDue);
+        }
+    }
+
+    // Event listener for term input
+    document.getElementById('term').addEventListener('input', updatePaymentDue);
 </script>
 @endsection

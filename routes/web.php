@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth', 'check.role.user:0']], function () {
     Route::get('sea_shipment-edit/{id_sea_shipment_line}', [shipmentController::class, 'editSeaShipment']);
     Route::post('sea_shipment-update', [shipmentController::class, 'updateSeaShipment']);
     Route::post('import-sea-shipment', [shipmentController::class, 'importSeaShipment']);
+    Route::post('print-sea-shipment', [shipmentController::class, 'printSeaShipment']);
 
     // bill recaps
     Route::get('/list_bill_recap', [BillRecapController::class, 'index']);

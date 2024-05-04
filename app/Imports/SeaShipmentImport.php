@@ -131,11 +131,11 @@ class SeaShipmentSheetImport implements ToCollection
                 $tot_cbm2 = null;
 
                 if ($row[3]) {
-                    $tot_cbm1 = ($row[8] * $row[9] * $row[10]) / 1000;
+                    $tot_cbm1 = ($row[8] * $row[9] * $row[10]) / 1000000;
                 }
 
                 if ($row[5]) {
-                    $tot_cbm2 = ($row[8] * $row[9] * $row[10]) / 1000;
+                    $tot_cbm2 = ($row[8] * $row[9] * $row[10]) / 1000000;
                 }
 
                 $dataShipmentLine = [

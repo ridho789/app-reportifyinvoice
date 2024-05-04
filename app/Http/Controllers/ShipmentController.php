@@ -4,14 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\Company;
 use App\Models\Shipper;
 use App\Models\Ship;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 use App\Imports\SeaShipmentImport;
+use App\Models\Cas;
+use App\Models\Insurance;
+use App\Models\Pricelist;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PDF;
+use DateTime;
+use DateInterval;
 
 class ShipmentController extends Controller
 {
@@ -67,9 +74,11 @@ class ShipmentController extends Controller
         });
 
         $customers = Customer::orderBy('name')->get();
+        $customer = Customer::where('id_customer', $seaShipment->id_customer)->first();
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships', 'groupSeaShipmentLines'));
+        $companies = Company::orderBy('name')->get();
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'ships', 'companies', 'groupSeaShipmentLines'));
     }
 
     public function updateSeaShipment(Request $request) {
@@ -156,5 +165,132 @@ class ShipmentController extends Controller
 
             return redirect('list_shipments')->with('logErrors', $logErrors);
         }
+    }
+
+    public function printSeaShipment(Request $request) {
+        $id_sea_shipment = $request->id;
+        $seaShipment = SeaShipment::where('id_sea_shipment', $id_sea_shipment)->first();
+        $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
+
+        function romanNumerals($number) {
+            $roman = '';
+            $romanDigit = array('','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII');
+            if($number > 0 && $number <= 12) {
+                $roman = $romanDigit[$number];
+            }
+            return $roman;
+        }
+
+        $invNumber = sprintf("%03d", $request->inv_no);;
+        $month = ltrim(date("m", strtotime($seaShipment->date)), '0');
+        $monthRoman = romanNumerals($month);
+        $year = date("Y", strtotime($seaShipment->date));
+        
+        $customer = Customer::where('id_customer', $seaShipment->id_customer)->first();
+        $shipper = Shipper::where('id_shipper', $seaShipment->id_shipper)->first();
+        $company = Company::where('id_company', $request->id_company)->first();
+
+        // update company if changed in customer
+        if ($customer->id_company != $request->id_company) {
+            Customer::where('id_customer', $seaShipment->id_customer)->update([
+                'id_company' => $request->id_company
+            ]);
+        }
+        
+        // format invoice
+        $invNameGenerate = $invNumber . '/' . $company->shorter . '/' . 'INV/' . $monthRoman . '/' . $year;
+        $titleInv = $customer->name . '-' . $shipper->name . '-' . $invNumber . '/' . $company->shorter . '/' . 'INV/' . $monthRoman . '/' . $year;
+
+        // payment due
+        $shipmentDate = new DateTime($seaShipment->date);
+        $termInterval = new DateInterval('P' . $request->term . 'D');
+        $shipmentDate->add($termInterval);
+
+        $paymentDue = $shipmentDate->format('Y-m-d');
+
+        if ($company->shorter == 'KPN') {
+            $imagePath = public_path('asset/assets/img/KOP/KPN.png');
+            $imageContent = file_get_contents($imagePath);
+            $companyName = 'PT KARYA PUTRA NATUNA';
+        }
+
+        if ($company->shorter == 'BMM') {
+            $imagePath = public_path('asset/assets/img/KOP/BMM.png');
+            $imageContent = file_get_contents($imagePath);
+            $companyName = 'PT BEVI MARGI MULYA';
+        }
+
+        if ($company->shorter == 'BMA') {
+            $imagePath = public_path('asset/assets/img/KOP/BMA.png');
+            $imageContent = file_get_contents($imagePath);
+            $companyName = 'PT BIEMAN MAKMUR ABADI';
+        }
+
+        if ($company->shorter == 'SMK') {
+            $imagePath = public_path('asset/assets/img/KOP/SMK.jpg');
+            $imageContent = file_get_contents($imagePath);
+            $companyName = 'PT SURYA MAKMUR KREASI';
+        }
+
+        if ($company->shorter == 'SMD') {
+            $imagePath = public_path('asset/assets/img/KOP/SMD.png');
+            $imageContent = file_get_contents($imagePath);
+            $companyName = 'SEMADI';
+        }
+
+        if ($company->shorter == 'SNM') {
+            $imagePath = public_path('asset/assets/img/KOP/SNM.jpg');
+            $imageContent = file_get_contents($imagePath);
+            $companyName = 'PT SETIA NEGARA MAJU';
+        }
+
+        // set pricelist
+        $pricelist = null;
+
+        $defaultPricelist = Pricelist::where('id_customer', null)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        ->where('start_period', null)->where('end_period', null)->first();
+
+        $customerPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        ->where('start_period', null)->where('end_period', null)->first();
+
+        $periodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        ->where('start_period', '>=', $seaShipment->date)->where('end_period', null)->first();
+
+        $allPeriodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        ->where('start_period', '<=', $seaShipment->date)->where('end_period', '>=', $seaShipment->date)->first();
+
+        if ($defaultPricelist) {
+            $pricelist = $defaultPricelist->price;
+        }
+
+        if ($customerPricelist) {
+            $pricelist = $customerPricelist->price;
+        }
+
+        if ($periodPricelist) {
+            $pricelist = $periodPricelist->price;
+        }
+
+        if ($allPeriodPricelist) {
+            $pricelist = $allPeriodPricelist->price;
+        }
+        
+        $pdf = PDF::loadView('pdf.generate_invoice', [
+            'customer' => $customer,
+            'shipper' => $shipper,
+            'seaShipment' => $seaShipment,
+            'seaShipmentLines' => $seaShipmentLines,
+            'pricelist' => $pricelist,
+            'term' => $request->term,
+            'paymentDue' => $paymentDue,
+            'banker' => $request->banker,
+            'account_no' => $request->account_no,
+            'imageContent' => $imageContent,
+            'invNameGenerate' => $invNameGenerate,
+            'titleInv' => $titleInv,
+            'companyName' => $companyName
+        ])->setPaper('folio', 'potrait');
+
+        return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
     }
 }
