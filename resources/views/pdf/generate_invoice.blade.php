@@ -138,7 +138,7 @@
                 @endphp
                 <tr>
                     <td width="5%" class="border_left_right"></td>
-                    <td width="30%" class="border_left_right text_center">{{ $ssl->marking }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $ssl->date)->format('d-M-y') }}</td>
+                    <td width="30%" class="border_left_right text_center">{{ $ssl->marking }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $ssl->date)->format('d-M') }}</td>
                     @if ($ssl->qty_pkgs)
                         <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $ssl->qty_pkgs }} PKG</td>
                     @else
@@ -151,7 +151,7 @@
             @endforeach
 
             <!-- empty row -->
-            @for ($i = 1; $i <= (15 - count($seaShipmentLines)); $i++)
+            @for ($i = 1; $i <= (17 - count($seaShipmentLines)); $i++)
                 <tr>
                     <td width="5%" class="border_left_right" style="height: 20px;"></td>
                     <td width="30%" class="border_left_right text_center"></td>
@@ -170,18 +170,6 @@
                 <td width="15%" class="border_left_right text_center"></td>
                 <td width="20%" class="border_left_right text_center"></td>
             </tr>
-
-            <!-- empty row -->
-            @for ($i = 1; $i <= 2; $i++)
-                <tr>
-                    <td width="5%" class="border_left_right" style="height: 20px;"></td>
-                    <td width="30%" class="border_left_right text_center"></td>
-                    <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
-                    <td width="10%" class="border_left_right text_center text_uppercase"></td>
-                    <td width="15%" class="border_left_right text_center"></td>
-                    <td width="20%" class="border_left_right text_center"></td>
-                </tr>
-            @endfor
 
         </table>
         <table style="margin-top: -1px;">
