@@ -28,19 +28,11 @@
                             </thead>
                             <tbody>
                             @foreach($historyData as $h)
-                                @php
-                                    $dataJsonOrderData = $h['older_data'];
-                                    $dataArrayOlderData = explode(',', $dataJsonOrderData);
-
-                                    $dataJsonChangedData = $h['changed_data'];
-                                    $dataArrayChangedData = explode(',', $dataJsonChangedData);
-                                    $countData = count($dataArrayOlderData);
-                                @endphp
                                 <tr>
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-sm font-weight-normal text-secondary mb-0">{{ $loop->iteration }}</p>
+                                                <p class="text-sm font-weight-normal text-secondary mb-0">{{ $loop->iteration }} </p>
                                             </div>
                                         </div>
                                     </td>
@@ -60,14 +52,24 @@
                                         <p class="text-sm font-weight-normal mb-0">{{ $h['updated_time'] }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        @for ($i = 0; $i < $countData; $i++)
-                                            <p class="text-sm font-weight-normal mb-1">{{ $dataArrayOlderData[$i] }}</p>
-                                        @endfor
+                                        @php
+                                            $olderData = $h['older_data'];
+                                            $pattern = '/{(.*?)}/';
+                                            preg_match_all($pattern, $olderData, $olders);
+                                        @endphp
+                                        @foreach ($olders[1] as $older)
+                                            <p class="text-sm font-weight-normal mb-2">{{ $older }}</p>
+                                        @endforeach
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        @for ($i = 0; $i < $countData; $i++)
-                                        <p class="text-sm font-weight-normal mb-1">{{ $dataArrayChangedData[$i] }}</p>
-                                        @endfor
+                                        @php
+                                            $changedData = $h['changed_data'];
+                                            $pattern = '/{(.*?)}/';
+                                            preg_match_all($pattern, $changedData, $changeds);
+                                        @endphp
+                                        @foreach ($changeds[1] as $changed)
+                                            <p class="text-sm font-weight-normal mb-2">{{ $changed }}</p>
+                                        @endforeach
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ $h['revcount'] }}</p>
