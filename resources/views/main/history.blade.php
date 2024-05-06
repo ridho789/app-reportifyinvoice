@@ -28,6 +28,14 @@
                             </thead>
                             <tbody>
                             @foreach($historyData as $h)
+                                @php
+                                    $dataJsonOrderData = $h['older_data'];
+                                    $dataArrayOlderData = explode(',', $dataJsonOrderData);
+
+                                    $dataJsonChangedData = $h['changed_data'];
+                                    $dataArrayChangedData = explode(',', $dataJsonChangedData);
+                                    $countData = count($dataArrayOlderData);
+                                @endphp
                                 <tr>
                                     <td>
                                         <div class="d-flex px-3 py-1">
@@ -52,13 +60,17 @@
                                         <p class="text-sm font-weight-normal mb-0">{{ $h['updated_time'] }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $historyData[$loop->index]['older_data'] }}</p>
+                                        @for ($i = 0; $i < $countData; $i++)
+                                            <p class="text-sm font-weight-normal mb-1">{{ $dataArrayOlderData[$i] }}</p>
+                                        @endfor
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $historyData[$loop->index]['changed_data'] }}</p>
+                                        @for ($i = 0; $i < $countData; $i++)
+                                        <p class="text-sm font-weight-normal mb-1">{{ $dataArrayChangedData[$i] }}</p>
+                                        @endfor
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $historyData[$loop->index]['revcount'] }}</p>
+                                        <p class="text-sm font-weight-normal mb-0">{{ $h['revcount'] }}</p>
                                     </td>
                                 </tr>
                             @endforeach
