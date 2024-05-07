@@ -57,7 +57,7 @@ class ShipmentController extends Controller
         $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
             return $item->date;
         })->map(function ($group) {
-            return [
+            $totals = [
                 'total_qty_pkgs' => $group->filter(function ($item) {
                     return is_numeric($item->qty_pkgs);
                 })->sum('qty_pkgs'),
@@ -71,8 +71,12 @@ class ShipmentController extends Controller
                     return is_numeric($item->tot_cbm_2);
                 })->sum('tot_cbm_2')
             ];
+        
+            $totals['cbm_difference'] = $totals['total_cbm1'] - $totals['total_cbm2'];
+        
+            return $totals;
         });
-
+        
         $customers = Customer::orderBy('name')->get();
         $customer = Customer::where('id_customer', $seaShipment->id_customer)->first();
         $shippers = Shipper::orderBy('name')->get();

@@ -717,6 +717,9 @@
     var QtyPkgs = document.querySelectorAll('input[name="qty_pkgs[]"]');
     QtyPkgs.forEach(function(input, index) {
         input.addEventListener('change', function() {
+            // update CBM
+            updateCBM(index);
+
             var row = input.closest('tr');
             var unitQtyPkgs = row.querySelector('select[name="unit_qty_pkgs[]"]');
 
@@ -733,6 +736,9 @@
     var QtyLoose = document.querySelectorAll('input[name="qty_loose[]"]');
     QtyLoose.forEach(function(input, index) {
         input.addEventListener('change', function() {
+            // update CBM
+            updateCBM(index);
+            
             var row = QtyLoose[index].closest('tr');
             var unitQtyLoose = row.querySelector('select[name="unit_qty_loose[]"]');
 
