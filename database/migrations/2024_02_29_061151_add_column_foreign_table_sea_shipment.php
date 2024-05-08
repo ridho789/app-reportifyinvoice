@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_customer')->after('id_shipper');
             $table->foreign('id_customer')->references('id_customer')->on('tbl_customers');
 
-            $table->unsignedBigInteger('id_ship')->after('id_customer');
+            $table->unsignedBigInteger('id_ship')->nullable()->after('id_customer');
             $table->foreign('id_ship')->references('id_ship')->on('tbl_ships');
         });
     }

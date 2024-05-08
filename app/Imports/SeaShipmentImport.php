@@ -97,6 +97,7 @@ class SeaShipmentSheetImport implements ToCollection
                 }
 
                 // Ship
+                $IdShip = null;
                 if ($row[4]) {
                     $checkShip = Ship::where('name', 'like', '%' . $row[4] . '%')->first();
                     if (!$checkShip) {
@@ -131,11 +132,11 @@ class SeaShipmentSheetImport implements ToCollection
                 $tot_cbm2 = null;
 
                 if ($row[3]) {
-                    $tot_cbm1 = ($row[8] * $row[9] * $row[10]) / 1000000;
+                    $tot_cbm1 = number_format(($row[8] * $row[9] * $row[10]) / 1000000, 3);
                 }
 
                 if ($row[5]) {
-                    $tot_cbm2 = ($row[8] * $row[9] * $row[10]) / 1000000;
+                    $tot_cbm2 = number_format(($row[8] * $row[9] * $row[10]) / 1000000, 3);
                 }
 
                 $dataShipmentLine = [

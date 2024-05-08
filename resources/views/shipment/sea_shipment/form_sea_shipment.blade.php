@@ -677,6 +677,22 @@
 
     calculateTotalWeight();
 
+    // Function to update total volume
+    function calculateTotalVolume() {
+        var totalVolume = 0;
+        var rows = document.querySelectorAll('input[name="cbm2[]"]');
+        
+        rows.forEach(function(row) {
+            if (row.value.trim() !== '') {
+                totalVolume += parseFloat(row.value) || 0;
+            }
+        });
+
+        document.querySelector('input[name="tot_vol"]').value = totalVolume.toFixed(3);
+    }
+
+    calculateTotalVolume();
+
     var qtyPkgInputs = document.querySelectorAll('input[name="weight[]"]');
     qtyPkgInputs.forEach(function(input) {
         input.addEventListener('change', calculateTotalWeight);
@@ -711,7 +727,7 @@
         var l = parseFloat(inputsL[index].value);
         var t = parseFloat(inputsT[index].value);
 
-        var volume = (p * l * t) / 1000000;
+        var volume = ((p * l * t) / 1000000).toFixed(3);
 
         var inputCBM1 = row.querySelector('input[name="cbm1[]"]');
         var inputCBM2 = row.querySelector('input[name="cbm2[]"]');
