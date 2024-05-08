@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_history')->nullable();
             $table->date('date');
             $table->string('code')->nullable();
-            $table->string('marking');
+            $table->string('marking')->nullable();
             $table->string('qty_pkgs')->nullable();
             $table->string('qty_loose')->nullable();
             $table->string('unit_qty_pkgs')->nullable();

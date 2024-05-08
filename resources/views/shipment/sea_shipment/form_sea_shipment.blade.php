@@ -121,7 +121,7 @@
                                             <input type="date" class="form-control" name="date" value="{{ $seaShipment->date }}">
                                         </td>
                                         <td class="align-middle text-center" width=10%>
-                                            <select class="form-select text-xs select-cust" name="id_customer">
+                                            <select class="form-select text-xs select-cust" name="id_customer" required>
                                                 <option value="">...</option>
                                                 @foreach ($customers as $c)
                                                 <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}" 
@@ -131,7 +131,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=10%>
-                                            <select class="form-select text-xs select-shipper" name="id_shipper">
+                                            <select class="form-select text-xs select-shipper" name="id_shipper" required>
                                                 <option value="">...</option>
                                                 @foreach ($shippers as $s)
                                                 <option value="{{ $s->id_shipper }}" 
@@ -150,8 +150,15 @@
                                                 @endforeach
                                             </select>
                                         </td>
-                                        <td class="align-middle text-center" width=5.5%>
-                                            <input type="text" class="form-control text-center" name="origin" value="{{ $seaShipment->origin ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="...">
+                                        <td class="align-middle text-center" width=7.5%>
+                                            <!-- <input type="text" class="form-control text-center" name="origin" value="{{ $seaShipment->origin ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="..."> -->
+                                            <select class="form-select text-center text-xs" name="origin" style="border: 0px;" required>
+                                                <option value="" {{ old('origin', $seaShipment->origin) == '' ? 'selected' : '' }}>...</option>
+                                                <option value="BTH-JKT" {{ old('origin', $seaShipment->origin) == 'BTH-JKT' ? 'selected' : '' }}>BTH-JKT</option>
+                                                <option value="BTH-SIN" {{ old('origin', $seaShipment->origin) == 'BTH-SIN' ? 'selected' : '' }}>BTH-SIN</option>
+                                                <option value="SIN-BTH" {{ old('origin', $seaShipment->origin) == 'SIN-BTH' ? 'selected' : '' }}>SIN-BTH</option>
+                                                <option value="SIN-JKT" {{ old('origin', $seaShipment->origin) == 'SIN-JKT' ? 'selected' : '' }}>SIN-JKT</option>
+                                            </select>
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." disabled>
@@ -352,8 +359,15 @@
                                                 @endforeach
                                             </select>
                                         </td>
-                                        <td class="align-middle text-center" width=5.5%>
-                                            <input type="text" class="form-control text-center" name="origin" oninput="this.value = this.value.toUpperCase()" placeholder="...">
+                                        <td class="align-middle text-center" width=7.5%>
+                                            <!-- <input type="text" class="form-control text-center" name="origin" oninput="this.value = this.value.toUpperCase()" placeholder="..."> -->
+                                            <select class="form-select text-center text-xs" name="origin" style="border: 0px;">
+                                                <option value="">...</option>
+                                                <option value="BTH-JKT">BTH-JKT</option>
+                                                <option value="BTH-SIN">BTH-SIN</option>
+                                                <option value="SIN-BTH">SIN-BTH</option>
+                                                <option value="SIN-JKT">SIN-JKT</option>
+                                            </select>
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." readonly>
@@ -490,6 +504,9 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        </div>
                     </form>
                     @endif 
                 </div>
@@ -497,6 +514,7 @@
         </div>
     </div>
 </div>
+@if ($seaShipment)
 <!-- Modal - SetPrint -->
 <div class="modal fade" id="setPrintModal" tabindex="-1" role="dialog" aria-labelledby="setPrintModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md" role="document">
@@ -558,6 +576,7 @@
         </div>
     </div>
 </div>
+@endif
 <script>
     // select2
     $(document).ready(function() {
@@ -701,13 +720,13 @@
         var inputQtyLoose = row.querySelector('input[name="qty_loose[]"]');
 
         if (inputQtyPkgs.value && inputQtyPkgs.value != '-') {
-            inputCBM1.value = volume;
+            inputCBM1.value = volume * inputQtyPkgs.value;
         } else {
             inputCBM1.value = '';
         }
 
         if (inputQtyLoose.value && inputQtyLoose.value != '-') {
-            inputCBM2.value = volume;
+            inputCBM2.value = volume * inputQtyLoose.value;
         } else {
             inputCBM2.value = '';
         }
