@@ -229,7 +229,7 @@
                                         <td class="align-middle text-center" width=7.5%>
                                             <input type="text" class="form-control text-center" name="code[]" value="{{ $ssl->code }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
-                                        <td class="align-middle text-center" width=10%>
+                                        <td class="align-middle text-center" width=12.5%>
                                             <input type="text" class="form-control text-center" name="marking[]" value="{{ $ssl->marking ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;" required>
                                         </td>
                                         <!-- qty -->

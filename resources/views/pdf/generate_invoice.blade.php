@@ -125,33 +125,75 @@
             @php
                 $amount = 0;
                 $totalQty = 0;
-                $totalWeight = 0;
                 $totalAmount = 0;
+                $totalCbm = 0;
             @endphp
 
-            @foreach ($seaShipmentLines as $ssl)
+            @foreach($groupSeaShipmentLines as $groupDate => $totals)
                 @php
-                    $totalQty += $ssl->qty_pkgs ?? $ssl->qty_loose;
-                    $totalWeight += $ssl->weight;
-                    $amount = $ssl->weight * $pricelist;
+                    $date = substr($groupDate, 0, 10);
+                    $lts = substr($groupDate, strrpos($groupDate, '-') + 1);
+
+                    $qty = $totals['total_qty_loose'];
+                    $amount = $totals['total_cbm2'] * $pricelist;
+                    $totalQty += $qty;
                     $totalAmount += $amount;
+                    $totalCbm += $totals['total_cbm2'];
+
+                    $groupedMarkings = collect($totals['markings'])->groupBy(function ($marking) {
+                        // Menentukan pola regex untuk ekstraksi prefix, separator, dan nomor
+                        preg_match('/^(.*?)([-#\s\.\/])\s*(\d+)$/', $marking, $matches);
+                        $prefix = $matches[1] ?? '';
+                        $separator = $matches[2] ?? '';
+                        $number = intval($matches[3] ?? 0);
+                        return $prefix . $separator;
+                    });
+
+                    $mergedMarkings = $groupedMarkings->map(function ($group) {
+                        $prefix = '';
+                        $separator = '';
+                        $suffixes = $group->map(function ($marking) use (&$prefix, &$separator) {
+                            // Ekstraksi prefix dan separator dari marking pertama
+                            if (empty($prefix) || empty($separator)) {
+                                preg_match('/^(.*?)([-#\s\.\/])\s*\d+$/', $marking, $matches);
+                                $prefix = $matches[1] ?? '';
+                                $separator = $matches[2] ?? '';
+                            }
+                            return intval(substr($marking, strrpos($marking, $separator) + 1)); // Mengambil angka setelah separator
+                        })->sort()->unique()->values()->toArray();
+
+                        $merged = [];
+                        $currentRange = [];
+                        $lastSuffix = null; // Initialize with null
+                        foreach ($suffixes as $suffix) {
+                            if ($lastSuffix !== null && $suffix - $lastSuffix !== 1) {
+                                $merged[] = count($currentRange) > 1 ? $prefix . $separator . $currentRange[0] . '-' . $lastSuffix : $prefix . $separator . $lastSuffix;
+                                $currentRange = [$suffix];
+                            } else {
+                                $currentRange[] = $suffix;
+                            }
+                            $lastSuffix = $suffix;
+                        }
+                        $merged[] = count($currentRange) > 1 ? $prefix . $separator . $currentRange[0] . '-' . $lastSuffix : $prefix . $separator . $lastSuffix;
+                        return implode(', ', $merged);
+                    })->values()->toArray();
                 @endphp
                 <tr>
                     <td width="5%" class="border_left_right"></td>
-                    <td width="30%" class="border_left_right text_center">{{ $ssl->marking }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $ssl->date)->format('d-M') }}</td>
-                    @if ($ssl->qty_pkgs)
-                        <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $ssl->qty_pkgs }} PKG</td>
+                    @if ($lts) 
+                        <td width="30%" class="border_left_right text_center">{{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }}</td>
                     @else
-                        <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $ssl->qty_loose }} PKG (<span>L</span>)</td>
+                        <td width="30%" class="border_left_right text_center">{{ $customer->name }} {{ implode(', ', $mergedMarkings) }}</td>
                     @endif
-                    <td width="10%" class="border_left_right text_center text_uppercase">{{ $ssl->weight }} KG</td>
+                    <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
+                    <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
                     <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($pricelist ?? 0, 0, ',', '.') }}</td>
                     <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
 
             <!-- empty row -->
-            @for ($i = 1; $i <= (17 - count($seaShipmentLines)); $i++)
+            @for ($i = 1; $i <= (17 - count($groupSeaShipmentLines)); $i++)
                 <tr>
                     <td width="5%" class="border_left_right" style="height: 20px;"></td>
                     <td width="30%" class="border_left_right text_center"></td>
@@ -166,7 +208,7 @@
                 <td width="5%" class="border_left_right"></td>
                 <td width="30%" class="border_left_right text_center">Total</td>
                 <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $totalQty }}</td>
-                <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalWeight }} KG</td>
+                <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3</td>
                 <td width="15%" class="border_left_right text_center"></td>
                 <td width="20%" class="border_left_right text_center"></td>
             </tr>

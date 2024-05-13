@@ -52,7 +52,7 @@ class ShipmentController extends Controller
         $id = Crypt::decrypt($id);
 
         $seaShipment = SeaShipment::where('id_sea_shipment', $id)->first();
-        $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
+        $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
 
         $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
             return $item->date;
@@ -174,7 +174,36 @@ class ShipmentController extends Controller
     public function printSeaShipment(Request $request) {
         $id_sea_shipment = $request->id;
         $seaShipment = SeaShipment::where('id_sea_shipment', $id_sea_shipment)->first();
-        $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
+        $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
+
+        $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
+            return $item->date . '-' . $item->lts;
+        })->map(function ($group) {
+            $totals = [
+                'total_qty_pkgs' => $group->filter(function ($item) {
+                    return is_numeric($item->qty_pkgs);
+                })->sum('qty_pkgs'),
+                'total_qty_loose' => $group->filter(function ($item) {
+                    return is_numeric($item->qty_loose);
+                })->sum('qty_loose'),
+                'total_weight' => $group->filter(function ($item) {
+                    return is_numeric($item->weight);
+                })->sum('weight'),
+                'total_cbm1' => $group->filter(function ($item) {
+                    return is_numeric($item->tot_cbm_1);
+                })->sum('tot_cbm_1'),
+                'total_cbm2' => $group->filter(function ($item) {
+                    return is_numeric($item->tot_cbm_2);
+                })->sum('tot_cbm_2')
+            ];
+        
+            $totals['cbm_difference'] = $totals['total_cbm1'] - $totals['total_cbm2'];
+        
+            $markings = $group->pluck('marking')->unique()->toArray();
+            $totals['markings'] = $markings;
+        
+            return $totals;
+        });
 
         function romanNumerals($number) {
             $roman = '';
@@ -284,6 +313,7 @@ class ShipmentController extends Controller
             'shipper' => $shipper,
             'seaShipment' => $seaShipment,
             'seaShipmentLines' => $seaShipmentLines,
+            'groupSeaShipmentLines' => $groupSeaShipmentLines,
             'pricelist' => $pricelist,
             'term' => $request->term,
             'paymentDue' => $paymentDue,
