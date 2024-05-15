@@ -156,11 +156,10 @@
                     $totalCbm += $totals['total_cbm2'] + $totals['cbm_difference'];
 
                     $groupedMarkings = collect($totals['markings'])->groupBy(function ($marking) {
-                        // Menentukan pola regex untuk ekstraksi prefix, separator, dan nomor
-                        preg_match('/^(.*?)([-#\s\.\/])\s*(\d+)$/', $marking, $matches);
+                        // Menentukan pola regex untuk ekstraksi prefix dan nomor
+                        preg_match('/^(.*?)([-#\s\.\/]?)\s*(\d+)$/', $marking, $matches);
                         $prefix = $matches[1] ?? '';
                         $separator = $matches[2] ?? '';
-                        $number = intval($matches[3] ?? 0);
                         return $prefix . $separator;
                     });
 
@@ -169,12 +168,12 @@
                         $separator = '';
                         $suffixes = $group->map(function ($marking) use (&$prefix, &$separator) {
                             // Ekstraksi prefix dan separator dari marking pertama
-                            if (empty($prefix) || empty($separator)) {
-                                preg_match('/^(.*?)([-#\s\.\/])\s*\d+$/', $marking, $matches);
+                            preg_match('/^(.*?)([-#\s\.\/]?)\s*(\d+)$/', $marking, $matches);
+                            if (empty($prefix)) {
                                 $prefix = $matches[1] ?? '';
                                 $separator = $matches[2] ?? '';
                             }
-                            return intval(substr($marking, strrpos($marking, $separator) + 1)); // Mengambil angka setelah separator
+                            return intval($matches[3] ?? 0); // Mengambil angka dari grup ketiga hasil regex
                         })->sort()->unique()->values()->toArray();
 
                         $merged = [];
