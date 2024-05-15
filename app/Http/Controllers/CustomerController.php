@@ -24,7 +24,8 @@ class CustomerController extends Controller
         $customer = Customer::updateOrCreate(
             ['name' => $request->customer],
             ['shipper_ids' => implode(',', $shipperIds)],
-            ['id_company' => $request->id_company]
+            ['id_company' => $request->id_company],
+            ['is_detail_invoice' => $request->input_is_detail_invoice]
         );
     
         if ($customer->wasRecentlyCreated) {
@@ -63,6 +64,7 @@ class CustomerController extends Controller
                 $existingCustomer->name = $request->customer;
                 $existingCustomer->id_company = $request->id_company;
                 $existingCustomer->shipper_ids = $shipperIds;
+                $existingCustomer->is_detail_invoice = $request->value_is_detail_invoice;
                 $existingCustomer->save();
     
                 return redirect()->back();
@@ -71,6 +73,7 @@ class CustomerController extends Controller
         } else {
             $existingCustomer->id_company = $request->id_company;
             $existingCustomer->shipper_ids = $shipperIds;
+            $existingCustomer->is_detail_invoice = $request->value_is_detail_invoice;
             $existingCustomer->save();
     
             return redirect()->back();

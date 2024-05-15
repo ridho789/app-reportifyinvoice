@@ -135,10 +135,25 @@
                     $lts = substr($groupDate, strrpos($groupDate, '-') + 1);
 
                     $qty = $totals['total_qty_loose'];
-                    $amount = $totals['total_cbm2'] * $pricelist;
+                    $unit_price = $pricelist;
+                    $unitPriceCbmDiff = 0;
+                    $amountCbmDiff = 0;
+                    
+                    // Jika ada cas
+                    if ($totals['cas']) {
+                        $unit_price = $pricelist + intval($totals['cas']);
+                    }
+
+                    // Jika ada selisih
+                    if ($totals['cbm_difference']) {
+                        $unitPriceCbmDiff = $pricelist;
+                        $amountCbmDiff = $totals['cbm_difference'] * $unitPriceCbmDiff;
+                    }
+                    
+                    $amount = $totals['total_cbm2'] * $unit_price;
                     $totalQty += $qty;
-                    $totalAmount += $amount;
-                    $totalCbm += $totals['total_cbm2'];
+                    $totalAmount += $amount + $amountCbmDiff;
+                    $totalCbm += $totals['total_cbm2'] + $totals['cbm_difference'];
 
                     $groupedMarkings = collect($totals['markings'])->groupBy(function ($marking) {
                         // Menentukan pola regex untuk ekstraksi prefix, separator, dan nomor
@@ -178,18 +193,41 @@
                         return implode(', ', $merged);
                     })->values()->toArray();
                 @endphp
-                <tr>
-                    <td width="5%" class="border_left_right"></td>
-                    @if ($lts) 
+                @if (!$lts)
+                    <tr>
+                        <td width="5%" class="border_left_right"></td>
+                        <td width="30%" class="border_left_right text_center">Code (??) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('M-y') }}</td>
+                        <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
+                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
+                        <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}</td>
+                        <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                @else
+                    <tr>
+                        <td width="5%" class="border_left_right"></td>
                         <td width="30%" class="border_left_right text_center">{{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }}</td>
-                    @else
-                        <td width="30%" class="border_left_right text_center">{{ $customer->name }} {{ implode(', ', $mergedMarkings) }}</td>
-                    @endif
-                    <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
-                    <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
-                    <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($pricelist ?? 0, 0, ',', '.') }}</td>
-                    <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
-                </tr>
+                        <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
+                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
+                        @if (!$totals['cas'])
+                            <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}</td>
+                        @else
+                            <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }} 
+                            <br> <span style="font-size: smaller;">( +{{ number_format($totals['cas'] ?? 0, 0, ',', '.') }} )</span></td>
+                        @endif
+                        <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                @endif
+
+                @if ($totals['cbm_difference'])
+                    <tr>
+                        <td width="5%" class="border_left_right"></td>
+                        <td width="30%" class="border_left_right text_center">Selisih SIN BTH ({{ $totals['total_cbm1'] }} - {{ $totals['total_cbm2'] }} M3)</td>
+                        <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
+                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['cbm_difference'] }} M3</td>
+                        <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unitPriceCbmDiff ?? 0, 0, ',', '.') }}</td>
+                        <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amountCbmDiff ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                @endif
             @endforeach
 
             <!-- empty row -->

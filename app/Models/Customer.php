@@ -18,6 +18,7 @@ class Customer extends Model
         'name',
         'shipper_ids',
         'id_company',
-        'id_history'
+        'id_history',
+        'is_detail_invoice'
     ];
 }

@@ -56,7 +56,7 @@
                                         <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm2'] ?? '-' }}</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">-</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['cbm_difference'] ?? '-' }}</span>
                                     </td>
                                     <!-- ### -->
                                     <td class="align-middle text-center">

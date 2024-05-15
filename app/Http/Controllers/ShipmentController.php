@@ -178,7 +178,7 @@ class ShipmentController extends Controller
 
         $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
             return $item->date . '-' . $item->lts;
-        })->map(function ($group) {
+        })->map(function ($group) use ($seaShipment) {
             $totals = [
                 'total_qty_pkgs' => $group->filter(function ($item) {
                     return is_numeric($item->qty_pkgs);
@@ -197,6 +197,55 @@ class ShipmentController extends Controller
                 })->sum('tot_cbm_2')
             ];
         
+            // set cas
+            $cas = null;
+            $lts = $group->first()->lts;
+
+            $defaultCas = Cas::where('id_customer', null)->where('id_shipper', null)->where('lts', $lts)->where('start_period', null)
+                ->where('end_period', null)->first();
+        
+            $shipperCas = Cas::where('id_customer', null)->where('id_shipper', $seaShipment->id_shipper)->where('lts', $lts)->where('start_period', null)
+                ->where('end_period', null)->first();
+        
+            $customerCas = Cas::where('id_customer', $seaShipment->id_customer)->where('id_shipper', null)->where('lts', $lts)->where('start_period', null)
+                ->where('end_period', null)->first();
+
+            $customerShipperCas = Cas::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('lts', $lts)->where('start_period', null)
+                ->where('end_period', null)->first();
+
+            $periodCas = Cas::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('lts', $lts)
+                ->where('start_period', '>=', $seaShipment->date)->where('end_period', null)->first();
+
+            $allPeriodCas = Cas::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('lts', $lts)
+                ->where('start_period', '<=', $seaShipment->date)->where('end_period', '>=', $seaShipment->date)->first();
+
+            if ($defaultCas) {
+                $cas = $defaultCas->charge;
+            } 
+            
+            if ($shipperCas) {
+                $cas = $shipperCas->charge;
+            } 
+            
+            if ($customerCas) {
+                $cas = $customerCas->charge;
+            }
+
+            if ($customerShipperCas) {
+                $cas = $customerShipperCas->charge;
+            }
+
+            if ($periodCas) {
+                $cas = $periodCas->charge;
+            }
+
+            if ($allPeriodCas) {
+                $cas = $allPeriodCas->charge;
+            }
+        
+            $totals['cas'] = $cas;
+        
+            // cbm difference
             $totals['cbm_difference'] = $totals['total_cbm1'] - $totals['total_cbm2'];
         
             $markings = $group->pluck('marking')->unique()->toArray();
@@ -280,10 +329,16 @@ class ShipmentController extends Controller
         // set pricelist
         $pricelist = null;
 
-        $defaultPricelist = Pricelist::where('id_customer', null)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        $defaultPricelist = Pricelist::where('id_customer', null)->where('id_shipper', null)->where('origin', $seaShipment->origin)
         ->where('start_period', null)->where('end_period', null)->first();
 
-        $customerPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        $shipperPricelist = Pricelist::where('id_customer', null)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        ->where('start_period', null)->where('end_period', null)->first();
+
+        $customerPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', null)->where('origin', $seaShipment->origin)
+        ->where('start_period', null)->where('end_period', null)->first();
+
+        $customerShipperPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
         ->where('start_period', null)->where('end_period', null)->first();
 
         $periodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
@@ -296,8 +351,16 @@ class ShipmentController extends Controller
             $pricelist = $defaultPricelist->price;
         }
 
+        if ($shipperPricelist) {
+            $pricelist = $shipperPricelist->price;
+        }
+
         if ($customerPricelist) {
             $pricelist = $customerPricelist->price;
+        }
+
+        if ($customerShipperPricelist) {
+            $pricelist = $customerShipperPricelist->price;
         }
 
         if ($periodPricelist) {
