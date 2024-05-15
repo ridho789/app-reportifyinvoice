@@ -284,7 +284,7 @@ class ShipmentController extends Controller
         $titleInv = $customer->name . '-' . $shipper->name . '-' . $invNumber . '/' . $company->shorter . '/' . 'INV/' . $monthRoman . '/' . $year;
 
         // payment due
-        $shipmentDate = new DateTime($seaShipment->date);
+        $shipmentDate = new DateTime($seaShipment->etd);
         $termInterval = new DateInterval('P' . $request->term . 'D');
         $shipmentDate->add($termInterval);
 

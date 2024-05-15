@@ -173,7 +173,7 @@
                                             <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." disabled>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
-                                            <input type="date" class="form-control" name="etd" value="{{ $seaShipment->etd }}">
+                                            <input type="date" class="form-control" name="etd" value="{{ $seaShipment->etd }}" required>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
                                             <input type="date" class="form-control" name="eta" value="{{ $seaShipment->eta }}">
@@ -382,7 +382,7 @@
                                             <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." readonly>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
-                                            <input type="date" class="form-control" name="etd">
+                                            <input type="date" class="form-control" name="etd" required>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
                                             <input type="date" class="form-control" name="eta">
@@ -551,7 +551,7 @@
                         <div class="col-1"></div>
                         <div class="col-6">
                             <label>Payment Due</label>
-                            <input type="date" class="form-control" id="payment_due" name="payment_due" value="{{ old('payment_due', $seaShipment->date) }}" readonly>
+                            <input type="date" class="form-control" id="payment_due" name="payment_due" value="{{ old('payment_due', $seaShipment->etd) }}" readonly>
                         </div>
                     </div>
 
