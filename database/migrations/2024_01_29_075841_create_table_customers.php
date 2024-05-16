@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_history')->nullable();
             $table->string('name');
             $table->string('shipper_ids')->nullable();
+            $table->string('bill_diff')->nullable();
             $table->boolean('is_detail_invoice')->default(false);
             $table->timestamps();
         });

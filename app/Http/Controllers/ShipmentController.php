@@ -53,10 +53,11 @@ class ShipmentController extends Controller
 
         $seaShipment = SeaShipment::where('id_sea_shipment', $id)->first();
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
+        $checkCbmDiff = false;
 
         $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
             return $item->date;
-        })->map(function ($group) {
+        })->map(function ($group) use (&$checkCbmDiff) {
             $totals = [
                 'total_qty_pkgs' => $group->filter(function ($item) {
                     return is_numeric($item->qty_pkgs);
@@ -73,16 +74,20 @@ class ShipmentController extends Controller
             ];
         
             $totals['cbm_difference'] = $totals['total_cbm1'] - $totals['total_cbm2'];
+
+            if ($totals['cbm_difference'] != 0) {
+                $checkCbmDiff = true;
+            }
         
             return $totals;
         });
-        
+
         $customers = Customer::orderBy('name')->get();
         $customer = Customer::where('id_customer', $seaShipment->id_customer)->first();
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
         $companies = Company::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'ships', 'companies', 'groupSeaShipmentLines'));
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'ships', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff'));
     }
 
     public function updateSeaShipment(Request $request) {
@@ -278,6 +283,22 @@ class ShipmentController extends Controller
                 'id_company' => $request->id_company
             ]);
         }
+
+        // update bill diff in customer
+        $bill_diff = null;
+        if ($request->bill_diff) {
+
+            $numericBillDiff = preg_replace("/[^0-9]/", "", explode(",", $request->bill_diff)[0]);
+            if ($request->bill_diff[0] === '-') {
+                $numericBillDiff *= -1;
+            }
+
+            $bill_diff = $numericBillDiff;
+
+            Customer::where('id_customer', $seaShipment->id_customer)->update([
+                'bill_diff' => $numericBillDiff
+            ]);
+        }
         
         // format invoice
         $invNameGenerate = $invNumber . '/' . $company->shorter . '/' . 'INV/' . $monthRoman . '/' . $year;
@@ -385,7 +406,8 @@ class ShipmentController extends Controller
             'imageContent' => $imageContent,
             'invNameGenerate' => $invNameGenerate,
             'titleInv' => $titleInv,
-            'companyName' => $companyName
+            'companyName' => $companyName,
+            'bill_diff' => $bill_diff
         ])->setPaper('folio', 'potrait');
 
         return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');

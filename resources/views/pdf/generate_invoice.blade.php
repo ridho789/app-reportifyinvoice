@@ -128,118 +128,153 @@
                 $totalAmount = 0;
                 $totalCbm = 0;
             @endphp
+            @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
+                @foreach($groupSeaShipmentLines as $groupDate => $totals)
+                    @php
+                        $date = substr($groupDate, 0, 10);
+                        $lts = substr($groupDate, strrpos($groupDate, '-') + 1);
 
-            @foreach($groupSeaShipmentLines as $groupDate => $totals)
-                @php
-                    $date = substr($groupDate, 0, 10);
-                    $lts = substr($groupDate, strrpos($groupDate, '-') + 1);
-
-                    $qty = $totals['total_qty_loose'];
-                    $unit_price = $pricelist;
-                    $unitPriceCbmDiff = 0;
-                    $amountCbmDiff = 0;
-                    
-                    // Jika ada cas
-                    if ($totals['cas']) {
-                        $unit_price = $pricelist + intval($totals['cas']);
-                    }
-
-                    // Jika ada selisih
-                    if ($totals['cbm_difference']) {
-                        $unitPriceCbmDiff = $pricelist;
-                        $amountCbmDiff = $totals['cbm_difference'] * $unitPriceCbmDiff;
-                    }
-                    
-                    $amount = $totals['total_cbm2'] * $unit_price;
-                    $totalQty += $qty;
-                    $totalAmount += $amount + $amountCbmDiff;
-                    $totalCbm += $totals['total_cbm2'] + $totals['cbm_difference'];
-
-                    $groupedMarkings = collect($totals['markings'])->groupBy(function ($marking) {
-                        // Menentukan pola regex untuk ekstraksi prefix dan nomor
-                        preg_match('/^(.*?)([-#\s\.\/]?)\s*(\d+)$/', $marking, $matches);
-                        $prefix = $matches[1] ?? '';
-                        $separator = $matches[2] ?? '';
-                        return $prefix . $separator;
-                    });
-
-                    $mergedMarkings = $groupedMarkings->map(function ($group) {
-                        $prefix = '';
-                        $separator = '';
-                        $suffixes = $group->map(function ($marking) use (&$prefix, &$separator) {
-                            // Ekstraksi prefix dan separator dari marking pertama
-                            preg_match('/^(.*?)([-#\s\.\/]?)\s*(\d+)$/', $marking, $matches);
-                            if (empty($prefix)) {
-                                $prefix = $matches[1] ?? '';
-                                $separator = $matches[2] ?? '';
-                            }
-                            return intval($matches[3] ?? 0); // Mengambil angka dari grup ketiga hasil regex
-                        })->sort()->unique()->values()->toArray();
-
-                        $merged = [];
-                        $currentRange = [];
-                        $lastSuffix = null; // Initialize with null
-                        foreach ($suffixes as $suffix) {
-                            if ($lastSuffix !== null && $suffix - $lastSuffix !== 1) {
-                                $merged[] = count($currentRange) > 1 ? $prefix . $separator . $currentRange[0] . '-' . $lastSuffix : $prefix . $separator . $lastSuffix;
-                                $currentRange = [$suffix];
-                            } else {
-                                $currentRange[] = $suffix;
-                            }
-                            $lastSuffix = $suffix;
+                        $qty = $totals['total_qty_loose'];
+                        $unit_price = $pricelist;
+                        $unitPriceCbmDiff = 0;
+                        $amountCbmDiff = 0;
+                        
+                        // Jika ada cas
+                        if ($totals['cas']) {
+                            $unit_price = $pricelist + intval($totals['cas']);
                         }
-                        $merged[] = count($currentRange) > 1 ? $prefix . $separator . $currentRange[0] . '-' . $lastSuffix : $prefix . $separator . $lastSuffix;
-                        return implode(', ', $merged);
-                    })->values()->toArray();
+
+                        // Jika ada selisih
+                        if ($totals['cbm_difference']) {
+                            $unitPriceCbmDiff = $bill_diff;
+                            $amountCbmDiff = $totals['cbm_difference'] * $unitPriceCbmDiff;
+                        }
+                        
+                        $amount = $totals['total_cbm2'] * $unit_price;
+                        $totalQty += $qty;
+                        $totalAmount += $amount + $amountCbmDiff;
+                        $totalCbm += $totals['total_cbm2'] + $totals['cbm_difference'];
+
+                        $groupedMarkings = collect($totals['markings'])->groupBy(function ($marking) {
+                            // Menentukan pola regex untuk ekstraksi prefix dan nomor
+                            preg_match('/^(.*?)([-#\s\.\/]?)\s*(\d+)$/', $marking, $matches);
+                            $prefix = $matches[1] ?? '';
+                            $separator = $matches[2] ?? '';
+                            return $prefix . $separator;
+                        });
+
+                        $mergedMarkings = $groupedMarkings->map(function ($group) {
+                            $prefix = '';
+                            $separator = '';
+                            $suffixes = $group->map(function ($marking) use (&$prefix, &$separator) {
+                                // Ekstraksi prefix dan separator dari marking pertama
+                                preg_match('/^(.*?)([-#\s\.\/]?)\s*(\d+)$/', $marking, $matches);
+                                if (empty($prefix)) {
+                                    $prefix = $matches[1] ?? '';
+                                    $separator = $matches[2] ?? '';
+                                }
+                                return intval($matches[3] ?? 0); // Mengambil angka dari grup ketiga hasil regex
+                            })->sort()->unique()->values()->toArray();
+
+                            $merged = [];
+                            $currentRange = [];
+                            $lastSuffix = null; // Initialize with null
+                            foreach ($suffixes as $suffix) {
+                                if ($lastSuffix !== null && $suffix - $lastSuffix !== 1) {
+                                    $merged[] = count($currentRange) > 1 ? $prefix . $separator . $currentRange[0] . '-' . $lastSuffix : $prefix . $separator . $lastSuffix;
+                                    $currentRange = [$suffix];
+                                } else {
+                                    $currentRange[] = $suffix;
+                                }
+                                $lastSuffix = $suffix;
+                            }
+                            $merged[] = count($currentRange) > 1 ? $prefix . $separator . $currentRange[0] . '-' . $lastSuffix : $prefix . $separator . $lastSuffix;
+                            return implode(', ', $merged);
+                        })->values()->toArray();
+                    @endphp
+                    @if (!$lts)
+                        <tr>
+                            <td width="5%" class="border_left_right"></td>
+                            <td width="30%" class="border_left_right text_center">Code (??) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('M-y') }}</td>
+                            <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
+                            <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}</td>
+                            <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td width="5%" class="border_left_right"></td>
+                            <td width="30%" class="border_left_right text_center">{{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }}</td>
+                            <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
+                            @if (!$totals['cas'])
+                                <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}</td>
+                            @else
+                                <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }} 
+                                <br> <span style="font-size: smaller;">( +{{ number_format($totals['cas'] ?? 0, 0, ',', '.') }} )</span></td>
+                            @endif
+                            <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
+                        </tr>
+                    @endif
+
+                    @if ($totals['cbm_difference'])
+                        <tr>
+                            <td width="5%" class="border_left_right"></td>
+                            <td width="30%" class="border_left_right text_center">Selisih SIN BTH ({{ $totals['total_cbm1'] }} - {{ $totals['total_cbm2'] }} M3)</td>
+                            <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['cbm_difference'] }} M3</td>
+                            <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unitPriceCbmDiff ?? 0, 0, ',', '.') }}</td>
+                            <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amountCbmDiff ?? 0, 0, ',', '.') }}</td>
+                        </tr>
+                    @endif
+                @endforeach
+
+                <!-- empty row -->
+                @for ($i = 1; $i <= (17 - count($groupSeaShipmentLines)); $i++)
+                    <tr>
+                        <td width="5%" class="border_left_right" style="height: 20px;"></td>
+                        <td width="30%" class="border_left_right text_center"></td>
+                        <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
+                        <td width="10%" class="border_left_right text_center text_uppercase"></td>
+                        <td width="15%" class="border_left_right text_center"></td>
+                        <td width="20%" class="border_left_right text_center"></td>
+                    </tr>
+                @endfor
+
+            @else
+                @foreach($seaShipmentLines as $line)
+                @php
+                    $qty = $line->qty_pkgs;
+                    $cbm = $line->tot_cbm_1;
+                    $unit_price = $pricelist;
+                    $amount = $cbm * $unit_price;
+
+                    $totalQty += $qty;
+                    $totalAmount += $amount;
+                    $totalCbm += $cbm;
                 @endphp
-                @if (!$lts)
                     <tr>
                         <td width="5%" class="border_left_right"></td>
-                        <td width="30%" class="border_left_right text_center">Code (??) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('M-y') }}</td>
+                        <td width="30%" class="border_left_right text_center">BATAM {{ $line->marking }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $line->date)->format('M-y') }}</td>
                         <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
-                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
+                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $cbm }} M3</td>
                         <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}</td>
                         <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
                     </tr>
-                @else
-                    <tr>
-                        <td width="5%" class="border_left_right"></td>
-                        <td width="30%" class="border_left_right text_center">{{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }}</td>
-                        <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
-                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
-                        @if (!$totals['cas'])
-                            <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}</td>
-                        @else
-                            <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }} 
-                            <br> <span style="font-size: smaller;">( +{{ number_format($totals['cas'] ?? 0, 0, ',', '.') }} )</span></td>
-                        @endif
-                        <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
-                    </tr>
-                @endif
+                @endforeach
 
-                @if ($totals['cbm_difference'])
+                <!-- empty row -->
+                @for ($i = 1; $i <= (17 - count($seaShipmentLines)); $i++)
                     <tr>
-                        <td width="5%" class="border_left_right"></td>
-                        <td width="30%" class="border_left_right text_center">Selisih SIN BTH ({{ $totals['total_cbm1'] }} - {{ $totals['total_cbm2'] }} M3)</td>
+                        <td width="5%" class="border_left_right" style="height: 20px;"></td>
+                        <td width="30%" class="border_left_right text_center"></td>
                         <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
-                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['cbm_difference'] }} M3</td>
-                        <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unitPriceCbmDiff ?? 0, 0, ',', '.') }}</td>
-                        <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amountCbmDiff ?? 0, 0, ',', '.') }}</td>
+                        <td width="10%" class="border_left_right text_center text_uppercase"></td>
+                        <td width="15%" class="border_left_right text_center"></td>
+                        <td width="20%" class="border_left_right text_center"></td>
                     </tr>
-                @endif
-            @endforeach
-
-            <!-- empty row -->
-            @for ($i = 1; $i <= (17 - count($groupSeaShipmentLines)); $i++)
-                <tr>
-                    <td width="5%" class="border_left_right" style="height: 20px;"></td>
-                    <td width="30%" class="border_left_right text_center"></td>
-                    <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
-                    <td width="10%" class="border_left_right text_center text_uppercase"></td>
-                    <td width="15%" class="border_left_right text_center"></td>
-                    <td width="20%" class="border_left_right text_center"></td>
-                </tr>
-            @endfor
+                @endfor
+            @endif
 
             <tr>
                 <td width="5%" class="border_left_right"></td>

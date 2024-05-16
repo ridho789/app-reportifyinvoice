@@ -17,6 +17,7 @@ class Customer extends Model
     protected $fillable = [
         'name',
         'shipper_ids',
+        'bill_diff',
         'id_company',
         'id_history',
         'is_detail_invoice'

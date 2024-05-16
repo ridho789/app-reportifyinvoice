@@ -301,7 +301,7 @@
 
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                            <button type="button" class="btn btn-secondary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#setPrintModal">Print</button>
+                            <button type="button" class="btn btn-secondary btn-sm ms-2 btn-print" data-bs-toggle="modal" data-bs-target="#setPrintModal">Print</button>
                         </div>
                     </form>
                     @else
@@ -517,55 +517,146 @@
 @if ($seaShipment)
 <!-- Modal - SetPrint -->
 <div class="modal fade" id="setPrintModal" tabindex="-1" role="dialog" aria-labelledby="setPrintModalLabel" aria-hidden="true">
+    @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    @else
     <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    @endif
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title font-weight-normal text-sm" id="setPrintModalLabel"><b>Please fill in the required data before printing the document</b></h5>
+                <h5 class="modal-title font-weight-normal text-xs" id="setPrintModalLabel"><i class="material-icons text-xs">priority_high</i>
+                    <b>Before printing the document, make sure you've filled in all the required (<span class="text-primary">*</span>) data.</b>
+                </h5>
             </div>
             <form action="{{ url('print-sea-shipment') }}" method="POST" enctype="multipart/form-data" target="_blank">
                 @csrf
                 <div class="modal-body">
-                    <input type="hidden" name="id" value="{{ $seaShipment->id_sea_shipment }}">
-                    <div class="input-group input-group-static mb-4">
-                        <label>Invoice No. <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->id_sea_shipment) }}" placeholder="..." required>
-                    </div>
-
-                    <div class="input-group input-group-static mb-1">
-                        <label class="text-sm">Company <span class="text-danger">*</span></label>
-                    </div>
-                    <div class="input-group input-group-static mb-4">
-                        <select class="form-select select-company" name="id_company" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
-                            <option value="">...</option>
-                            @foreach ($companies as $c)
-                            <option value="{{ $c->id_company }}" {{ old('id_company', $customer->id_company) == $c->id_company ? 'selected' : '' }}>{{ $c->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    
-                    <div class="input-group input-group-static mb-4">
-                        <div class="col-5">
-                            <label>Term <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="term" name="term" min="1" value="{{ old('term') }}" placeholder="..." required>
+                    @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
+                        <div class="row">
+                            <div class="col-6">
+                                <h5 class="text-sm">Form</h5>
+                                <input type="hidden" name="id" value="{{ $seaShipment->id_sea_shipment }}">
+                                <div class="input-group input-group-static mb-4">
+                                    <label>Invoice No. <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->id_sea_shipment) }}" placeholder="..." required>
+                                </div>
+            
+                                <div class="input-group input-group-static mb-1">
+                                    <label class="text-sm">Company <span class="text-danger">*</span></label>
+                                </div>
+                                <div class="input-group input-group-static mb-4">
+                                    <select class="form-select select-company" name="id_company" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                        <option value="">...</option>
+                                        @foreach ($companies as $c)
+                                        <option value="{{ $c->id_company }}" {{ old('id_company', $customer->id_company) == $c->id_company ? 'selected' : '' }}>{{ $c->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div class="input-group input-group-static mb-4">
+                                    <div class="col-5">
+                                        <label>Term <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="term" name="term" min="1" value="{{ old('term') }}" placeholder="..." required>
+                                    </div>
+                                    <div class="col-1"></div>
+                                    <div class="col-6">
+                                        <label>Payment Due</label>
+                                        <input type="date" class="form-control" id="payment_due" name="payment_due" value="{{ old('payment_due', $seaShipment->etd) }}" readonly>
+                                    </div>
+                                </div>
+            
+                                <div class="input-group input-group-static mb-4">
+                                    <div class="col-5">
+                                        <label>Banker (<span class="text-info">Optional</span>)</label>
+                                        <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
+                                    </div>
+                                    <div class="col-1"></div>
+                                    <div class="col-6">
+                                        <label>Account No. (<span class="text-info">Optional</span>)</label>
+                                        <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                @if ($groupSeaShipmentLines)
+                                    <h5 class="text-sm">Fee Setup</h5>
+                                    @if ($checkCbmDiff) 
+                                    <div class="input-group input-group-static mb-4">
+                                        <label>Bill Difference <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="bill_diff" id="bill_diff" value="{{ old('bill_diff', $customer->bill_diff) }}" placeholder="..." required>
+                                    </div>
+                                    @endif
+                                    
+                                    @foreach ($groupSeaShipmentLines as $date => $gsl)
+                                        <div class="input-group input-group-static mb-4">
+                                            <div class="col-3">
+                                                <label>Date</label>
+                                                <input type="date" class="form-control" id="dateG" name="dateG" value="{{ old('dateG', $date) }}" readonly>
+                                            </div>
+                                            <div class="col-1"></div>
+                                            <div class="col-3">
+                                                <label>BL (<span class="text-info">Optional</span>)</label>
+                                                <input type="text" class="form-control" id="bl" name="bl" value="{{ old('bl') }}" placeholder="...">
+                                            </div>
+                                            <div class="col-1"></div>
+                                            <div class="col-4">
+                                                <label>Permit (<span class="text-info">Optional</span>)</label>
+                                                <input type="text" class="form-control" id="permit" name="permit" value="{{ old('permit') }}" placeholder="...">
+                                            </div>
+                                        </div>
+                                    @endforeach
+                
+                                    <div class="input-group input-group-static mb-4">
+                                        <label>Bill Transport (<span class="text-info">Optional</span>)</label>
+                                        <input type="text" class="form-control" name="transport" id="transport" value="{{ old('transport') }}" placeholder="...">
+                                    </div>
+                                @endif
+                            </div>
                         </div>
-                        <div class="col-1"></div>
-                        <div class="col-6">
-                            <label>Payment Due</label>
-                            <input type="date" class="form-control" id="payment_due" name="payment_due" value="{{ old('payment_due', $seaShipment->etd) }}" readonly>
+                    @else
+                        <h5 class="text-sm">Form</h5>
+                        <input type="hidden" name="id" value="{{ $seaShipment->id_sea_shipment }}">
+                        <div class="input-group input-group-static mb-4">
+                            <label>Invoice No. <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->id_sea_shipment) }}" placeholder="..." required>
                         </div>
-                    </div>
-
-                    <div class="input-group input-group-static mb-4">
-                        <div class="col-5">
-                            <label>Banker (<span class="text-info">Optional</span>)</label>
-                            <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
+    
+                        <div class="input-group input-group-static mb-1">
+                            <label class="text-sm">Company <span class="text-danger">*</span></label>
                         </div>
-                        <div class="col-1"></div>
-                        <div class="col-6">
-                            <label>Account No. (<span class="text-info">Optional</span>)</label>
-                            <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select select-company" name="id_company" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                <option value="">...</option>
+                                @foreach ($companies as $c)
+                                <option value="{{ $c->id_company }}" {{ old('id_company', $customer->id_company) == $c->id_company ? 'selected' : '' }}>{{ $c->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                    </div>
+                        
+                        <div class="input-group input-group-static mb-4">
+                            <div class="col-5">
+                                <label>Term <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="term" name="term" min="1" value="{{ old('term') }}" placeholder="..." required>
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <label>Payment Due</label>
+                                <input type="date" class="form-control" id="payment_due" name="payment_due" value="{{ old('payment_due', $seaShipment->etd) }}" readonly>
+                            </div>
+                        </div>
+    
+                        <div class="input-group input-group-static mb-4">
+                            <div class="col-5">
+                                <label>Banker (<span class="text-info">Optional</span>)</label>
+                                <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <label>Account No. (<span class="text-info">Optional</span>)</label>
+                                <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
+                            </div>
+                        </div>
+                    @endif
                     
                     <div class="text-end">
                         <button type="button" class="btn bg-gradient-secondary btn-sm" data-bs-dismiss="modal">Close</button>
@@ -812,5 +903,58 @@
 
     // Event listener for term input
     document.getElementById('term').addEventListener('input', updatePaymentDue);
+
+    // Currency
+    function formatCurrency(num) {
+        num = num.toString().replace(/[^\d-]/g, '');
+
+        num = num.replace(/-+/g, (match, offset) => offset > 0 ? "" : "-");
+
+        let isNegative = false;
+        if (num.startsWith("-")) {
+            isNegative = true;
+            num = num.slice(1);
+        }
+
+        let formattedNum = "Rp " + Math.abs(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+        if (isNegative) {
+            formattedNum = "-" + formattedNum;
+        }
+
+        return formattedNum;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        function formatInputs() {
+            let priceBillDiff = document.querySelectorAll("#bill_diff");
+            priceBillDiff.forEach(function(billDiff) {
+                if (billDiff.value.trim() !== "") {
+                    billDiff.value = formatCurrency(billDiff.value);
+                }
+                billDiff.addEventListener("input", function() {
+                    if (this.value.trim() !== "") {
+                        this.value = formatCurrency(this.value);
+                    }
+                });
+            });
+
+            let priceBillTransport = document.querySelectorAll("#transport");
+            priceBillTransport.forEach(function(billTransport) {
+                if (billTransport.value.trim() !== "") {
+                    billTransport.value = formatCurrency(billTransport.value);
+                }
+                billTransport.addEventListener("input", function() {
+                    if (this.value.trim() !== "") {
+                        this.value = formatCurrency(this.value);
+                    }
+                });
+            });
+        }
+
+        $('#setPrintModal').on('shown.bs.modal', function() {
+            formatInputs();
+        });
+    });
 </script>
 @endsection
