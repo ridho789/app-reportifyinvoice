@@ -299,7 +299,17 @@ class ShipmentController extends Controller
                 'bill_diff' => $numericBillDiff
             ]);
         }
-        
+
+        // update invoice type
+        $inv_type = null;
+        if ($request->inv_type) {
+            $inv_type = $request->inv_type;
+
+            Customer::where('id_customer', $seaShipment->id_customer)->update([
+                'inv_type' => $inv_type
+            ]);
+        }
+
         // format invoice
         $invNameGenerate = $invNumber . '/' . $company->shorter . '/' . 'INV/' . $monthRoman . '/' . $year;
         $titleInv = $customer->name . '-' . $shipper->name . '-' . $invNumber . '/' . $company->shorter . '/' . 'INV/' . $monthRoman . '/' . $year;
@@ -407,7 +417,8 @@ class ShipmentController extends Controller
             'invNameGenerate' => $invNameGenerate,
             'titleInv' => $titleInv,
             'companyName' => $companyName,
-            'bill_diff' => $bill_diff
+            'bill_diff' => $bill_diff,
+            'inv_type' => $inv_type
         ])->setPaper('folio', 'potrait');
 
         return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');

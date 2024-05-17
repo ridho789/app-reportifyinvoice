@@ -81,13 +81,6 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="col-lg-12 mb-3">
-                                    <div class="form-check form-check-inline" style="padding-left: 0;">
-                                        <input type="hidden" id="is-detail-invoice-hidden" name="input_is_detail_invoice">
-                                        <input class="form-check-input" type="checkbox" value="" id="isDetail">
-                                        <label class="form-check-label" for="isDetail">Click to enable data detail in invoice print</label>
-                                    </div>
-                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                         </form>
@@ -149,13 +142,6 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="col-lg-12 mb-3">
-                                    <div class="form-check form-check-inline" style="padding-left: 0;">
-                                        <input type="hidden" id="edit-is-detail-invoice-hidden" name="value_is_detail_invoice">
-                                        <input class="form-check-input" type="checkbox" value="" id="editIsDetail">
-                                        <label class="form-check-label" for="editIsDetail">Click to enable data detail in invoice print</label>
-                                    </div>
-                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary btn-sm">Update</button>
                         </form>
@@ -194,11 +180,7 @@
                                         </div>
                                     </td>
                                     <td class="name-customer-selected">
-                                        @if ($c->is_detail_invoice == 1)
-                                            <p class="text-sm font-weight-normal text-primary mb-0">{{ $c->name }}</p>
-                                        @else
-                                            <p class="text-sm font-weight-normal mb-0">{{ $c->name }}</p>
-                                        @endif
+                                        <p class="text-sm font-weight-normal mb-0">{{ $c->name }}</p>
                                     </td>
                                     <td class="shipper-selected align-middle text-center text-sm">
                                         @php
@@ -228,7 +210,6 @@
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
                                     </td>
-                                    <td style="display: none;" class="detail-invoice-selected">{{$c->is_detail_invoice}}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -316,10 +297,6 @@
                     maximumSelectionLength: 1
                 });
 
-                var detailInvoice = row.querySelector(".detail-invoice-selected").textContent;
-                var isDetailInvoiceCheckboxEditForm = document.getElementById('editIsDetail');
-                isDetailInvoiceCheckboxEditForm.checked = parseInt(detailInvoice) === 1;
-
                 if (myEditForm.style.display === 'none') {
                     myEditForm.style.display = 'block';
                 }
@@ -329,27 +306,6 @@
                 }
             });
         });
-    });
-
-    // Elemen checkbox form add
-    var isDetailInvoiceCheckbox = document.getElementById('isDetail');
-
-    isDetailInvoiceCheckbox.addEventListener('click', function () {
-        var isDetailInvoice = isDetailInvoiceCheckbox.checked ? 1 : 0;
-
-        var hiddenValueDetailInvoice = document.querySelector("input[name='input_is_detail_invoice']");
-        hiddenValueDetailInvoice.value = isDetailInvoice;
-    });
-
-    // Elemen checkbox form edit
-    var isDetailInvoiceCheckboxEdit = document.getElementById('editIsDetail');
-
-    isDetailInvoiceCheckboxEdit.addEventListener('click', function () {
-        var isDetailInvoiceEdit = isDetailInvoiceCheckboxEdit.checked ? 1 : 0;
-        
-        // Setel nilai checkbox ke input tersembunyi
-        var hiddenEditValueDetailInvoice = document.querySelector("input[name='value_is_detail_invoice']");
-        hiddenEditValueDetailInvoice.value = isDetailInvoiceEdit;
     });
 </script>
 @endsection

@@ -565,7 +565,7 @@
                                     </div>
                                 </div>
             
-                                <div class="input-group input-group-static mb-4">
+                                <div class="input-group input-group-static">
                                     <div class="col-5">
                                         <label>Banker (<span class="text-info">Optional</span>)</label>
                                         <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
@@ -582,10 +582,22 @@
                                     <h5 class="text-sm">Fee Setup</h5>
                                     @if ($checkCbmDiff) 
                                     <div class="input-group input-group-static mb-4">
-                                        <label>Bill Difference <span class="text-danger">*</span></label>
+                                        <label>Difference Bill <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="bill_diff" id="bill_diff" value="{{ old('bill_diff', $customer->bill_diff) }}" placeholder="..." required>
                                     </div>
                                     @endif
+                                    
+                                    <div class="input-group input-group-static mb-1">
+                                        <label class="text-sm">Invoice Type <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="input-group input-group-static mb-4">
+                                        <select class="form-select text-left" id="inv_type" name="inv_type" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                            <option value="" {{ old('inv_type', $customer->inv_type) == '' ? 'selected' : '' }}>...</option>
+                                            <option value="basic" {{ old('inv_type', $customer->inv_type) == 'basic' ? 'selected' : '' }}>Basic</option>
+                                            <option value="detail" {{ old('inv_type', $customer->inv_type) == 'detail' ? 'selected' : '' }}>Detail</option>
+                                            <option value="separate" {{ old('inv_type', $customer->inv_type) == 'separate' ? 'selected' : '' }}>Separate</option>
+                                        </select>
+                                    </div>
                                     
                                     @foreach ($groupSeaShipmentLines as $date => $gsl)
                                         <div class="input-group input-group-static mb-4">
@@ -606,8 +618,8 @@
                                         </div>
                                     @endforeach
                 
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Bill Transport (<span class="text-info">Optional</span>)</label>
+                                    <div class="input-group input-group-static">
+                                        <label>Transport Bill (<span class="text-info">Optional</span>)</label>
                                         <input type="text" class="form-control" name="transport" id="transport" value="{{ old('transport') }}" placeholder="...">
                                     </div>
                                 @endif
@@ -645,7 +657,7 @@
                             </div>
                         </div>
     
-                        <div class="input-group input-group-static mb-4">
+                        <div class="input-group input-group-static">
                             <div class="col-5">
                                 <label>Banker (<span class="text-info">Optional</span>)</label>
                                 <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
@@ -658,7 +670,7 @@
                         </div>
                     @endif
                     
-                    <div class="text-end">
+                    <div class="text-end mt-3">
                         <button type="button" class="btn bg-gradient-secondary btn-sm" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn bg-gradient-primary btn-sm ms-1">Process</button>
                     </div>
