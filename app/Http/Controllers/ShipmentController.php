@@ -13,12 +13,14 @@ use App\Imports\SeaShipmentImport;
 use App\Models\Cas;
 use App\Models\Insurance;
 use App\Models\Pricelist;
+use App\Models\SeaShipmentBill;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PDF;
 use DateTime;
 use DateInterval;
+use Carbon\Carbon;
 
 class ShipmentController extends Controller
 {
@@ -53,6 +55,7 @@ class ShipmentController extends Controller
 
         $seaShipment = SeaShipment::where('id_sea_shipment', $id)->first();
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
+        $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
         $checkCbmDiff = false;
 
         $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
@@ -87,7 +90,8 @@ class ShipmentController extends Controller
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
         $companies = Company::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'ships', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff'));
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 
+        'ships', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill'));
     }
 
     public function updateSeaShipment(Request $request) {
@@ -180,6 +184,7 @@ class ShipmentController extends Controller
         $id_sea_shipment = $request->id;
         $seaShipment = SeaShipment::where('id_sea_shipment', $id_sea_shipment)->first();
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
+        $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
 
         $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
             return $item->date . '-' . $item->lts;
@@ -401,12 +406,64 @@ class ShipmentController extends Controller
         if ($allPeriodPricelist) {
             $pricelist = $allPeriodPricelist->price;
         }
+
+        // data bill
+        $dataBill = [
+            'dateBL' => $request->dateBL,
+            'codeShipment' => $request->codeShipment,
+            'transport' => $request->transport,
+            'bl' => $request->bl,
+            'permit' => $request->permit,
+            'insurance' => $request->insurance
+        ];
+
+        $resultBIll = [];
+
+        foreach ($dataBill["dateBL"] as $index => $date) {
+            $resultBIll[] = [
+                "dateBL" => $dataBill["dateBL"][$index],
+                "codeShipment" => $dataBill["codeShipment"][$index],
+                "transport" => $dataBill["transport"][$index],
+                "bl" => $dataBill["bl"][$index],
+                "permit" => $dataBill["permit"][$index],
+                "insurance" => $dataBill["insurance"][$index]
+            ];
+
+            $checkSeaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->where('date', $date)->first();
+            if ($checkSeaShipmentBill) {
+                $checkSeaShipmentBill->code = $dataBill["codeShipment"][$index];
+                $checkSeaShipmentBill->transport = preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]);
+                $checkSeaShipmentBill->bl = preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]);
+                $checkSeaShipmentBill->permit = preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]);
+                $checkSeaShipmentBill->insurance = preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0]);
+                $checkSeaShipmentBill->save();
+
+            } else {
+                SeaShipmentBill::create([
+                    'id_sea_shipment' => $seaShipment->id_sea_shipment,
+                    'date' => $date,
+                    'code' => $dataBill["codeShipment"][$index],
+                    'transport' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]),
+                    'bl' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]),
+                    'permit' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]),
+                    'insurance' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0])
+                ]);
+            }
+        }
+
+        // update data in shipment
+        $seaShipment->term = $request->term;
+        $seaShipment->is_printed = true;
+        $seaShipment->printcount += 1;
+        $seaShipment->printdate = Carbon::now()->addHours(7);
+        $seaShipment->save();
         
         $pdf = PDF::loadView('pdf.generate_invoice', [
             'customer' => $customer,
             'shipper' => $shipper,
             'seaShipment' => $seaShipment,
             'seaShipmentLines' => $seaShipmentLines,
+            'seaShipmentBill' => $seaShipmentBill,
             'groupSeaShipmentLines' => $groupSeaShipmentLines,
             'pricelist' => $pricelist,
             'term' => $request->term,

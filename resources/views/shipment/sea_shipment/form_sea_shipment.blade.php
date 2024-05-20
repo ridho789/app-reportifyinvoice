@@ -114,7 +114,8 @@
                                         <td width=10%>
                                             <div class="d-flex px-3 py-1">
                                                 <input type="hidden" name="id_sea_shipment" value="{{ $seaShipment->id_sea_shipment }}">
-                                                <input type="text" class="form-control" name="no_aju" value="{{ $seaShipment->no_aju ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="...">
+                                                <input type="text" class="form-control" name="no_aju" value="{{ $seaShipment->no_aju ?? '-' }}" 
+                                                oninput="this.value = this.value.toUpperCase()" placeholder="...">
                                             </div>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
@@ -151,7 +152,8 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <!-- <input type="text" class="form-control text-center" name="origin" value="{{ $seaShipment->origin ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="..."> -->
+                                            <!-- <input type="text" class="form-control text-center" name="origin" value="{{ $seaShipment->origin ?? '-' }}" 
+                                            oninput="this.value = this.value.toUpperCase()" placeholder="..."> -->
                                             <select class="form-select text-center text-xs" name="origin" style="border: 0px;" required>
                                                 <option value="" {{ old('origin', $seaShipment->origin) == '' ? 'selected' : '' }}>...</option>
                                                 <option value="BTH-JKT" {{ old('origin', $seaShipment->origin) == 'BTH-JKT' ? 'selected' : '' }}>BTH-JKT</option>
@@ -227,14 +229,17 @@
                                             <input type="date" class="form-control text-center" name="bldate[]" value="{{ $ssl->date }}" style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <input type="text" class="form-control text-center" name="code[]" value="{{ $ssl->code }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="code[]" value="{{ $ssl->code }}" 
+                                            oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=12.5%>
-                                            <input type="text" class="form-control text-center" name="marking[]" value="{{ $ssl->marking ?? '-' }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;" required>
+                                            <input type="text" class="form-control text-center" name="marking[]" value="{{ $ssl->marking ?? '-' }}" 
+                                            oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;" required>
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="qty_pkgs[]" value="{{ $ssl->qty_pkgs }}" placeholder="..." style="border: 0px;" min="1">
+                                            <input type="number" class="form-control text-center" name="qty_pkgs[]" value="{{ $ssl->qty_pkgs }}" 
+                                            placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
@@ -246,7 +251,8 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="qty_loose[]" value="{{ $ssl->qty_loose }}" placeholder="..." style="border: 0px;" min="1">
+                                            <input type="number" class="form-control text-center" name="qty_loose[]" value="{{ $ssl->qty_loose }}" 
+                                            placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
@@ -263,13 +269,16 @@
                                         </td>
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="p[]" value="{{ $ssl->dimension_p ?? '-' }}" placeholder="..." style="border: 0px;" min="1" required>
+                                            <input type="number" class="form-control text-center" name="p[]" value="{{ $ssl->dimension_p ?? '-' }}" 
+                                            placeholder="..." style="border: 0px;" min="1" required>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="l[]" value="{{ $ssl->dimension_l ?? '-' }}" placeholder="..." style="border: 0px;" min="1" required>
+                                            <input type="number" class="form-control text-center" name="l[]" value="{{ $ssl->dimension_l ?? '-' }}" 
+                                            placeholder="..." style="border: 0px;" min="1" required>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="t[]" value="{{ $ssl->dimension_t ?? '-' }}" placeholder="..." style="border: 0px;" min="1" required>
+                                            <input type="number" class="form-control text-center" name="t[]" value="{{ $ssl->dimension_t ?? '-' }}" 
+                                            placeholder="..." style="border: 0px;" min="1" required>
                                         </td>
                                         <!-- ### -->
                                         <!-- total cbm -->
@@ -281,7 +290,8 @@
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="lts[]" value="{{ $ssl->lts }}" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="lts[]" value="{{ $ssl->lts }}" 
+                                            oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="desc[]" value="{{ $ssl->desc }}" placeholder="..." style="border: 0px;">
@@ -434,10 +444,12 @@
                                             <input type="date" class="form-control text-center" name="bldate[]" style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <input type="text" class="form-control text-center" name="code[]" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="code[]" oninput="this.value = this.value.toUpperCase()" 
+                                            placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=10%>
-                                            <input type="text" class="form-control text-center" name="marking[]" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="marking[]" oninput="this.value = this.value.toUpperCase()" 
+                                            placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
@@ -488,7 +500,8 @@
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="lts[]" oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="lts[]" oninput="this.value = this.value.toUpperCase()" 
+                                            placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="desc[]" placeholder="..." style="border: 0px;">
@@ -556,7 +569,7 @@
                                 <div class="input-group input-group-static mb-4">
                                     <div class="col-5">
                                         <label>Term <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="term" name="term" min="1" value="{{ old('term') }}" placeholder="..." required>
+                                        <input type="number" class="form-control" id="term" name="term" min="1" value="{{ old('term', $seaShipment->term) }}" placeholder="..." required>
                                     </div>
                                     <div class="col-1"></div>
                                     <div class="col-6">
@@ -567,12 +580,12 @@
             
                                 <div class="input-group input-group-static">
                                     <div class="col-5">
-                                        <label>Banker (<span class="text-info">Optional</span>)</label>
+                                        <label>Banker (<span class="text-info">Opt</span>)</label>
                                         <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
                                     </div>
                                     <div class="col-1"></div>
                                     <div class="col-6">
-                                        <label>Account No. (<span class="text-info">Optional</span>)</label>
+                                        <label>Account No. (<span class="text-info">Opt</span>)</label>
                                         <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
                                     </div>
                                 </div>
@@ -583,7 +596,8 @@
                                     @if ($checkCbmDiff) 
                                     <div class="input-group input-group-static mb-4">
                                         <label>Difference Bill <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="bill_diff" id="bill_diff" value="{{ old('bill_diff', $customer->bill_diff) }}" placeholder="..." required>
+                                        <input type="text" class="form-control" name="bill_diff" id="bill_diff" value="{{ old('bill_diff', $customer->bill_diff) }}" 
+                                        placeholder="..." required>
                                     </div>
                                     @endif
                                     
@@ -591,37 +605,61 @@
                                         <label class="text-sm">Invoice Type <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="input-group input-group-static mb-4">
-                                        <select class="form-select text-left" id="inv_type" name="inv_type" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                        <select class="form-select text-left" id="inv_type" name="inv_type" 
+                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px; {{ $checkCbmDiff ? '' : 'margin-top: -4px;' }}" required>
                                             <option value="" {{ old('inv_type', $customer->inv_type) == '' ? 'selected' : '' }}>...</option>
                                             <option value="basic" {{ old('inv_type', $customer->inv_type) == 'basic' ? 'selected' : '' }}>Basic</option>
-                                            <option value="detail" {{ old('inv_type', $customer->inv_type) == 'detail' ? 'selected' : '' }}>Detail</option>
                                             <option value="separate" {{ old('inv_type', $customer->inv_type) == 'separate' ? 'selected' : '' }}>Separate</option>
                                         </select>
                                     </div>
                                     
                                     @foreach ($groupSeaShipmentLines as $date => $gsl)
+                                        @php
+                                            $checkSeaShipmentBill = null;
+                                            if ($seaShipmentBill) {
+                                                $checkSeaShipmentBill = $seaShipmentBill->where('date', $date)->first();
+                                            }
+                                        @endphp
+                                        <div class="input-group input-group-static mb-4">
+                                            <label style="margin-bottom: {{ $checkCbmDiff ? '1.25px' : '2px' }}; margin-top: 2px;">Date</label>
+                                            <input type="date" class="form-control" id="dateBL" name="dateBL[]" value="{{ old('dateBL', $date) }}" style="font-weight: bold;" readonly>
+                                        </div>
+
+                                        <div class="input-group input-group-static mb-4">
+                                            <div class="col-5">
+                                                <label>Code (<span class="text-info">Opt</span>)</label>
+                                                <input type="text" class="form-control" id="codeShipment" name="codeShipment[]" 
+                                                    value="{{ old('codeShipment', $checkSeaShipmentBill ? $checkSeaShipmentBill->code : '') }}" 
+                                                    oninput="this.value = this.value.toUpperCase()" placeholder="...">
+                                            </div>
+                                            <div class="col-1"></div>
+                                            <div class="col-6">
+                                                <label>Transport Bill (<span class="text-info">Opt</span>)</label>
+                                                <input type="text" class="form-control" name="transport[]" id="transport" 
+                                                value="{{ old('transport', $checkSeaShipmentBill ? $checkSeaShipmentBill->transport : '') }}" placeholder="...">
+                                            </div>
+                                        </div>
+
                                         <div class="input-group input-group-static mb-4">
                                             <div class="col-3">
-                                                <label>Date</label>
-                                                <input type="date" class="form-control" id="dateG" name="dateG" value="{{ old('dateG', $date) }}" readonly>
+                                                <label>BL (<span class="text-info">Opt</span>)</label>
+                                                <input type="text" class="form-control" id="bl" name="bl[]" 
+                                                value="{{ old('bl', $checkSeaShipmentBill ? $checkSeaShipmentBill->bl : '') }}" placeholder="...">
                                             </div>
                                             <div class="col-1"></div>
                                             <div class="col-3">
-                                                <label>BL (<span class="text-info">Optional</span>)</label>
-                                                <input type="text" class="form-control" id="bl" name="bl" value="{{ old('bl') }}" placeholder="...">
+                                                <label>Permit (<span class="text-info">Opt</span>)</label>
+                                                <input type="text" class="form-control" id="permit" name="permit[]" 
+                                                value="{{ old('permit', $checkSeaShipmentBill ? $checkSeaShipmentBill->permit : '') }}" placeholder="...">
                                             </div>
                                             <div class="col-1"></div>
                                             <div class="col-4">
-                                                <label>Permit (<span class="text-info">Optional</span>)</label>
-                                                <input type="text" class="form-control" id="permit" name="permit" value="{{ old('permit') }}" placeholder="...">
+                                                <label>Insurance (<span class="text-info">Opt</span>)</label>
+                                                <input type="text" class="form-control" id="insurance" name="insurance[]" 
+                                                value="{{ old('insurance', $checkSeaShipmentBill ? $checkSeaShipmentBill->insurance : '') }}" placeholder="...">
                                             </div>
                                         </div>
                                     @endforeach
-                
-                                    <div class="input-group input-group-static">
-                                        <label>Transport Bill (<span class="text-info">Optional</span>)</label>
-                                        <input type="text" class="form-control" name="transport" id="transport" value="{{ old('transport') }}" placeholder="...">
-                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -957,6 +995,42 @@
                     billTransport.value = formatCurrency(billTransport.value);
                 }
                 billTransport.addEventListener("input", function() {
+                    if (this.value.trim() !== "") {
+                        this.value = formatCurrency(this.value);
+                    }
+                });
+            });
+
+            let pricebl = document.querySelectorAll("#bl");
+            pricebl.forEach(function(bl) {
+                if (bl.value.trim() !== "") {
+                    bl.value = formatCurrency(bl.value);
+                }
+                bl.addEventListener("input", function() {
+                    if (this.value.trim() !== "") {
+                        this.value = formatCurrency(this.value);
+                    }
+                });
+            });
+
+            let pricepermit = document.querySelectorAll("#permit");
+            pricepermit.forEach(function(permit) {
+                if (permit.value.trim() !== "") {
+                    permit.value = formatCurrency(permit.value);
+                }
+                permit.addEventListener("input", function() {
+                    if (this.value.trim() !== "") {
+                        this.value = formatCurrency(this.value);
+                    }
+                });
+            });
+
+            let priceinsurance = document.querySelectorAll("#insurance");
+            priceinsurance.forEach(function(insurance) {
+                if (insurance.value.trim() !== "") {
+                    insurance.value = formatCurrency(insurance.value);
+                }
+                insurance.addEventListener("input", function() {
                     if (this.value.trim() !== "") {
                         this.value = formatCurrency(this.value);
                     }

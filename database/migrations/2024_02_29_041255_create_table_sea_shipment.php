@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('origin');
             $table->date('etd')->nullable();
             $table->date('eta')->nullable();
+            $table->integer('term')->nullable();
             $table->string('value_key')->nullable()->unique();
             $table->boolean('is_printed')->default(false);
             $table->integer('printcount')->nullable();
