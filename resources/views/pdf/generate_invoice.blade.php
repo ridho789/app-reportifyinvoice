@@ -129,6 +129,22 @@
                 $totalCbm = 0;
                 $checkLoopDate = null;
                 $totalRow = count($groupSeaShipmentLines);
+
+                // Bill
+                if ($dataBill) {
+                    $resultBill = [];
+                    foreach ($dataBill["dateBL"] as $index => $date) {
+                        $resultBill[] = [
+                            "dateBL" => $dataBill["dateBL"][$index] ?? null,
+                            "codeShipment" => $dataBill["codeShipment"][$index] ?? null,
+                            "transport" => isset($dataBill["transport"][$index]) ? preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]) : null,
+                            "bl" => isset($dataBill["bl"][$index]) ? preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]) : null,
+                            "permit" => isset($dataBill["permit"][$index]) ? preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]) : null,
+                            "insurance" => isset($dataBill["insurance"][$index]) ? preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0]) : null
+                        ];
+                    }
+                }
+                $billIndex = 0;
             @endphp
             @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
                 @foreach($groupSeaShipmentLines as $groupDate => $totals)
@@ -160,13 +176,14 @@
                         $checkSeaShipmentBill = null;
 
                         if ($checkLoopDate != $date) {
-                            if ($seaShipmentBill) {
-                                $checkSeaShipmentBill = $seaShipmentBill->where('date', $date)->first();
-                                $bl = $checkSeaShipmentBill->bl ?? $bl;
-                                $permit = $checkSeaShipmentBill->permit ?? $permit;
-                                $transport = $checkSeaShipmentBill->transport ?? $transport;
-                                $insurance = $checkSeaShipmentBill->insurance ?? $insurance;
+                            if (isset($resultBill[$billIndex])) {
+                                $code = $resultBill[$billIndex]['codeShipment'];
+                                $bl = $resultBill[$billIndex]['bl'];
+                                $permit = $resultBill[$billIndex]['permit'];
+                                $transport = $resultBill[$billIndex]['transport'];
+                                $insurance = $resultBill[$billIndex]['insurance'];
                             }
+                            $billIndex++;
                         }
 
                         $totalRow += ($bl ? 1 : 0) + ($permit ? 1 : 0) + ($transport ? 1 : 0) + ($insurance ? 1 : 0);
@@ -223,7 +240,7 @@
                     @if (!$totals['cas'])
                         <tr>
                             <td width="5%" class="border_left_right"></td>
-                            <td width="30%" class="border_left_right text_center">{{ $checkSeaShipmentBill ? $checkSeaShipmentBill->code : '' }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('M-y') }}</td>
+                            <td width="30%" class="border_left_right text_center">{{ $code ? $code : '' }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('M-y') }}</td>
                             <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
                             <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
                             <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}</td>

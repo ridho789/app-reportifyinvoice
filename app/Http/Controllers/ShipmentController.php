@@ -475,7 +475,8 @@ class ShipmentController extends Controller
             'titleInv' => $titleInv,
             'companyName' => $companyName,
             'bill_diff' => $bill_diff,
-            'inv_type' => $inv_type
+            'inv_type' => $inv_type,
+            'dataBill' => $dataBill
         ])->setPaper('folio', 'potrait');
 
         return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
