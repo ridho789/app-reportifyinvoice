@@ -273,7 +273,11 @@ class ShipmentController extends Controller
             return $roman;
         }
 
-        $invNumber = sprintf("%03d", $request->inv_no);;
+        $invNumber = $request->inv_no;
+        list($numberPart, $suffixPart) = explode('-', $invNumber);
+        $formattedNumberPart = sprintf("%03d", $numberPart);
+        $invNumber = $formattedNumberPart . '-' . $suffixPart;
+
         $month = ltrim(date("m", strtotime($seaShipment->date)), '0');
         $monthRoman = romanNumerals($month);
         $year = date("Y", strtotime($seaShipment->date));
