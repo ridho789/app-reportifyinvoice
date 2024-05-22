@@ -408,13 +408,20 @@
                 if ($hundreds != 0) {
                     $hundreds_str = '';
                     if ($hundreds >= 100) {
-                        $hundreds_str .= $unit[floor($hundreds / 100)] . ' ratus ';
+                        if (floor($hundreds / 100) == 1) {
+                            $hundreds_str .= 'seratus ';
+
+                        } else {
+                            $hundreds_str .= $unit[floor($hundreds / 100)] . ' ratus ';
+                        }
+
                         $hundreds %= 100;
                     }
         
                     if ($hundreds >= 20) {
                         $hundreds_str .= $tens[floor($hundreds / 10)] . ' ';
                         $hundreds %= 10;
+                        
                     } elseif ($hundreds >= 10) {
                         $hundreds_str .= $dozen[$hundreds - 10] . ' ';
                         $hundreds = 0;
