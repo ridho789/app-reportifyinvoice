@@ -60,26 +60,50 @@
                     @csrf
                     <div class="modal-body">
 
-                        <div class="input-group input-group-static mb-1">
-                            <label>Customer (<span class="text-info">Optional</span>)</label>
-                        </div>
-                        <select class="form-select select-new-cust mb-4" name="id_customer" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                            <option value="">...</option>
-                            @foreach ($customers as $c)
-                            <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
-                            @endforeach
-                        </select>
-                        
-                        <div class="input-group input-group-static mb-1">
-                            <label>Shipper (<span class="text-info">Optional</span>)</label>
-                        </div>
-                        <select class="form-select select-new-shipper mb-4" name="id_shipper" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                            <option value="">...</option>
-                            @foreach ($shippers as $s)
-                            <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
-                            @endforeach
-                        </select>
+                        @if (count($customers) > 0)
+                            <div class="input-group input-group-static mb-2">
+                                <label>Customer (<span class="text-info">Optional</span>)</label>
+                            </div>
+                            <div class="input-group input-group-static text-xs mb-4">
+                                <select class="form-select select-new-cust" name="id_customer" multiple style="width: 100%;">
+                                    @foreach ($customers as $c)
+                                        <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @else
+                            <div class="input-group input-group-static mb-2">
+                                <label>Customer (<span class="text-info">Optional</span>)</label>
+                            </div>
+                            <div class="input-group input-group-static text-xs mb-4">
+                                <select class="form-control" disabled>
+                                    <option value="">No data available</option>
+                                </select>
+                            </div>
+                        @endif
 
+                        @if (count($shippers) > 0)
+                            <div class="input-group input-group-static mb-2">
+                                <label>Shipper (<span class="text-info">Optional</span>)</label>
+                            </div>
+                            <div class="input-group input-group-static text-xs mb-4">
+                                <select class="form-select select-new-shipper" name="id_shipper" multiple style="width: 100%;">
+                                    @foreach ($shippers as $s)
+                                        <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @else
+                            <div class="input-group input-group-static mb-2">
+                                <label>Shipper (<span class="text-info">Optional</span>)</label>
+                            </div>
+                            <div class="input-group input-group-static text-xs mb-4">
+                                <select class="form-control" disabled>
+                                    <option value="">No data available</option>
+                                </select>
+                            </div>
+                        @endif
+                        
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>LTS <span class="text-danger">*</span></label>
@@ -132,26 +156,51 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="id" name="id">
-                        <div class="input-group input-group-static mb-1">
-                            <label>Customer (<span class="text-info">Optional</span>)</label>
-                        </div>
-                        <select class="form-select select-new-cust mb-4" id="customer" name="id_customer" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                            <option value="">...</option>
-                            @foreach ($customers as $c)
-                            <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
-                            @endforeach
-                        </select>
-                        
-                        <div class="input-group input-group-static mb-1">
-                            <label>Shipper (<span class="text-info">Optional</span>)</label>
-                        </div>
-                        <select class="form-select select-new-shipper mb-4" id="shipper" name="id_shipper" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                            <option value="">...</option>
-                            @foreach ($shippers as $s)
-                            <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
-                            @endforeach
-                        </select>
 
+                        @if (count($customers) > 0)
+                            <div class="input-group input-group-static mb-1">
+                                <label>Customer (<span class="text-info">Optional</span>)</label>
+                            </div>
+                            <div class="input-group input-group-static text-xs mb-4">
+                                <select class="form-select select-new-cust" id="customer" name="id_customer" multiple style="width: 100%;">
+                                    @foreach ($customers as $c)
+                                        <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @else
+                            <div class="input-group input-group-static mb-1">
+                                <label>Customer (<span class="text-info">Optional</span>)</label>
+                            </div>
+                            <div class="input-group input-group-static text-xs mb-4">
+                                <select class="form-control" disabled>
+                                    <option value="">No data available</option>
+                                </select>
+                            </div>
+                        @endif
+
+                        @if (count($shippers) > 0)
+                            <div class="input-group input-group-static mb-1">
+                                <label>Shipper (<span class="text-info">Optional</span>)</label>
+                            </div>
+                            <div class="input-group input-group-static text-xs mb-4">
+                                <select class="form-select select-new-shipper" id="shipper" name="id_shipper" multiple style="width: 100%;">
+                                    @foreach ($shippers as $s)
+                                        <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @else
+                            <div class="input-group input-group-static mb-1">
+                                <label>Shipper (<span class="text-info">Optional</span>)</label>
+                            </div>
+                            <div class="input-group input-group-static text-xs mb-4">
+                                <select class="form-control" disabled>
+                                    <option value="">No data available</option>
+                                </select>
+                            </div>
+                        @endif
+                        
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>LTS <span class="text-danger">*</span></label>
@@ -362,6 +411,32 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // select2
+        function initializeSelect2() {
+            var selectElementsCustomers = document.querySelectorAll('.select-new-cust');
+            selectElementsCustomers.forEach(function(selectElement) {
+                $(selectElement).select2({
+                    placeholder: "Please choose..",
+                    maximumSelectionLength: 1
+                });
+            });
+
+            var selectElementsShippers = document.querySelectorAll('.select-new-shipper');
+            selectElementsShippers.forEach(function(selectElement) {
+                $(selectElement).select2({
+                    placeholder: "Please choose..",
+                    maximumSelectionLength: 1
+                });
+            });
+        }
+
+        initializeSelect2();
+
+        var modal = document.getElementById('casNewModal');
+        modal.addEventListener('shown.bs.modal', function() {
+            initializeSelect2();
+        });
+        
         let chargeNewCas = document.querySelectorAll("#new-charge");
         chargeNewCas.forEach(function(newCharge) {
             newCharge.addEventListener("input", function() {
@@ -386,10 +461,20 @@
 
                 // Mengisi data ke dalam formulir
                 document.getElementById("id").value = id;
-                document.getElementById("customer").value = customer;
-                document.getElementById("shipper").value = shipper;
                 document.getElementById("lts").value = lts;
                 document.getElementById("charge").value = charge;
+
+                $("#customer").val(customer);
+                $("#customer").select2({
+                    placeholder: "Please choose..",
+                    maximumSelectionLength: 1
+                });
+
+                $("#shipper").val(shipper);
+                $("#shipper").select2({
+                    placeholder: "Please choose..",
+                    maximumSelectionLength: 1
+                });
 
                 if (desc && desc != '-') {
                     document.getElementById("desc").value = desc;
