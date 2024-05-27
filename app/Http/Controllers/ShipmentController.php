@@ -429,36 +429,38 @@ class ShipmentController extends Controller
             ];
 
             $resultBIll = [];
+            
+            if ($dataBill) {
+                foreach ($dataBill["dateBL"] as $index => $date) {
+                    $resultBIll[] = [
+                        "dateBL" => $dataBill["dateBL"][$index],
+                        "codeShipment" => $dataBill["codeShipment"][$index],
+                        "transport" => $dataBill["transport"][$index],
+                        "bl" => $dataBill["bl"][$index],
+                        "permit" => $dataBill["permit"][$index],
+                        "insurance" => $dataBill["insurance"][$index]
+                    ];
 
-            foreach ($dataBill["dateBL"] as $index => $date) {
-                $resultBIll[] = [
-                    "dateBL" => $dataBill["dateBL"][$index],
-                    "codeShipment" => $dataBill["codeShipment"][$index],
-                    "transport" => $dataBill["transport"][$index],
-                    "bl" => $dataBill["bl"][$index],
-                    "permit" => $dataBill["permit"][$index],
-                    "insurance" => $dataBill["insurance"][$index]
-                ];
+                    $checkSeaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->where('date', $date)->first();
+                    if ($checkSeaShipmentBill) {
+                        $checkSeaShipmentBill->code = $dataBill["codeShipment"][$index];
+                        $checkSeaShipmentBill->transport = preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]);
+                        $checkSeaShipmentBill->bl = preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]);
+                        $checkSeaShipmentBill->permit = preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]);
+                        $checkSeaShipmentBill->insurance = preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0]);
+                        $checkSeaShipmentBill->save();
 
-                $checkSeaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->where('date', $date)->first();
-                if ($checkSeaShipmentBill) {
-                    $checkSeaShipmentBill->code = $dataBill["codeShipment"][$index];
-                    $checkSeaShipmentBill->transport = preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]);
-                    $checkSeaShipmentBill->bl = preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]);
-                    $checkSeaShipmentBill->permit = preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]);
-                    $checkSeaShipmentBill->insurance = preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0]);
-                    $checkSeaShipmentBill->save();
-
-                } else {
-                    SeaShipmentBill::create([
-                        'id_sea_shipment' => $seaShipment->id_sea_shipment,
-                        'date' => $date,
-                        'code' => $dataBill["codeShipment"][$index],
-                        'transport' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]),
-                        'bl' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]),
-                        'permit' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]),
-                        'insurance' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0])
-                    ]);
+                    } else {
+                        SeaShipmentBill::create([
+                            'id_sea_shipment' => $seaShipment->id_sea_shipment,
+                            'date' => $date,
+                            'code' => $dataBill["codeShipment"][$index],
+                            'transport' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]),
+                            'bl' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]),
+                            'permit' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]),
+                            'insurance' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0])
+                        ]);
+                    }
                 }
             }
         }

@@ -613,53 +613,78 @@
                                         </select>
                                     </div>
                                     
-                                    @foreach ($groupSeaShipmentLines as $date => $gsl)
-                                        @php
-                                            $checkSeaShipmentBill = null;
-                                            if ($seaShipmentBill) {
-                                                $checkSeaShipmentBill = $seaShipmentBill->where('date', $date)->first();
-                                            }
-                                        @endphp
-                                        <div class="input-group input-group-static mb-4">
-                                            <label style="margin-bottom: {{ $checkCbmDiff ? '1.25px' : '2px' }}; margin-top: 2px;">Date</label>
-                                            <input type="date" class="form-control" id="dateBL" name="dateBL[]" value="{{ old('dateBL', $date) }}" style="font-weight: bold;" readonly>
-                                        </div>
+                                    <div class="accordion-1">
+                                        <div class="row">
+                                            <div class="accordion" id="accordionRental">
+                                                <label style="margin-left: 0; margin-bottom: 7.5px;">Other Fees</label>
+                                                @foreach ($groupSeaShipmentLines as $date => $gsl)
+                                                @php
+                                                    $checkSeaShipmentBill = null;
+                                                    if ($seaShipmentBill) {
+                                                        $checkSeaShipmentBill = $seaShipmentBill->where('date', $date)->first();
+                                                    }
+                                                @endphp
+                                                <div class="accordion-item" style="margin-bottom: 57px;">
+                                                    <div class="accordion-header" id="headingOne-{{ $loop->index }}">
+                                                        @php
+                                                            $marginTop = $checkCbmDiff ? '-9.25px' : '-8.75px';
+                                                        @endphp
+                                                        <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" 
+                                                            data-bs-target="#collapseOne-{{ $loop->index }}" aria-expanded="false" aria-controls="collapseOne-{{ $loop->index }}" 
+                                                            style="padding: 0.5rem; margin-top: {{ $marginTop }}; margin-bottom: 8.5px;">
+                                                            <label class="font-weight-normal" style="margin-bottom: 2px; margin-left: -7.5px;">
+                                                                <b style="color: #344767;">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M-y') }}</b>
+                                                                <input type="hidden" class="form-control" id="dateBL" name="dateBL[]" value="{{ $date }}">
+                                                            </label>
+                                                            <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3 collapse-icon" aria-hidden="true"></i>
+                                                            <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3 collapse-icon d-none" aria-hidden="true"></i>
+                                                        </button>
+                                                    </div>
 
-                                        <div class="input-group input-group-static mb-4">
-                                            <div class="col-5">
-                                                <label>Code (<span class="text-info">Opt</span>)</label>
-                                                <input type="text" class="form-control" id="codeShipment" name="codeShipment[]" 
-                                                    value="{{ old('codeShipment', $checkSeaShipmentBill ? $checkSeaShipmentBill->code : '') }}" 
-                                                    oninput="this.value = this.value.toUpperCase()" placeholder="...">
-                                            </div>
-                                            <div class="col-1"></div>
-                                            <div class="col-6">
-                                                <label>Transport Bill (<span class="text-info">Opt</span>)</label>
-                                                <input type="text" class="form-control" name="transport[]" id="transport" 
-                                                value="{{ old('transport', $checkSeaShipmentBill ? $checkSeaShipmentBill->transport : '') }}" placeholder="...">
-                                            </div>
-                                        </div>
+                                                    <div id="collapseOne-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="headingOne-{{ $loop->index }}" 
+                                                    data-bs-parent="#accordionRental">
+                                                        <div class="accordion-body">
+                                                            <div class="input-group input-group-static mb-4">
+                                                                <div class="col-5">
+                                                                    <label>Code (<span class="text-info">Opt</span>)</label>
+                                                                    <input type="text" class="form-control" id="codeShipment-{{ $loop->index }}" name="codeShipment[]" 
+                                                                    value="{{ old('codeShipment', $checkSeaShipmentBill ? $checkSeaShipmentBill->code : '') }}" 
+                                                                    oninput="this.value = this.value.toUpperCase()" placeholder="...">
+                                                                </div>
+                                                                <div class="col-1"></div>
+                                                                <div class="col-6">
+                                                                    <label>Transport Bill (<span class="text-info">Opt</span>)</label>
+                                                                    <input type="text" class="form-control transport" name="transport[]" id="transport-{{ $loop->index }}" 
+                                                                    value="{{ old('transport', $checkSeaShipmentBill ? $checkSeaShipmentBill->transport : '') }}" placeholder="...">
+                                                                </div>
+                                                            </div>
 
-                                        <div class="input-group input-group-static mb-4">
-                                            <div class="col-3">
-                                                <label>BL (<span class="text-info">Opt</span>)</label>
-                                                <input type="text" class="form-control" id="bl" name="bl[]" 
-                                                value="{{ old('bl', $checkSeaShipmentBill ? $checkSeaShipmentBill->bl : '') }}" placeholder="...">
-                                            </div>
-                                            <div class="col-1"></div>
-                                            <div class="col-3">
-                                                <label>Permit (<span class="text-info">Opt</span>)</label>
-                                                <input type="text" class="form-control" id="permit" name="permit[]" 
-                                                value="{{ old('permit', $checkSeaShipmentBill ? $checkSeaShipmentBill->permit : '') }}" placeholder="...">
-                                            </div>
-                                            <div class="col-1"></div>
-                                            <div class="col-4">
-                                                <label>Insurance (<span class="text-info">Opt</span>)</label>
-                                                <input type="text" class="form-control" id="insurance" name="insurance[]" 
-                                                value="{{ old('insurance', $checkSeaShipmentBill ? $checkSeaShipmentBill->insurance : '') }}" placeholder="...">
+                                                            <div class="input-group input-group-static mb-0">
+                                                                <div class="col-3">
+                                                                    <label>BL (<span class="text-info">Opt</span>)</label>
+                                                                    <input type="text" class="form-control bl" id="bl-{{ $loop->index }}" name="bl[]" 
+                                                                    value="{{ old('bl', $checkSeaShipmentBill ? $checkSeaShipmentBill->bl : '') }}" placeholder="...">
+                                                                </div>
+                                                                <div class="col-1"></div>
+                                                                <div class="col-3">
+                                                                    <label>Permit (<span class="text-info">Opt</span>)</label>
+                                                                    <input type="text" class="form-control permit" id="permit-{{ $loop->index }}" name="permit[]" 
+                                                                    value="{{ old('permit', $checkSeaShipmentBill ? $checkSeaShipmentBill->permit : '') }}" placeholder="...">
+                                                                </div>
+                                                                <div class="col-1"></div>
+                                                                <div class="col-4">
+                                                                    <label>Insurance (<span class="text-info">Opt</span>)</label>
+                                                                    <input type="text" class="form-control insurance" id="insurance-{{ $loop->index }}" name="insurance[]" 
+                                                                    value="{{ old('insurance', $checkSeaShipmentBill ? $checkSeaShipmentBill->insurance : '') }}" placeholder="...">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endforeach
                                             </div>
                                         </div>
-                                    @endforeach
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -989,7 +1014,7 @@
                 });
             });
 
-            let priceBillTransport = document.querySelectorAll("#transport");
+            let priceBillTransport = document.querySelectorAll(".transport");
             priceBillTransport.forEach(function(billTransport) {
                 if (billTransport.value.trim() !== "") {
                     billTransport.value = formatCurrency(billTransport.value);
@@ -1001,7 +1026,7 @@
                 });
             });
 
-            let pricebl = document.querySelectorAll("#bl");
+            let pricebl = document.querySelectorAll(".bl");
             pricebl.forEach(function(bl) {
                 if (bl.value.trim() !== "") {
                     bl.value = formatCurrency(bl.value);
@@ -1013,7 +1038,7 @@
                 });
             });
 
-            let pricepermit = document.querySelectorAll("#permit");
+            let pricepermit = document.querySelectorAll(".permit");
             pricepermit.forEach(function(permit) {
                 if (permit.value.trim() !== "") {
                     permit.value = formatCurrency(permit.value);
@@ -1025,7 +1050,7 @@
                 });
             });
 
-            let priceinsurance = document.querySelectorAll("#insurance");
+            let priceinsurance = document.querySelectorAll(".insurance");
             priceinsurance.forEach(function(insurance) {
                 if (insurance.value.trim() !== "") {
                     insurance.value = formatCurrency(insurance.value);
@@ -1040,6 +1065,17 @@
 
         $('#setPrintModal').on('shown.bs.modal', function() {
             formatInputs();
+        });
+
+        var accordionButtons = document.querySelectorAll('.accordion-button');
+
+        accordionButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                var icons = this.querySelectorAll('.collapse-icon');
+                icons.forEach(function (icon) {
+                    icon.classList.toggle('d-none');
+                });
+            });
         });
     });
 </script>
