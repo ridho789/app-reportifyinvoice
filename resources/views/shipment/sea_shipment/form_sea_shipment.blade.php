@@ -616,7 +616,6 @@
                                     <div class="accordion-1">
                                         <div class="row">
                                             <div class="accordion" id="accordionRental">
-                                                <label style="margin-left: 0; margin-bottom: 7.5px;">Other Fees</label>
                                                 @foreach ($groupSeaShipmentLines as $date => $gsl)
                                                 @php
                                                     $checkSeaShipmentBill = null;
@@ -624,11 +623,12 @@
                                                         $checkSeaShipmentBill = $seaShipmentBill->where('date', $date)->first();
                                                     }
                                                 @endphp
-                                                <div class="accordion-item" style="margin-bottom: 57px;">
+                                                <div class="accordion-item" style="margin-bottom: 23.5px;">
                                                     <div class="accordion-header" id="headingOne-{{ $loop->index }}">
                                                         @php
-                                                            $marginTop = $checkCbmDiff ? '-9.25px' : '-8.75px';
+                                                            $marginTop = $checkCbmDiff ? '-9.5px' : '-8.75px';
                                                         @endphp
+                                                        <label style="margin-left: 0; margin-bottom: 7.5px;">Other Fees</label>
                                                         <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" 
                                                             data-bs-target="#collapseOne-{{ $loop->index }}" aria-expanded="false" aria-controls="collapseOne-{{ $loop->index }}" 
                                                             style="padding: 0.5rem; margin-top: {{ $marginTop }}; margin-bottom: 8.5px;">
