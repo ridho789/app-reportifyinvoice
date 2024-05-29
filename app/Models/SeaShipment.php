@@ -16,6 +16,7 @@ class SeaShipment extends Model
 
     protected $fillable = [
         'no_aju',
+        'no_inv',
         'date',
         'origin',
         'etd',

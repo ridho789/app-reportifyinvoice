@@ -3,16 +3,6 @@
 @section('content')
 <div class="container-fluid py-4">
     <div class="row">
-        <div class="col-12 d-flex ms-auto">
-            <div>
-                <a href="{{ url('/form_bill_recap') }}" class="btn btn-icon bg-gradient-primary" id="btn-new-bill-recap">
-                    new bill recap
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
         <div class="col-12">
             <div class="card mb-4">
                 <div class="card-header pb-5">
@@ -22,7 +12,7 @@
                     </p>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
-                    @if (count($customers) > 0)
+                    @if (count($bills) > 0)
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
                             <thead>
@@ -43,19 +33,24 @@
                             </thead>
                             <tbody>
                                 @foreach($bills as $b)
+                                @php
+                                    $seaShipment = $seaShipments->get($b->id_sea_shipment);
+                                @endphp
                                 <tr>
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-sm font-weight-normal text-secondary mb-0">{{ $customerName[$b->id_customer] }}</p>
+                                                <p class="text-sm font-weight-normal text-secondary mb-0">{{ $customerName[$seaShipment->id_customer] }}</p>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="text-sm font-weight-normal mb-0">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $b->load_date)->format('d-M-y') }}</p>
+                                        <p class="text-sm font-weight-normal mb-0">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $seaShipment->etd)->format('d-M-y') }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $b->no_inv }}</p>
+                                        <a href="{{ url('sea_shipment-edit', ['id' => Crypt::encrypt($b->id_sea_shipment )]) }}" target="_blank">
+                                            <p class="text-sm font-weight-normal mb-0 text-info">{{ $b->inv_no }}</p>
+                                        </a>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ $b->freight_type }}</p>
@@ -66,10 +61,10 @@
                                         </div>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $b->unit_price }}</p>
+                                        <p class="text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($b->unit_price ?? 0, 0, ',', '.') }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $b->amount }}</p>
+                                        <p class="text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($b->amount ?? 0, 0, ',', '.') }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         @if (!empty($b->payment_date))
@@ -80,14 +75,14 @@
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         @if (!empty($b->payment_amount))
-                                            <p class="text-sm font-weight-normal mb-0">{{ $b->payment_amount }}</p>
+                                            <p class="text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($b->payment_amount ?? 0, 0, ',', '.') ?? '-' }}</p>
                                         @else
                                             <p class="text-sm font-weight-normal mb-0">-</p>
                                         @endif
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         @if ($b->remaining_bill)
-                                            <p class="text-sm font-weight-normal mb-0">{{ $b->remaining_bill }}</p>
+                                            <p class="text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($b->remaining_bill ?? 0, 0, ',', '.') ?? '-' }}</p>
                                         @else
                                             <p class="text-sm font-weight-normal mb-0">-</p>
                                         @endif

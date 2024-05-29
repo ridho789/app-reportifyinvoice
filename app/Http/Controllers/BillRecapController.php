@@ -5,19 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\BillRecap;
+use App\Models\SeaShipment;
 use Illuminate\Support\Facades\Crypt;
 
 class BillRecapController extends Controller
 {
     public function index() {
-        $customers = Customer::all();
-        $bills = BillRecap::with('customer')
-            ->join('tbl_customers', 'tbl_customers.id_customer', '=', 'tbl_bill_recaps.id_customer')
-            ->orderBy('tbl_customers.name', 'asc')
-            ->orderBy('tbl_bill_recaps.load_date', 'asc')
-            ->get();
+        $bills = BillRecap::all();
+        $seaShipmentIds = $bills->pluck('id_sea_shipment')->unique();
+        $seaShipments = SeaShipment::whereIn('id_sea_shipment', $seaShipmentIds)->get()->keyBy('id_sea_shipment');
         $customerName = Customer::pluck('name', 'id_customer');
-        return view('/bill_recap.list_bill_recap', compact('customers', 'bills', 'customerName'));
+        return view('/bill_recap.list_bill_recap', compact('bills', 'customerName', 'seaShipments'));
     }
 
     public function create() {
@@ -27,18 +25,13 @@ class BillRecapController extends Controller
     }
 
     public function store(Request $request) {
+        $paymentAmount = preg_replace("/[^0-9]/", "", explode(",", $request->payment_amount)[0]);
+        $remainingBill = preg_replace("/[^0-9]/", "", explode(",", $request->remaining_bill)[0]);
+
         BillRecap::insert([
-            'id_customer' => $request->id_customer,
-            'load_date' => $request->load_date,
-            'no_inv' => $request->no_inv,
-            'freight_type' => $request->freight,
-            'entry_date' => $request->entry_date,
-            'size' => $request->size,
-            'unit_price' => $request->unit_price,
-            'amount' => $request->amount,
             'payment_date' => $request->payment_date,
-            'payment_amount' => $request->payment_amount,
-            'remaining_bill' => $request->remaining_bill,
+            'payment_amount' => $paymentAmount,
+            'remaining_bill' => $remainingBill,
             'overdue_bill' => $request->overdue_bill,
         ]);
 
@@ -49,22 +42,18 @@ class BillRecapController extends Controller
         $id = Crypt::decrypt($id);
         $customers = Customer::all();
         $bill = BillRecap::where('id_bill_recap', $id)->first();
-        return view('/bill_recap.form_bill_recap', compact('customers', 'bill'));
+        $seaShipment = SeaShipment::where('id_sea_shipment', $bill->id_sea_shipment)->first();
+        return view('/bill_recap.form_bill_recap', compact('customers', 'bill', 'seaShipment'));
     }
 
     public function update(Request $request) {
+        $paymentAmount = preg_replace("/[^0-9]/", "", explode(",", $request->payment_amount)[0]);
+        $remainingBill = preg_replace("/[^0-9]/", "", explode(",", $request->remaining_bill)[0]);
+
         BillRecap::where('id_bill_recap', $request->id)->update([
-            'id_customer' => $request->id_customer,
-            'load_date' => $request->load_date,
-            'no_inv' => $request->no_inv,
-            'freight_type' => $request->freight,
-            'entry_date' => $request->entry_date,
-            'size' => $request->size,
-            'unit_price' => $request->unit_price,
-            'amount' => $request->amount,
             'payment_date' => $request->payment_date,
-            'payment_amount' => $request->payment_amount,
-            'remaining_bill' => $request->remaining_bill,
+            'payment_amount' => $paymentAmount,
+            'remaining_bill' => $remainingBill,
             'overdue_bill' => $request->overdue_bill,
         ]);
 

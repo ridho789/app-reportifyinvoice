@@ -30,10 +30,10 @@
                             <div class="input-group input-group-static">
                                 <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</label>
                                 @if (count($customers) > 0)
-                                <select class="form-control" name="id_customer" required>
+                                <select class="form-control" name="id_customer" disabled>
                                     <option value="">Choose one..</option>
                                     @foreach ($customers as $c)
-                                    <option value="{{ $c->id_customer }}" {{ old('id_customer', $bill->id_customer) == $c->id_customer ? 'selected' : '' }}>{{ $c->name }}
+                                    <option value="{{ $c->id_customer }}" {{ old('id_customer', $seaShipment->id_customer) == $c->id_customer ? 'selected' : '' }}>{{ $c->name }}
                                     </option>
                                     @endforeach
                                 </select>
@@ -46,47 +46,39 @@
 
                             <div class="input-group input-group-static">
                                 <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Load Date</label>
-                                <input type="date" name="load_date" class="form-control" value="{{ old('load_date', $bill->load_date) }}" required>
+                                <input type="date" name="load_date" class="form-control" value="{{ old('load_date', $seaShipment->etd) }}" disabled>
                             </div>
 
                             <div class="input-group input-group-static">
                                 <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Inv</label>
-                                <input type="text" name="no_inv" class="form-control" value="{{ old('no_inv', $bill->no_inv) }}" style="width: 170px;" required>
+                                <input type="text" name="no_inv" class="form-control" value="{{ old('no_inv', $bill->inv_no) }}" style="width: 275px;" disabled>
                             </div>
 
                             <div class="input-group input-group-static">
                                 <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Freight</label>
-                                <select class="form-control" name="freight" required>
-                                    <option value="">Choose one..</option>
-                                    <option value="SIN BTH" {{ old('freight', $bill->freight_type) == 'SIN BTH' ? 'selected' : '' }}>SIN BTH</option>
-                                    <option value="SIN JKT" {{ old('freight', $bill->freight_type) == 'SIN JKT' ? 'selected' : '' }}>SIN JKT</option>
-                                    <option value="BTH JKT" {{ old('freight', $bill->freight_type) == 'BTH JKT' ? 'selected' : '' }}>BTH JKT</option>
-                                </select>
-                            </div>
-
-                            <div class="input-group input-group-static">
-                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Entry Date / BL</label>
-                                <input type="date" name="entry_date" class="form-control" value="{{ old('entry_date', $bill->entry_date) }}" required>
+                                <input type="text" name="freight" class="form-control" value="{{ old('freight', $bill->freight_type) }}" disabled>
                             </div>
 
                             <div class="input-group input-group-static">
                                 <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Size (M3)</label>
-                                <input type="text" name="size" id="size" class="form-control" value="{{ old('size', $bill->size) }}" required>
+                                <input type="text" name="size" id="size" class="form-control" value="{{ old('size', $bill->size) }}" disabled>
                             </div>
 
                             <div class="input-group input-group-static">
                                 <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Unit Price</label>
-                                <input type="text" name="unit_price" id="unit_price" class="form-control" value="{{ old('unit_price', $bill->unit_price) }}" required>
+                                <input type="text" name="unit_price" id="unit_price" class="form-control" 
+                                value="{{ old('unit_price', 'Rp ' . number_format($bill->unit_price ?? 0, 0, ',', '.')) }}" disabled>
                             </div>
 
                             <div class="input-group input-group-static">
                                 <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Amount</label>
-                                <input type="text" name="amount" id="amount" class="form-control" value="{{ old('amount', $bill->amount) }}" readonly>
+                                <input type="text" name="amount" id="amount" class="form-control" 
+                                value="{{ old('amount', 'Rp ' . number_format($bill->amount ?? 0, 0, ',', '.')) }}" disabled>
                             </div>
 
                             <div class="input-group input-group-static">
                                 <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment Date</label>
-                                <input type="date" name="payment_date" value="{{ old('payment_date', $bill->payment_date) }}" class="form-control">
+                                <input type="date" name="payment_date" value="{{ old('payment_date', $bill->payment_date) }}" class="form-control" required>
                             </div>
 
                             <div class="input-group input-group-static">
@@ -210,56 +202,37 @@
 </style>
 
 <script>
-    const sizeInput = document.getElementById('size');
-    const unitPriceInput = document.getElementById('unit_price');
     const amountInput = document.getElementById('amount');
     const paymentAmountInput = document.getElementById('payment_amount');
     const remainingBillInput = document.getElementById('remaining_bill');
 
-    sizeInput.addEventListener('input', updateAmount);
-    unitPriceInput.addEventListener('input', updateAmount);
     paymentAmountInput.addEventListener('input', updateAmount);
 
     function updateAmount() {
-        const sizeValue = parseFloat(sizeInput.value.replace(/\./g, '').replace(',', '.'));
-        const unitPriceValue = parseFloat(unitPriceInput.value.replace(/\./g, '').replace(',', '.'));
-        const paymentAmountValue = parseFloat(paymentAmountInput.value.replace(/\./g, '').replace(',', '.'));
+        const paymentAmountValue = parseFloat(paymentAmountInput.value.replace(/Rp\s?|[.]/g, ''));
 
-        if (!isNaN(sizeValue) && !isNaN(unitPriceValue)) {
-            const amount = sizeValue * unitPriceValue;
-            const formattedAmount = new Intl.NumberFormat('id-ID', {
-                maximumFractionDigits: 0
-            }).format(amount);
-            amountInput.value = formattedAmount;
+        if (!isNaN(paymentAmountValue)) {
+            const convertFormattedAmount = parseFloat(amountInput.value.replace(/Rp\s?|[.]/g, ''));
+            if (paymentAmountValue < convertFormattedAmount) {
+                const remainingBill = convertFormattedAmount - paymentAmountValue;
+                const formattedRemainingBill = new Intl.NumberFormat('id-ID', {
+                    maximumFractionDigits: 0
+                }).format(remainingBill);
+                remainingBillInput.value = "Rp " + formattedRemainingBill;
+                remainingBillInput.classList.remove('text-danger');
 
-            if (!isNaN(paymentAmountValue)) {
-                const convertFormattedAmount = parseFloat(formattedAmount.replace(/\./g, '').replace(',', '.'));
-                if (paymentAmountValue < convertFormattedAmount) {
-                    const remainingBill = amount - paymentAmountValue;
-                    const formattedRemainingBill = new Intl.NumberFormat('id-ID', {
-                        maximumFractionDigits: 0
-                    }).format(remainingBill);
-                    remainingBillInput.value = formattedRemainingBill;
-                    remainingBillInput.classList.remove('text-danger');
-
-                } else if (paymentAmountValue == convertFormattedAmount) {
-                    remainingBillInput.value = '0';
-                    remainingBillInput.classList.remove('text-danger');
-
-                } else {
-                    remainingBillInput.value = 'Overpayment';
-                    remainingBillInput.classList.add('text-danger');
-                    paymentAmountInput.value = '';
-                }
+            } else if (paymentAmountValue == convertFormattedAmount) {
+                remainingBillInput.value = '0';
+                remainingBillInput.classList.remove('text-danger');
 
             } else {
-                remainingBillInput.value = '';
+                remainingBillInput.value = 'Overpayment';
+                remainingBillInput.classList.add('text-danger');
+                paymentAmountInput.value = '';
             }
 
         } else {
-            amountInput.value = '';
             remainingBillInput.value = '';
-            remainingBillInput.classList.remove('text-danger');
         }
     }
 
@@ -281,16 +254,22 @@
             formattedNum = "-" + formattedNum;
         }
 
-        return formattedNum;
+        return "Rp " + formattedNum;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        let inputPrices = document.querySelectorAll("#unit_price, #payment_amount");
+        paymentAmountInput.value = formatCurrency(paymentAmountInput.value);
+        remainingBillInput.value = formatCurrency(remainingBillInput.value);
+
+        let inputPrices = document.querySelectorAll("#payment_amount");
         inputPrices.forEach(function(inputPrice) {
             inputPrice.addEventListener("input", function() {
                 this.value = formatCurrency(this.value);
             });
         });
+
+        // update remaining bill when page loads
+        updateAmount();
     });
 </script>
 @endsection

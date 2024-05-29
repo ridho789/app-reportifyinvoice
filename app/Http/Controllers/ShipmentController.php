@@ -14,6 +14,7 @@ use App\Models\Cas;
 use App\Models\Insurance;
 use App\Models\Pricelist;
 use App\Models\SeaShipmentBill;
+use App\Models\BillRecap;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -186,9 +187,61 @@ class ShipmentController extends Controller
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
         $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
 
+        // set pricelist
+        $pricelist = null;
+
+        $defaultPricelist = Pricelist::where('id_customer', null)->where('id_shipper', null)->where('origin', $seaShipment->origin)
+        ->where('start_period', null)->where('end_period', null)->first();
+
+        $shipperPricelist = Pricelist::where('id_customer', null)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        ->where('start_period', null)->where('end_period', null)->first();
+
+        $customerPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', null)->where('origin', $seaShipment->origin)
+        ->where('start_period', null)->where('end_period', null)->first();
+
+        $customerShipperPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        ->where('start_period', null)->where('end_period', null)->first();
+
+        $periodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        ->where('start_period', '>=', $seaShipment->date)->where('end_period', null)->first();
+
+        $allPeriodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        ->where('start_period', '<=', $seaShipment->date)->where('end_period', '>=', $seaShipment->date)->first();
+
+        if ($defaultPricelist) {
+            $pricelist = $defaultPricelist->price;
+        }
+
+        if ($shipperPricelist) {
+            $pricelist = $shipperPricelist->price;
+        }
+
+        if ($customerPricelist) {
+            $pricelist = $customerPricelist->price;
+        }
+
+        if ($customerShipperPricelist) {
+            $pricelist = $customerShipperPricelist->price;
+        }
+
+        if ($periodPricelist) {
+            $pricelist = $periodPricelist->price;
+        }
+
+        if ($allPeriodPricelist) {
+            $pricelist = $allPeriodPricelist->price;
+        }
+
+        // group data shipment per date
+        $totalCbm1Overall = 0;
+        $totalCbm2Overall = 0;
+        $totalCasOverall = 0;
+        $totalCbmDiffOverall = 0;
+        $totalAmountOverall = 0;
+
         $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
             return $item->date . '-' . $item->lts;
-        })->map(function ($group) use ($seaShipment) {
+        })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountOverall, &$pricelist) {
             $totals = [
                 'total_qty_pkgs' => $group->filter(function ($item) {
                     return is_numeric($item->qty_pkgs);
@@ -206,6 +259,9 @@ class ShipmentController extends Controller
                     return is_numeric($item->tot_cbm_2);
                 })->sum('tot_cbm_2')
             ];
+
+            $totalCbm1Overall += $totals['total_cbm1'];
+            $totalCbm2Overall += $totals['total_cbm2'];
         
             // set cas
             $cas = null;
@@ -254,9 +310,15 @@ class ShipmentController extends Controller
             }
         
             $totals['cas'] = $cas;
+            $totalCasOverall += $totals['cas'];
         
             // cbm difference
             $totals['cbm_difference'] = $totals['total_cbm1'] - $totals['total_cbm2'];
+            $totalCbmDiffOverall += $totals['cbm_difference'];
+
+            // amount
+            $cbm = $totals['total_cbm2'] != 0 ? $totals['total_cbm2'] : $totals['total_cbm1'];
+            $totalAmountOverall += $cbm * ($pricelist + $totals['cas']);
         
             $markings = $group->pluck('marking')->unique()->toArray();
             $totals['markings'] = $markings;
@@ -371,53 +433,13 @@ class ShipmentController extends Controller
             $companyName = 'PT SETIA NEGARA MAJU';
         }
 
-        // set pricelist
-        $pricelist = null;
-
-        $defaultPricelist = Pricelist::where('id_customer', null)->where('id_shipper', null)->where('origin', $seaShipment->origin)
-        ->where('start_period', null)->where('end_period', null)->first();
-
-        $shipperPricelist = Pricelist::where('id_customer', null)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
-        ->where('start_period', null)->where('end_period', null)->first();
-
-        $customerPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', null)->where('origin', $seaShipment->origin)
-        ->where('start_period', null)->where('end_period', null)->first();
-
-        $customerShipperPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
-        ->where('start_period', null)->where('end_period', null)->first();
-
-        $periodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
-        ->where('start_period', '>=', $seaShipment->date)->where('end_period', null)->first();
-
-        $allPeriodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
-        ->where('start_period', '<=', $seaShipment->date)->where('end_period', '>=', $seaShipment->date)->first();
-
-        if ($defaultPricelist) {
-            $pricelist = $defaultPricelist->price;
-        }
-
-        if ($shipperPricelist) {
-            $pricelist = $shipperPricelist->price;
-        }
-
-        if ($customerPricelist) {
-            $pricelist = $customerPricelist->price;
-        }
-
-        if ($customerShipperPricelist) {
-            $pricelist = $customerShipperPricelist->price;
-        }
-
-        if ($periodPricelist) {
-            $pricelist = $periodPricelist->price;
-        }
-
-        if ($allPeriodPricelist) {
-            $pricelist = $allPeriodPricelist->price;
-        }
-
         // data bill
         $dataBill = null;
+        $totalBlOverall = 0;
+        $totalPermitOverall = 0;
+        $totalTransportOverall = 0;
+        $totalInsuranceOverall = 0;
+
         if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
             $dataBill = [
                 'dateBL' => $request->dateBL,
@@ -428,26 +450,36 @@ class ShipmentController extends Controller
                 'insurance' => $request->insurance
             ];
 
-            $resultBIll = [];
-            
+            $resultBill = [];
+
             if ($dataBill) {
                 foreach ($dataBill["dateBL"] as $index => $date) {
-                    $resultBIll[] = [
+                    $transportValue = preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]);
+                    $blValue = preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]);
+                    $permitValue = preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]);
+                    $insuranceValue = preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0]);
+
+                    $resultBill[] = [
                         "dateBL" => $dataBill["dateBL"][$index],
                         "codeShipment" => $dataBill["codeShipment"][$index],
-                        "transport" => $dataBill["transport"][$index],
-                        "bl" => $dataBill["bl"][$index],
-                        "permit" => $dataBill["permit"][$index],
-                        "insurance" => $dataBill["insurance"][$index]
+                        "transport" => $transportValue,
+                        "bl" => $blValue,
+                        "permit" => $permitValue,
+                        "insurance" => $insuranceValue
                     ];
+
+                    $totalTransportOverall += $transportValue;
+                    $totalBlOverall += $blValue;
+                    $totalPermitOverall += $permitValue;
+                    $totalInsuranceOverall += $insuranceValue;
 
                     $checkSeaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->where('date', $date)->first();
                     if ($checkSeaShipmentBill) {
                         $checkSeaShipmentBill->code = $dataBill["codeShipment"][$index];
-                        $checkSeaShipmentBill->transport = preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]);
-                        $checkSeaShipmentBill->bl = preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]);
-                        $checkSeaShipmentBill->permit = preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]);
-                        $checkSeaShipmentBill->insurance = preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0]);
+                        $checkSeaShipmentBill->transport = $transportValue;
+                        $checkSeaShipmentBill->bl = $blValue;
+                        $checkSeaShipmentBill->permit = $permitValue;
+                        $checkSeaShipmentBill->insurance = $insuranceValue;
                         $checkSeaShipmentBill->save();
 
                     } else {
@@ -455,10 +487,10 @@ class ShipmentController extends Controller
                             'id_sea_shipment' => $seaShipment->id_sea_shipment,
                             'date' => $date,
                             'code' => $dataBill["codeShipment"][$index],
-                            'transport' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]),
-                            'bl' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]),
-                            'permit' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]),
-                            'insurance' => preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0])
+                            'transport' => $transportValue,
+                            'bl' => $blValue,
+                            'permit' => $permitValue,
+                            'insurance' => $insuranceValue
                         ]);
                     }
                 }
@@ -466,6 +498,7 @@ class ShipmentController extends Controller
         }
 
         // update data in shipment
+        $seaShipment->no_inv = $request->inv_no;
         $seaShipment->term = $request->term;
         $seaShipment->is_printed = true;
         $seaShipment->printcount += 1;
@@ -491,7 +524,39 @@ class ShipmentController extends Controller
             'bill_diff' => $bill_diff,
             'inv_type' => $inv_type,
             'dataBill' => $dataBill
-        ])->setPaper('folio', 'potrait');
+        ])->setPaper('folio', 'portrait');
+
+        // after print create data to bill recap
+        $checkBillRecap = BillRecap::where('id_sea_shipment', $seaShipment->id_sea_shipment)->first();
+
+        // size
+        if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
+            $size = ($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall) + $totalCbmDiffOverall;
+        } else {
+            $size = $totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall;
+        }
+
+        $amountOther = $totalBlOverall + $totalPermitOverall + $totalTransportOverall + $totalInsuranceOverall;
+        $amountDiff = $totalCbmDiffOverall * $bill_diff;
+        $allTotalAmount = $totalAmountOverall + $amountOther + $amountDiff;
+
+        if (!$checkBillRecap) {
+            BillRecap::create([
+                'id_sea_shipment' => $seaShipment->id_sea_shipment,
+                'inv_no' => $titleInv,
+                'freight_type' => 'SEA FREIGHT',
+                'size' => $size,
+                'unit_price' => $pricelist,
+                'amount' => $allTotalAmount,
+            ]);
+
+        } else {
+            $checkBillRecap->inv_no = $titleInv;
+            $checkBillRecap->size = $size;
+            $checkBillRecap->unit_price = $pricelist;
+            $checkBillRecap->amount = $allTotalAmount;
+            $checkBillRecap->save();
+        }
 
         return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
     }

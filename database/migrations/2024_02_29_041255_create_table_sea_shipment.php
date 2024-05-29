@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_sea_shipment');
             $table->unsignedBigInteger('id_history')->nullable();
             $table->string('no_aju')->nullable();
+            $table->string('no_inv')->nullable();
             $table->date('date')->nullable();
             $table->string('origin');
             $table->date('etd')->nullable();

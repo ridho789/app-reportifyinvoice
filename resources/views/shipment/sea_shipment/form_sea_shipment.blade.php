@@ -551,7 +551,11 @@
                                 <input type="hidden" name="id" value="{{ $seaShipment->id_sea_shipment }}">
                                 <div class="input-group input-group-static mb-4">
                                     <label>Invoice No. <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->id_sea_shipment) }}" placeholder="..." required>
+                                    @if ($seaShipment->no_inv)
+                                        <input type="text" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->no_inv) }}" placeholder="..." required>
+                                    @else
+                                        <input type="text" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->id_sea_shipment) }}" placeholder="..." required>
+                                    @endif
                                 </div>
             
                                 <div class="input-group input-group-static mb-1">
@@ -693,7 +697,11 @@
                         <input type="hidden" name="id" value="{{ $seaShipment->id_sea_shipment }}">
                         <div class="input-group input-group-static mb-4">
                             <label>Invoice No. <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->id_sea_shipment) }}" placeholder="..." required>
+                            @if ($seaShipment->no_inv)
+                                <input type="text" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->no_inv) }}" placeholder="..." required>
+                            @else
+                                <input type="text" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->id_sea_shipment) }}" placeholder="..." required>
+                            @endif
                         </div>
     
                         <div class="input-group input-group-static mb-1">

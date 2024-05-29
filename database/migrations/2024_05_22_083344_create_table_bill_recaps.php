@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('tbl_bill_recaps', function (Blueprint $table) {
             $table->id('id_bill_recap');
-            $table->date('load_date');
-            $table->string('no_inv');
+            $table->string('inv_no');
             $table->string('freight_type');
-            $table->date('entry_date');
             $table->string('size');
             $table->string('unit_price');
             $table->string('amount');
