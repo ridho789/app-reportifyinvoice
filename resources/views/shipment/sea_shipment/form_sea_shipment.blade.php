@@ -719,7 +719,7 @@
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>Term <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="term" name="term" min="1" value="{{ old('term') }}" placeholder="..." required>
+                                <input type="number" class="form-control" id="term" name="term" min="1" value="{{ old('term', $seaShipment->term) }}" placeholder="..." required>
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
