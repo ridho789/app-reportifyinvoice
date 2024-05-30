@@ -127,6 +127,7 @@
                 $totalQty = 0;
                 $totalAmount = 0;
                 $totalCbm = 0;
+                $totalWeight = 0;
                 $checkLoopDate = null;
                 $entryRow = 0;
 
@@ -153,6 +154,7 @@
                         $lts = substr($groupDate, strrpos($groupDate, '-') + 1);
 
                         $qty = $totals['total_qty_loose'];
+                        $weight = $totals['total_weight'];
                         $unit_price = $pricelist;
                         $unitPriceCbmDiff = 0;
                         $amountCbmDiff = 0;
@@ -164,10 +166,12 @@
                         }
 
                         // Jika ada selisih
-                        if ($totals['cbm_difference']) {
-                            $unitPriceCbmDiff = $bill_diff;
-                            $amountCbmDiff = $totals['cbm_difference'] * $unitPriceCbmDiff;
-                            $entryRow++;
+                        if (!$is_weight) {
+                            if ($totals['cbm_difference']) {
+                                $unitPriceCbmDiff = $bill_diff;
+                                $amountCbmDiff = $totals['cbm_difference'] * $unitPriceCbmDiff;
+                                $entryRow++;
+                            }
                         }
 
                         // Data tagihan lainnya
@@ -192,7 +196,14 @@
                         $checkLoopDate = $date;
                         
                         $amount = $totals['total_cbm2'] * $unit_price;
+
+                        // Jika penagihan dengan berat
+                        if ($is_weight) {
+                            $amount = $weight * $unit_price;
+                        }
+
                         $totalQty += $qty;
+                        $totalWeight += $weight;
                         $totalAmount += $amount + $amountCbmDiff + (intval($bl) + intval($permit) + intval($transport) + intval($insurance));
                         $totalCbm += $totals['total_cbm2'] + $totals['cbm_difference'];
 
@@ -252,7 +263,13 @@
                             @endif
                         </td>
                         <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
-                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
+
+                        @if ($is_weight)
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight }} KG</td>
+                        @else
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
+                        @endif
+
                         <td width="15%" class="border_left_right text_center">
                             {{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}
                             @if ($totals['cas'])
@@ -311,7 +328,7 @@
                     @endif
                     
                     <!-- selisih -->
-                    @if ($totals['cbm_difference'])
+                    @if ($totals['cbm_difference'] && !$is_weight)
                         <tr>
                             <td width="5%" class="border_left_right"></td>
                             <td width="30%" class="border_left_right text_center">Selisih SIN BTH ({{ $totals['total_cbm1'] }} - {{ $totals['total_cbm2'] }} M3)</td>
@@ -359,6 +376,7 @@
 
                         $qty = $totals['total_qty_pkgs'];
                         $cbm = $totals['total_cbm1'];
+                        $weight = $totals['total_weight'];
                         $unit_price = $pricelist;
                         $entryRow++;
                         
@@ -369,7 +387,14 @@
 
                         $totalQty += $qty;
                         $totalCbm += $cbm;
+                        $totalWeight += $weight;
                         $amount = $cbm * $unit_price;
+
+                        // Jika beralih penagihan dengan berat
+                        if ($is_weight) {
+                            $amount = $weight * $unit_price;
+                        }
+
                         $totalAmount += $amount;
 
                         $groupedMarkings = collect($totals['markings'])->groupBy(function ($marking) {
@@ -425,7 +450,11 @@
                             @endif
                         </td>
                         <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
-                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $cbm }} M3</td>
+                        @if ($is_weight)
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight }} KG</td>
+                        @else
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $cbm }} M3</td>
+                        @endif
                         <td width="15%" class="border_left_right text_center">
                             {{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}
                             @if ($totals['cas'])
@@ -470,7 +499,11 @@
                 <td width="5%" class="border_left_right"></td>
                 <td width="30%" class="border_left_right text_center">Total</td>
                 <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $totalQty }}</td>
-                <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3</td>
+                @if ($is_weight)
+                    <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalWeight }} KG</td>
+                @else
+                    <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3</td>
+                @endif
                 <td width="15%" class="border_left_right text_center"></td>
                 <td width="20%" class="border_left_right text_center"></td>
             </tr>

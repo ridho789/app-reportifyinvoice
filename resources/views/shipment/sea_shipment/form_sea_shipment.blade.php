@@ -582,7 +582,7 @@
                                     </div>
                                 </div>
             
-                                <div class="input-group input-group-static">
+                                <div class="input-group input-group-static mb-4">
                                     <div class="col-5">
                                         <label>Banker (<span class="text-info">Opt</span>)</label>
                                         <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
@@ -591,6 +591,14 @@
                                     <div class="col-6">
                                         <label>Account No. (<span class="text-info">Opt</span>)</label>
                                         <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
+                                    </div>
+                                </div>
+
+                                <div class="input-group input-group-static">
+                                    <div class="form-check form-check-inline" style="padding-left: 0;">
+                                        <input type="hidden" name="is_weight" value="{{ $seaShipment->is_weight }}">
+                                        <input class="form-check-input" type="checkbox" id="isWeight">
+                                        <label class="form-check-label mb-1 mx-2" for="isWeight">Click to switch billing by <span class="text-primary">weight</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -728,7 +736,7 @@
                             </div>
                         </div>
     
-                        <div class="input-group input-group-static">
+                        <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>Banker (<span class="text-info">Optional</span>)</label>
                                 <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
@@ -737,6 +745,14 @@
                             <div class="col-6">
                                 <label>Account No. (<span class="text-info">Optional</span>)</label>
                                 <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
+                            </div>
+                        </div>
+
+                        <div class="input-group input-group-static">
+                            <div class="form-check form-check-inline" style="padding-left: 0;">
+                                <input type="hidden" name="is_weight" value="{{ $seaShipment->is_weight }}">
+                                <input class="form-check-input" type="checkbox" id="isWeight">
+                                <label class="form-check-label mb-1 mx-2" for="isWeight">Click to switch billing by <span class="text-primary">weight</span></label>
                             </div>
                         </div>
                     @endif
@@ -830,11 +846,6 @@
 
     calculateTotalPackages();
 
-    var qtyPkgInputs = document.querySelectorAll('input[name="qty_pkgs[]"]');
-    qtyPkgInputs.forEach(function(input) {
-        input.addEventListener('change', calculateTotalPackages);
-    });
-
     // Function to update total weight
     function calculateTotalWeight() {
         var totalWeight = 0;
@@ -880,18 +891,27 @@
     inputsP.forEach(function(input, index) {
         input.addEventListener('input', function() {
             updateCBM(index);
+
+            // update volume
+            calculateTotalVolume();
         });
     });
 
     inputsL.forEach(function(input, index) {
         input.addEventListener('input', function() {
             updateCBM(index);
+
+            // update volume
+            calculateTotalVolume();
         });
     });
 
     inputsT.forEach(function(input, index) {
         input.addEventListener('input', function() {
             updateCBM(index);
+
+            // update volume
+            calculateTotalVolume();
         });
     });
 
@@ -929,6 +949,9 @@
             // update CBM
             updateCBM(index);
 
+            // update total package
+            calculateTotalPackages();
+
             var row = input.closest('tr');
             var unitQtyPkgs = row.querySelector('select[name="unit_qty_pkgs[]"]');
 
@@ -947,6 +970,9 @@
         input.addEventListener('change', function() {
             // update CBM
             updateCBM(index);
+
+            // update volume
+            calculateTotalVolume();
             
             var row = QtyLoose[index].closest('tr');
             var unitQtyLoose = row.querySelector('select[name="unit_qty_loose[]"]');
@@ -1008,7 +1034,56 @@
         return formattedNum;
     }
 
+    var isSwitchBillingWeight = document.getElementById('isWeight');
+    isSwitchBillingWeight.addEventListener('click', function () {
+        var isWeightInvoice = isSwitchBillingWeight.checked ? 1 : 0;
+        var hiddenValueIsWeightInvoice = document.querySelector("input[name='is_weight']");
+        hiddenValueIsWeightInvoice.value = isWeightInvoice;
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
+        // Checkbox switch billing by weight
+        var totalWeight = document.querySelector("input[name='tot_weight']");
+        var isSwitchBillingWeight = document.getElementById('isWeight');
+        var hiddenValueIsWeightInvoice = document.querySelector("input[name='is_weight']");
+
+        if (hiddenValueIsWeightInvoice.value && hiddenValueIsWeightInvoice.value !== '0') {
+            isSwitchBillingWeight.checked = true;
+
+        } else {
+            isSwitchBillingWeight.checked = false;
+        }
+
+        if (totalWeight.value === '0') {
+            isSwitchBillingWeight.setAttribute('disabled', 'disabled');
+            isSwitchBillingWeight.checked = false;
+            hiddenValueIsWeightInvoice.value = 0;
+
+        } else {
+            isSwitchBillingWeight.removeAttribute('disabled', 'disabled');
+        }
+
+        // Function to add days to a date
+        function addDays(date, days) {
+            var result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+
+        // Original payment due date
+        var originalPaymentDue = document.getElementById('payment_due').value;
+
+        // Function to update payment due date based on term
+        var term = parseInt(document.getElementById('term').value);
+
+        if (!isNaN(term) && term > 0) {
+            var newPaymentDue = addDays(originalPaymentDue, term);
+            document.getElementById('payment_due').valueAsDate = newPaymentDue;
+
+        } else {
+            document.getElementById('payment_due').valueAsDate = new Date(originalPaymentDue);
+        }
+
         function formatInputs() {
             let priceBillDiff = document.querySelectorAll("#bill_diff");
             priceBillDiff.forEach(function(billDiff) {

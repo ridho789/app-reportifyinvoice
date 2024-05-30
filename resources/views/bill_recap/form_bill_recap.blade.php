@@ -60,7 +60,7 @@
                             </div>
 
                             <div class="input-group input-group-static">
-                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Size (M3)</label>
+                                <label class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Units</label>
                                 <input type="text" name="size" id="size" class="form-control" value="{{ old('size', $bill->size) }}" disabled>
                             </div>
 

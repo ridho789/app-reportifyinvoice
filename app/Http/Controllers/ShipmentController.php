@@ -237,8 +237,12 @@ class ShipmentController extends Controller
         $totalCasOverall = 0;
         $totalCbmDiffOverall = 0;
         $totalAmountOverall = 0;
+        $totalWeightOverall = 0;
 
-        function calculateTotals($group, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountOverall, $pricelist) {
+        // is weight
+        $isWeight = $request->is_weight;
+
+        function calculateTotals($group, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountOverall, $isWeight, $pricelist) {
             $totals = [
                 'total_qty_pkgs' => $group->filter(function ($item) {
                     return is_numeric($item->qty_pkgs);
@@ -257,6 +261,7 @@ class ShipmentController extends Controller
                 })->sum('tot_cbm_2')
             ];
 
+            $totalWeightOverall += $totals['total_weight'];
             $totalCbm1Overall += $totals['total_cbm1'];
             $totalCbm2Overall += $totals['total_cbm2'];
 
@@ -288,7 +293,14 @@ class ShipmentController extends Controller
 
             // amount
             $cbm = $totals['total_cbm2'] != 0 ? $totals['total_cbm2'] : $totals['total_cbm1'];
-            $totalAmountOverall += $cbm * ($pricelist + $totals['cas']);
+            $weight = $totals['total_weight'];
+
+            if ($isWeight) {
+                $totalAmountOverall += $weight * ($pricelist + $totals['cas']);
+
+            } else {
+                $totalAmountOverall += $cbm * ($pricelist + $totals['cas']);
+            }
 
             $totals['markings'] = $group->pluck('marking')->unique()->toArray();
 
@@ -296,18 +308,38 @@ class ShipmentController extends Controller
         }
 
         // Initial grouping
-        $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
-            return $item->date . '-' . $item->lts;
-        })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountOverall, $pricelist) {
-            return calculateTotals($group, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalCasOverall, $totalCbmDiffOverall, $totalAmountOverall, $pricelist);
-        });
+        if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
+
+            // reset total value
+            $totalCbm1Overall = 0;
+            $totalCbm2Overall = 0;
+            $totalCasOverall = 0;
+            $totalCbmDiffOverall = 0;
+            $totalAmountOverall = 0;
+            $totalWeightOverall = 0;
+
+            $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
+                return $item->date . '-' . $item->lts;
+            })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountOverall, $isWeight, $pricelist) {
+                return calculateTotals($group, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, $totalAmountOverall, $isWeight, $pricelist);
+            });
+        }
 
         // Conditional re-grouping
         if (($request->inv_type && $request->inv_type == 'separate') || in_array($seaShipment->origin, ['BTH-SIN', 'BTH-JKT'])) {
+
+            // reset total value
+            $totalCbm1Overall = 0;
+            $totalCbm2Overall = 0;
+            $totalCasOverall = 0;
+            $totalCbmDiffOverall = 0;
+            $totalAmountOverall = 0;
+            $totalWeightOverall = 0;
+
             $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
                 return $item->date . '-' . $item->marking . '-' . $item->lts;
-            })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountOverall, $pricelist) {
-                return calculateTotals($group, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalCasOverall, $totalCbmDiffOverall, $totalAmountOverall, $pricelist);
+            })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountOverall, $isWeight, $pricelist) {
+                return calculateTotals($group, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, $totalAmountOverall, $isWeight, $pricelist);
             });
         }
 
@@ -418,6 +450,12 @@ class ShipmentController extends Controller
             $companyName = 'PT SETIA NEGARA MAJU';
         }
 
+        $dataBill = null;
+        $totalTransportOverall = 0;
+        $totalBlOverall = 0;
+        $totalPermitOverall = 0;
+        $totalInsuranceOverall = 0;
+
         if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
             $dataBill = [
                 'dateBL' => $request->dateBL,
@@ -429,10 +467,6 @@ class ShipmentController extends Controller
             ];
         
             $resultBill = [];
-            $totalTransportOverall = 0;
-            $totalBlOverall = 0;
-            $totalPermitOverall = 0;
-            $totalInsuranceOverall = 0;
         
             if ($dataBill) {
                 foreach ($dataBill["dateBL"] as $index => $date) {
@@ -481,6 +515,7 @@ class ShipmentController extends Controller
         // update data in shipment
         $seaShipment->no_inv = $request->inv_no;
         $seaShipment->term = $request->term;
+        $seaShipment->is_weight = $request->is_weight;
         $seaShipment->is_printed = true;
         $seaShipment->printcount += 1;
         $seaShipment->printdate = Carbon::now()->addHours(7);
@@ -495,6 +530,7 @@ class ShipmentController extends Controller
             'groupSeaShipmentLines' => $groupSeaShipmentLines,
             'pricelist' => $pricelist,
             'term' => $request->term,
+            'is_weight' => $request->is_weight,
             'paymentDue' => $paymentDue,
             'banker' => $request->banker,
             'account_no' => $request->account_no,
@@ -512,13 +548,27 @@ class ShipmentController extends Controller
 
         // size
         if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
-            $size = ($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall) + $totalCbmDiffOverall;
+            if ($isWeight) {
+                $size = $totalWeightOverall . ' KG';
+            } else {
+                $size = ($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall) + $totalCbmDiffOverall . ' M3';
+            }
+
         } else {
-            $size = $totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall;
+            if ($isWeight) {
+                $size = $totalWeightOverall . ' KG';
+            } else {
+                $size = $totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall . ' M3';
+            }
         }
 
         $amountOther = $totalBlOverall + $totalPermitOverall + $totalTransportOverall + $totalInsuranceOverall;
         $amountDiff = $totalCbmDiffOverall * $bill_diff;
+
+        if ($isWeight) {
+            $amountDiff = 0;
+        }
+
         $allTotalAmount = $totalAmountOverall + $amountOther + $amountDiff;
 
         if (!$checkBillRecap) {

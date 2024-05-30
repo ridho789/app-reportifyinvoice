@@ -25,6 +25,7 @@ class SeaShipment extends Model
         'id_customer',
         'id_ship',
         'term',
+        'is_weight',
         'value_key',
         'is_printed',
         'printcount',
