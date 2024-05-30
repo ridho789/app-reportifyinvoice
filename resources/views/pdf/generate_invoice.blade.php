@@ -252,13 +252,25 @@
                     <tr>
                         <td width="5%" class="border_left_right"></td>
                         <td width="30%" class="border_left_right text_center">
-                            @if (!$totals['cas'])
-                                {{ $code ? $code : '' }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
-                            @else
-                                @if ($inv_type == 'separate')
-                                    {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                            @if ($is_weight)
+                                @if (!$totals['cas'])
+                                    {{ $code ? $code : '' }} : {{ $totals['total_cbm2'] }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                 @else
-                                    {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }}
+                                    @if ($inv_type == 'separate')
+                                        {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                    @else
+                                        {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3
+                                    @endif
+                                @endif
+                            @else
+                                @if (!$totals['cas'])
+                                    {{ $code ? $code : '' }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                @else
+                                    @if ($inv_type == 'separate')
+                                        {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                    @else
+                                        {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }}
+                                    @endif
                                 @endif
                             @endif
                         </td>
@@ -443,10 +455,18 @@
                     <tr>
                         <td width="5%" class="border_left_right"></td>
                         <td width="30%" class="border_left_right text_center">
-                            @if (!$totals['cas'])
-                                BATAM {{ implode(', ', $mergedMarkings) }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                            @if ($is_weight)
+                                @if (!$totals['cas'])
+                                    BATAM {{ implode(', ', $mergedMarkings) }} : {{ $cbm }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                @else
+                                    BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                @endif
                             @else
-                                BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                @if (!$totals['cas'])
+                                    BATAM {{ implode(', ', $mergedMarkings) }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                @else
+                                    BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                @endif
                             @endif
                         </td>
                         <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
