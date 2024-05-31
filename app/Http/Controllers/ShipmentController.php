@@ -59,9 +59,14 @@ class ShipmentController extends Controller
         $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
         $checkCbmDiff = false;
 
+        $isWeight = false;
+        $totalCbm1Overall = 0;
+        $totalCbm2Overall = 0;
+        $totalWeightOverall = 0;
+
         $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
             return $item->date;
-        })->map(function ($group) use (&$checkCbmDiff) {
+        })->map(function ($group) use (&$checkCbmDiff, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall) {
             $totals = [
                 'total_qty_pkgs' => $group->filter(function ($item) {
                     return is_numeric($item->qty_pkgs);
@@ -76,6 +81,10 @@ class ShipmentController extends Controller
                     return is_numeric($item->tot_cbm_2);
                 })->sum('tot_cbm_2')
             ];
+
+            $totalWeightOverall += $totals['total_weight'];
+            $totalCbm1Overall += $totals['total_cbm1'];
+            $totalCbm2Overall += $totals['total_cbm2'];
         
             $totals['cbm_difference'] = $totals['total_cbm1'] - $totals['total_cbm2'];
 
@@ -86,13 +95,22 @@ class ShipmentController extends Controller
             return $totals;
         });
 
+        // Check billing with weight or cbm
+        $totalCbmOverall = $totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall;
+        if (($totalWeightOverall / 1000) > $totalCbmOverall) {
+            $isWeight = true;
+
+        }else {
+            $isWeight = false;
+        }
+
         $customers = Customer::orderBy('name')->get();
         $customer = Customer::where('id_customer', $seaShipment->id_customer)->first();
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
         $companies = Company::orderBy('name')->get();
         return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 
-        'ships', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill'));
+        'ships', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
     }
 
     public function updateSeaShipment(Request $request) {
@@ -238,11 +256,14 @@ class ShipmentController extends Controller
         $totalCbmDiffOverall = 0;
         $totalAmountOverall = 0;
         $totalWeightOverall = 0;
+        $totalAmountWeightOverall = 0;
+        $totalAmountCbmOverall = 0;
 
         // is weight
-        $isWeight = $request->is_weight;
+        $isWeight = false;
 
-        function calculateTotals($group, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountOverall, $isWeight, $pricelist) {
+        function calculateTotals($group, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
+        &$totalAmountWeightOverall, &$totalAmountCbmOverall, $pricelist) {
             $totals = [
                 'total_qty_pkgs' => $group->filter(function ($item) {
                     return is_numeric($item->qty_pkgs);
@@ -295,12 +316,8 @@ class ShipmentController extends Controller
             $cbm = $totals['total_cbm2'] != 0 ? $totals['total_cbm2'] : $totals['total_cbm1'];
             $weight = $totals['total_weight'];
 
-            if ($isWeight) {
-                $totalAmountOverall += $weight * ($pricelist + $totals['cas']);
-
-            } else {
-                $totalAmountOverall += $cbm * ($pricelist + $totals['cas']);
-            }
+            $totalAmountWeightOverall += $weight * ($pricelist + $totals['cas']);
+            $totalAmountCbmOverall += $cbm * ($pricelist + $totals['cas']);
 
             $totals['markings'] = $group->pluck('marking')->unique()->toArray();
 
@@ -317,11 +334,13 @@ class ShipmentController extends Controller
             $totalCbmDiffOverall = 0;
             $totalAmountOverall = 0;
             $totalWeightOverall = 0;
+            $totalAmountWeightOverall = 0;
+            $totalAmountCbmOverall = 0;
 
             $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
                 return $item->date . '-' . $item->lts;
-            })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountOverall, $isWeight, $pricelist) {
-                return calculateTotals($group, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, $totalAmountOverall, $isWeight, $pricelist);
+            })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountWeightOverall, &$totalAmountCbmOverall, $pricelist) {
+                return calculateTotals($group, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, $totalAmountWeightOverall, $totalAmountCbmOverall, $pricelist);
             });
         }
 
@@ -335,12 +354,31 @@ class ShipmentController extends Controller
             $totalCbmDiffOverall = 0;
             $totalAmountOverall = 0;
             $totalWeightOverall = 0;
+            $totalAmountWeightOverall = 0;
+            $totalAmountCbmOverall = 0;
 
             $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
                 return $item->date . '-' . $item->marking . '-' . $item->lts;
-            })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountOverall, $isWeight, $pricelist) {
-                return calculateTotals($group, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, $totalAmountOverall, $isWeight, $pricelist);
+            })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, &$totalAmountWeightOverall, &$totalAmountCbmOverall, $pricelist) {
+                return calculateTotals($group, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, $totalAmountWeightOverall, $totalAmountCbmOverall, $pricelist);
             });
+        }
+
+        // Check billing with weight or cbm
+        $totalCbmOverall = $totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall;
+        if (($totalWeightOverall / 1000) > $totalCbmOverall) {
+            $isWeight = true;
+
+        }else {
+            $isWeight = false;
+        }
+
+        // Apply isWeight condition to totalAmountOverall calculation
+        if ($isWeight) {
+            $totalAmountOverall = $totalAmountWeightOverall;
+            
+        } else {
+            $totalAmountOverall = $totalAmountCbmOverall;
         }
 
         function romanNumerals($number) {
@@ -515,7 +553,6 @@ class ShipmentController extends Controller
         // update data in shipment
         $seaShipment->no_inv = $request->inv_no;
         $seaShipment->term = $request->term;
-        $seaShipment->is_weight = $request->is_weight;
         $seaShipment->is_printed = true;
         $seaShipment->printcount += 1;
         $seaShipment->printdate = Carbon::now()->addHours(7);
@@ -530,7 +567,7 @@ class ShipmentController extends Controller
             'groupSeaShipmentLines' => $groupSeaShipmentLines,
             'pricelist' => $pricelist,
             'term' => $request->term,
-            'is_weight' => $request->is_weight,
+            'is_weight' => $isWeight,
             'paymentDue' => $paymentDue,
             'banker' => $request->banker,
             'account_no' => $request->account_no,

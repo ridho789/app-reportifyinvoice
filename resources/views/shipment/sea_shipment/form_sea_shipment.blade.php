@@ -594,13 +594,12 @@
                                     </div>
                                 </div>
 
+                                @if ($isWeight)
                                 <div class="input-group input-group-static">
-                                    <div class="form-check form-check-inline" style="padding-left: 0;">
-                                        <input type="hidden" name="is_weight" value="{{ $seaShipment->is_weight }}">
-                                        <input class="form-check-input" type="checkbox" id="isWeight">
-                                        <label class="form-check-label mb-1 mx-2" for="isWeight">Click to switch billing by <span class="text-primary">weight</span></label>
-                                    </div>
+                                    <label class="form-check-label mb-1">Billing by <b><span class="text-info">weight (KG) </span></b> <br> 
+                                    Total Weight <b>{{ $totalWeightOverall / 1000 }}</b> <u>></u> Total CBM <b>{{ $totalCbmOverall }}</b></label>
                                 </div>
+                                @endif
                             </div>
                             <div class="col-6">
                                 @if ($groupSeaShipmentLines)
@@ -747,14 +746,13 @@
                                 <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
                             </div>
                         </div>
-
+                        
+                        @if ($isWeight)
                         <div class="input-group input-group-static">
-                            <div class="form-check form-check-inline" style="padding-left: 0;">
-                                <input type="hidden" name="is_weight" value="{{ $seaShipment->is_weight }}">
-                                <input class="form-check-input" type="checkbox" id="isWeight">
-                                <label class="form-check-label mb-1 mx-2" for="isWeight">Click to switch billing by <span class="text-primary">weight</span></label>
-                            </div>
+                            <label class="form-check-label mb-1">Billing by <b><span class="text-info">weight (KG) </span></b> - 
+                            Total Weight <b>{{ $totalWeightOverall / 1000 }}</b> <u>></u> Total CBM <b>{{ $totalCbmOverall }}</b></label>
                         </div>
+                        @endif
                     @endif
                     
                     <div class="text-end mt-3">
@@ -1034,35 +1032,7 @@
         return formattedNum;
     }
 
-    var isSwitchBillingWeight = document.getElementById('isWeight');
-    isSwitchBillingWeight.addEventListener('click', function () {
-        var isWeightInvoice = isSwitchBillingWeight.checked ? 1 : 0;
-        var hiddenValueIsWeightInvoice = document.querySelector("input[name='is_weight']");
-        hiddenValueIsWeightInvoice.value = isWeightInvoice;
-    });
-
     document.addEventListener('DOMContentLoaded', function() {
-        // Checkbox switch billing by weight
-        var totalWeight = document.querySelector("input[name='tot_weight']");
-        var isSwitchBillingWeight = document.getElementById('isWeight');
-        var hiddenValueIsWeightInvoice = document.querySelector("input[name='is_weight']");
-
-        if (hiddenValueIsWeightInvoice.value && hiddenValueIsWeightInvoice.value !== '0') {
-            isSwitchBillingWeight.checked = true;
-
-        } else {
-            isSwitchBillingWeight.checked = false;
-        }
-
-        if (totalWeight.value === '0') {
-            isSwitchBillingWeight.setAttribute('disabled', 'disabled');
-            isSwitchBillingWeight.checked = false;
-            hiddenValueIsWeightInvoice.value = 0;
-
-        } else {
-            isSwitchBillingWeight.removeAttribute('disabled', 'disabled');
-        }
-
         // Function to add days to a date
         function addDays(date, days) {
             var result = new Date(date);
