@@ -1,4 +1,4 @@
-@unless(request()->is('list_shipments', 'form_sea_shipment', 'list_sea_shipment', 'sea_shipment-edit/*', 'company','customer', 'shipper', 'ship', 'list_bill_recap', 'insurance', 
+@unless(request()->is('list_shipments', 'form_sea_shipment', 'list_sea_shipment', 'sea_shipment-edit/*', 'company','customer', 'shipper', 'ship', 'unit', 'list_bill_recap', 'insurance', 
 'pricelist', 'cas', 'history', 'form_bill_recap', 'bill_recap-edit/*'))
 <footer class="footer py-4  ">
     <div class="container-fluid">

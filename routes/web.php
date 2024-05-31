@@ -7,6 +7,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ShipperController;
 use App\Http\Controllers\ShipController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\BillRecapController;
 use App\Http\Controllers\PricelistController;
@@ -74,6 +75,11 @@ Route::group(['middleware' => ['auth', 'check.role.user:0']], function () {
     Route::get('/ship', [ShipController::class, 'index']);
     Route::post('ship-store', [ShipController::class, 'store']);
     Route::post('ship-update', [ShipController::class, 'update']);
+
+    // unit
+    Route::get('/unit', [UnitController::class, 'index']);
+    Route::post('unit-store', [UnitController::class, 'store']);
+    Route::post('unit-update', [UnitController::class, 'update']);
 
     // insurance
     Route::get('/insurance', [InsuranceController::class, 'index']);
