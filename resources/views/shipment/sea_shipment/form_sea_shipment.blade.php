@@ -292,11 +292,11 @@
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="lts[]" value="{{ $ssl->lts }}" 
+                                            <input type="text" class="form-control text-center lts-input" name="lts[]" value="{{ $ssl->lts }}" 
                                             oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="qty[]" value="{{ $ssl->qty }}" min="1" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center qty-input" name="qty[]" value="{{ $ssl->qty }}" min="1" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs select-unit" name="id_unit" style="border: none;">
@@ -326,7 +326,7 @@
 
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                            <button type="button" class="btn btn-secondary btn-sm ms-2 btn-print" data-bs-toggle="modal" data-bs-target="#setPrintModal">Print</button>
+                            <button type="button" class="btn btn-secondary btn-sm ms-2 btn-print">Print</button>
                         </div>
                     </form>
                     @else
@@ -1153,6 +1153,56 @@
                 });
             });
         });
+    });
+
+    // Check LTS = LP, LPI or LPM
+    document.querySelector('.btn-print').addEventListener('click', function(event) {
+        let isValid = true;
+        const rows = document.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            const ltsInput = row.querySelector('.lts-input');
+            const qtyInput = row.querySelector('.qty-input');
+            const unitInput = row.querySelector('.select-unit');
+
+            if (ltsInput && qtyInput && unitInput) {
+                const lts = ltsInput.value;
+                const qty = qtyInput;
+                const unit = unitInput;
+
+                if (['LP', 'LPM', 'LPI'].includes(lts)) {
+                    qty.required = true;
+                    unit.required = true;
+                    
+                    if (!qty.value || !unit.value) {
+                        isValid = false;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Please fill in the Qty and Unit fields for LTS values LP, LPM, or LPI',
+                            position: 'top',
+                            width: '535px',
+                            toast: true,
+                            showConfirmButton: false,
+                            timer: 7500,
+                            timerProgressBar: true,
+                            customClass: {
+                                container: 'swal2-top-end-container'
+                            }
+                        });
+                        return;
+                    }
+                } else {
+                    qty.required = false;
+                    unit.required = false;
+                }
+            }
+        });
+
+        if (isValid) {
+            const printModal = new bootstrap.Modal(document.getElementById('setPrintModal'));
+            printModal.show();
+        }
     });
 </script>
 @endsection

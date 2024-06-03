@@ -84,12 +84,12 @@
                     <span class="nav-link-text ms-1">Cas</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link text-white {{ request()->is('insurance') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/insurance') }}">
                     <span class="sidenav-mini-icon"> I </span>
                     <span class="nav-link-text ms-1">Insurances</span>
                 </a>
-            </li>
+            </li> -->
             <li class="nav-item">
                 <a class="nav-link text-white {{ request()->is('pricelist') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/pricelist') }}">
                     <span class="sidenav-mini-icon"> P </span>

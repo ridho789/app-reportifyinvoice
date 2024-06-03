@@ -31,7 +31,6 @@
     <style>
         .swal2-popup {
             font-size: 0.9rem; /* Sesuaikan ukuran font */
-            width: 300px !important; /* Sesuaikan lebar */
             padding: 1em !important; /* Sesuaikan padding */
             border-radius: 0.5em; /* Sesuaikan radius border */
         }
