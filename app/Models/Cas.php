@@ -18,6 +18,7 @@ class Cas extends Model
         'id_cas',
         'id_customer',
         'id_shipper',
+        'id_unit',
         'lts',
         'desc',
         'charge',

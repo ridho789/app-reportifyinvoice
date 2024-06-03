@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Models\Cas;
 use App\Models\Shipper;
 use App\Models\Customer;
+use App\Models\Unit;
 
 class CasImport implements ToCollection
 {
@@ -60,15 +61,27 @@ class CasImport implements ToCollection
                 }
             }
 
+            // Unit
+            $IdUnit = null;
+            if ($row[4]) {
+                $checkUnit = Unit::where('name', 'like', '%' . $row[0] . '%')->first();
+                if (empty($checkUnit)) {
+                    $checkUnit = Unit::create(['name' => strtoupper($row[4])]);
+                }
+
+                // IdShipper
+                $IdUnit = $checkUnit->id_unit;
+            }
+
             $startPeriod = null;
             $endPeriod = null;
     
-            if ($row[5]) {
-                $startPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]);
+            if ($row[6]) {
+                $startPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]);
             }
     
-            if ($row[6]) {
-                $endPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]);
+            if ($row[7]) {
+                $endPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[7]);
             }
             
             $dataCas = [
@@ -76,13 +89,14 @@ class CasImport implements ToCollection
                 'id_shipper' => $IdShipper,
                 'lts' => strtoupper($row[2]),
                 'charge' => $row[3],
-                'desc' => $row[4],
+                'id_unit' => $IdUnit,
+                'desc' => $row[5],
                 'start_period' => $startPeriod,
                 'end_period' => $endPeriod
             ];
     
-            $exitingCas = Cas::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('lts', $row[2])->where('charge', $row[3])->where('desc', $row[4])
-            ->where('start_period', $startPeriod)->where('end_period', $endPeriod)->first();
+            $exitingCas = Cas::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('lts', $row[2])->where('charge', $row[3])->where('id_unit', $IdUnit)
+            ->where('desc', $row[5])->where('start_period', $startPeriod)->where('end_period', $endPeriod)->first();
             
             if ($exitingCas) {
                 $errorMessage = 'Error importing data: The data in the row ' . $currentRow . ' already exists in the system ';

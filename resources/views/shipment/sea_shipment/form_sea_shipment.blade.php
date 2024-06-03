@@ -198,10 +198,12 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Code</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Marking</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="4">Quantity</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Weight <br> kg</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">W <br> kg</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="3">Dimension</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="2">Total CBM</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Lartas</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">LTS</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Qty</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Unit</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Desc</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">State</th>
                                     </tr>
@@ -232,7 +234,7 @@
                                             <input type="text" class="form-control text-center" name="code[]" value="{{ $ssl->code }}" 
                                             oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
-                                        <td class="align-middle text-center" width=12.5%>
+                                        <td class="align-middle text-center" width=15.5%>
                                             <input type="text" class="form-control text-center" name="marking[]" value="{{ $ssl->marking ?? '-' }}" 
                                             oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;" required>
                                         </td>
@@ -293,7 +295,20 @@
                                             <input type="text" class="form-control text-center" name="lts[]" value="{{ $ssl->lts }}" 
                                             oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
-                                        <td class="align-middle text-center">
+                                        <td class="align-middle text-center" width=5%>
+                                            <input type="number" class="form-control text-center" name="qty[]" value="{{ $ssl->qty }}" min="1" placeholder="..." style="border: 0px;">
+                                        </td>
+                                        <td class="align-middle" width=5%>
+                                            <select class="form-select text-center text-xs select-unit" name="id_unit" style="border: none;">
+                                                <option value="">-</option>
+                                                @foreach ($units as $u)
+                                                <option value="{{ $u->id_unit }}" 
+                                                    {{ old('id_unit', $seaShipment->id_unit) == $u->id_unit ? 'selected' : '' }}>{{ $u->name }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td class="align-middle text-center" width=7.5%>
                                             <input type="text" class="form-control text-center" name="desc[]" value="{{ $ssl->desc }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=7.5%>
@@ -419,6 +434,8 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="3">Dimension</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="2">Total CBM</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Lartas</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Qty</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Unit</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Desc</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">State</th>
                                     </tr>
@@ -502,6 +519,12 @@
                                         <td class="align-middle text-center" width=5%>
                                             <input type="text" class="form-control text-center" name="lts[]" oninput="this.value = this.value.toUpperCase()" 
                                             placeholder="..." style="border: 0px;">
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <input type="text" class="form-control text-center" name="qty[]" placeholder="..." style="border: 0px;">
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <input type="text" class="form-control text-center" name="unit[]" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="desc[]" placeholder="..." style="border: 0px;">

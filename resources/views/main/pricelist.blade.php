@@ -122,12 +122,12 @@
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>Start Period (<span class="text-info">Optional</span>)</label>
-                                <input type="date" class="form-control" name="start_period" value="{{ old('start_period') }}">
+                                <input type="date" class="form-control start-period" name="start_period" value="{{ old('start_period') }}">
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
                                 <label>End Period (<span class="text-info">Optional</span>)</label>
-                                <input type="date" class="form-control" name="end_period" value="{{ old('end_period') }}">
+                                <input type="date" class="form-control end-period" name="end_period" value="{{ old('end_period') }}">
                             </div>
                         </div>
                         <div class="text-end">
@@ -218,12 +218,12 @@
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>Start Period (<span class="text-info">Optional</span>)</label>
-                                <input type="date" class="form-control" id="start_period" name="start_period" value="{{ old('start_period') }}">
+                                <input type="date" class="form-control start-period" id="start_period" name="start_period" value="{{ old('start_period') }}">
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
                                 <label>End Period (<span class="text-info">Optional</span>)</label>
-                                <input type="date" class="form-control" id="end_period" name="end_period" value="{{ old('end_period') }}">
+                                <input type="date" class="form-control end-period" id="end_period" name="end_period" value="{{ old('end_period') }}">
                             </div>
                         </div>
                         <div class="text-end">
@@ -452,5 +452,42 @@
                 this.value = formatCurrency(this.value);
             });
         });
+
+        // Start Period - End Period
+        var startPeriods = document.getElementsByClassName('start-period');
+        var endPeriods = document.getElementsByClassName('end-period');
+
+        for (let i = 0; i < startPeriods.length; i++) {
+            let startPeriod = startPeriods[i];
+            let endPeriod = endPeriods[i];
+
+            startPeriod.addEventListener('change', function () {
+                if (startPeriod.value) {
+                    endPeriod.min = startPeriod.value;
+                } else {
+                    endPeriod.removeAttribute('min');
+                }
+            });
+
+            endPeriod.addEventListener('change', function () {
+                if (endPeriod.value && startPeriod.value && endPeriod.value < startPeriod.value) {
+                    endPeriod.value = startPeriod.value;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'End Period cannot be earlier than Start Period',
+                        position: 'top-end',
+                        width: '300px',
+                        toast: true,
+                        showConfirmButton: false,
+                        timer: 3500,
+                        timerProgressBar: true,
+                        customClass: {
+                            container: 'swal2-top-end-container'
+                        }
+                    });
+                }
+            });
+        }
     });
 </script>

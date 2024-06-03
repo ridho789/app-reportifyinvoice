@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('tot_cbm_1')->nullable();
             $table->string('tot_cbm_2')->nullable();
             $table->string('lts')->nullable();
+            $table->string('qty')->nullable();
             $table->string('desc')->nullable();
             $table->string('state')->nullable();
             $table->timestamps();

@@ -24,6 +24,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- Include Select2 from CDN -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .swal2-popup {
+            font-size: 0.9rem; /* Sesuaikan ukuran font */
+            width: 300px !important; /* Sesuaikan lebar */
+            padding: 1em !important; /* Sesuaikan padding */
+            border-radius: 0.5em; /* Sesuaikan radius border */
+        }
+        .swal2-title {
+            font-size: 1.1rem; /* Sesuaikan ukuran judul */
+        }
+        .swal2-content {
+            font-size: 0.9rem; /* Sesuaikan ukuran konten */
+        }
+        .swal2-top-end-container {
+            top: 1em !important;
+            right: 1em !important;
+        }
+    </style>
 
     <!-- customer style for select2 -->
     <style>

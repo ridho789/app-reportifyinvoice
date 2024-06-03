@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cas;
 use App\Models\Customer;
 use App\Models\Shipper;
+use App\Models\Unit;
 use App\Imports\CasImport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -20,10 +21,12 @@ class CasController extends Controller
 
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');
+        $unit = Unit::pluck('name', 'id_unit');
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
+        $units = Unit::orderBy('name')->get();
         $logErrors = '';
-        return view('main.cas', compact('cas', 'customer', 'shipper', 'customers', 'shippers', 'logErrors'));
+        return view('main.cas', compact('cas', 'customer', 'shipper', 'unit', 'customers', 'shippers', 'units','logErrors'));
     }
 
     public function store(Request $request) {
@@ -35,6 +38,7 @@ class CasController extends Controller
         $dataNewCas = [
             'id_customer' => $request->id_customer,
             'id_shipper' => $request->id_shipper,
+            'id_unit' => $request->id_unit,
             'lts' => $request->new_lts,
             'charge' => $numericNewCharge,
             'desc' => $request->new_desc,
@@ -43,10 +47,11 @@ class CasController extends Controller
         ];
 
         $exitingCas = Cas::where('id_customer', $request->id_customer)->where('id_shipper', $request->id_shipper)->where('lts', $request->new_lts)->where('charge', $numericNewCharge)
-            ->where('desc', $request->new_desc)->where('start_period', $request->new_start_period)->where('end_period', $request->new_end_period)->first();
+            ->where('id_unit', $request->id_unit)->where('desc', $request->new_desc)->where('start_period', $request->new_start_period)->where('end_period', $request->new_end_period)->first();
 
         $dataCustomer = Customer::where('id_customer', $request->id_customer)->first();
         $dataShipper = Shipper::where('id_shipper', $request->id_shipper)->first();
+        $dataUnit = Unit::where('id_unit', $request->id_unit)->first();
 
         $customerName = 'null';
         if ($dataCustomer) {
@@ -56,7 +61,12 @@ class CasController extends Controller
         $shipperName = 'null';
         if ($dataShipper) {
             $shipperName = $dataShipper->name;
-        } 
+        }
+        
+        $unitName = 'null';
+        if ($dataUnit) {
+            $unitName = $dataUnit->name;
+        }
 
         $startPeriod = 'null';
         if ($request->new_start_period) {
@@ -69,8 +79,8 @@ class CasController extends Controller
         }
 
         if ($exitingCas) {
-            $logErrors = 'Customer: ' . $customerName . ' - ' . 'Shipper: ' . $shipperName . ' - ' . 'LTS: ' . $request->new_lts . ' - ' . 'Charge: ' . 
-            $request->new_charge . ' - ' . 'Desc: ' . $request->new_desc . ' - ' . 'Start Period: ' . $startPeriod . ' - ' . 'End Period: ' . $endPeriod . ', already in the system';
+            $logErrors = 'Customer: ' . $customerName . ' - ' . 'Shipper: ' . $shipperName . ' - ' . 'LTS: ' . $request->new_lts . ' - ' . 'Charge: ' . $request->new_charge . ' - ' . 
+            'Unit: ' . $unitName . ' - ' . 'Desc: ' . $request->new_desc . ' - ' . 'Start Period: ' . $startPeriod . ' - ' . 'End Period: ' . $endPeriod . ', already in the system';
             
             return redirect('cas')->with('logErrors', $logErrors);
 
@@ -91,6 +101,7 @@ class CasController extends Controller
         if ($cas) {
             $cas->id_customer = $request->id_customer;
             $cas->id_shipper = $request->id_shipper;
+            $cas->id_unit = $request->id_unit;
             $cas->lts = $request->lts;
             $cas->charge = $numericCharge;
             $cas->desc = $request->desc;

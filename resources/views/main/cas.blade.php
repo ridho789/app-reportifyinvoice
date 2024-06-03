@@ -116,19 +116,46 @@
                             </div>
                         </div>
                         <div class="input-group input-group-static mb-4">
-                            <label>Desc (<span class="text-info">Optional</span>)</label>
-                            <input type="text" class="form-control" id="new-desc" name="new_desc" value="{{ old('new-desc') }}" placeholder="...">
+                            <div class="col-5">
+                                @if (count($units) > 0)
+                                    <div class="input-group input-group-static">
+                                        <label>Unit (<span class="text-info">Optional</span>)</label>
+                                    </div>
+                                    <div class="input-group input-group-static text-xs">
+                                        <select class="form-select select-new-unit" name="id_unit" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                            <option value="">...</option>
+                                            @foreach ($units as $u)
+                                                <option value="{{ $u->id_unit }}">{{ $u->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @else
+                                    <div class="input-group input-group-static">
+                                        <label>Unit (<span class="text-info">Optional</span>)</label>
+                                    </div>
+                                    <div class="input-group input-group-static text-xs">
+                                        <select class="form-control" disabled>
+                                            <option value="">No data available</option>
+                                        </select>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <label>Desc (<span class="text-info">Optional</span>)</label>
+                                <input type="text" class="form-control" id="new-desc" name="new_desc" value="{{ old('new-desc') }}" placeholder="...">
+                            </div>
                         </div>
 
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>Start Period (<span class="text-info">Optional</span>)</label>
-                                <input type="date" class="form-control" id="new_start_period" name="new_start_period" value="{{ old('new_start_period') }}">
+                                <input type="date" class="form-control start-period" id="new_start_period" name="new_start_period" value="{{ old('new_start_period') }}">
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
                                 <label>End Period (<span class="text-info">Optional</span>)</label>
-                                <input type="date" class="form-control" id="new_end_period" name="new_end_period" value="{{ old('new_end_period') }}">
+                                <input type="date" class="form-control end-period" id="new_end_period" name="new_end_period" value="{{ old('new_end_period') }}">
                             </div>
                         </div>
 
@@ -213,19 +240,46 @@
                             </div>
                         </div>
                         <div class="input-group input-group-static mb-4">
-                            <label>Desc (<span class="text-info">Optional</span>)</label>
-                            <input type="text" class="form-control" id="desc" name="desc" value="{{ old('desc') }}" placeholder="...">
+                            <div class="col-5">
+                                @if (count($units) > 0)
+                                    <div class="input-group input-group-static">
+                                        <label>Unit (<span class="text-info">Optional</span>)</label>
+                                    </div>
+                                    <div class="input-group input-group-static text-xs">
+                                        <select class="form-select select-new-unit" id="id_unit" name="id_unit" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                            <option value="">...</option>
+                                            @foreach ($units as $u)
+                                                <option value="{{ $u->id_unit }}">{{ $u->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @else
+                                    <div class="input-group input-group-static">
+                                        <label>Unit (<span class="text-info">Optional</span>)</label>
+                                    </div>
+                                    <div class="input-group input-group-static text-xs">
+                                        <select class="form-control" disabled>
+                                            <option value="">No data available</option>
+                                        </select>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-6">
+                                <label>Desc (<span class="text-info">Optional</span>)</label>
+                                <input type="text" class="form-control" id="desc" name="desc" value="{{ old('desc') }}" placeholder="...">
+                            </div>
                         </div>
 
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>Start Period (<span class="text-info">Optional</span>)</label>
-                                <input type="date" class="form-control" id="start_period" name="start_period" value="{{ old('start_period') }}">
+                                <input type="date" class="form-control start-period" id="start_period" name="start_period" value="{{ old('start_period') }}">
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
                                 <label>End Period (<span class="text-info">Optional</span>)</label>
-                                <input type="date" class="form-control" id="end_period" name="end_period" value="{{ old('end_period') }}">
+                                <input type="date" class="form-control end-period" id="end_period" name="end_period" value="{{ old('end_period') }}">
                             </div>
                         </div>
 
@@ -278,6 +332,7 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Lts</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Charge</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Unit</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Desc</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start Period</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">End Period</th>
@@ -286,7 +341,7 @@
                             </thead>
                             <tbody>
                                 @foreach($cas as $c)
-                                <tr data-id="{{ $c->id_cas }}" data-id-customer="{{ $c->id_customer }}" data-id-shipper="{{ $c->id_shipper }}">
+                                <tr data-id="{{ $c->id_cas }}" data-id-customer="{{ $c->id_customer }}" data-id-shipper="{{ $c->id_shipper }}" data-id-unit="{{ $c->id_unit }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
@@ -305,6 +360,9 @@
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="charge-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($c->charge ?? 0, 0, ',', '.') }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="unit-selected text-sm font-weight-normal mb-0">{{ $unit[$c->id_unit] ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="desc-selected text-sm font-weight-normal mb-0">{{ $c->desc ?? '-' }}</p>
@@ -452,6 +510,7 @@
                 var row = this.closest("tr");
                 var id = row.getAttribute("data-id");
                 var customer = row.getAttribute("data-id-customer");
+                var unit = row.getAttribute("data-id-unit");
                 var shipper = row.getAttribute("data-id-shipper");
                 var lts = row.querySelector(".lts-selected").textContent;
                 var charge = row.querySelector(".charge-selected").textContent.trim();
@@ -463,6 +522,7 @@
                 document.getElementById("id").value = id;
                 document.getElementById("lts").value = lts;
                 document.getElementById("charge").value = charge;
+                document.getElementById("id_unit").value = unit;
 
                 $("#customer").val(customer);
                 $("#customer").select2({
@@ -506,5 +566,42 @@
                 this.value = formatCurrency(this.value);
             });
         });
+
+        // Start Period - End Period
+        var startPeriods = document.getElementsByClassName('start-period');
+        var endPeriods = document.getElementsByClassName('end-period');
+
+        for (let i = 0; i < startPeriods.length; i++) {
+            let startPeriod = startPeriods[i];
+            let endPeriod = endPeriods[i];
+
+            startPeriod.addEventListener('change', function () {
+                if (startPeriod.value) {
+                    endPeriod.min = startPeriod.value;
+                } else {
+                    endPeriod.removeAttribute('min');
+                }
+            });
+
+            endPeriod.addEventListener('change', function () {
+                if (endPeriod.value && startPeriod.value && endPeriod.value < startPeriod.value) {
+                    endPeriod.value = startPeriod.value;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'End Period cannot be earlier than Start Period',
+                        position: 'top-end',
+                        width: '300px',
+                        toast: true,
+                        showConfirmButton: false,
+                        timer: 3500,
+                        timerProgressBar: true,
+                        customClass: {
+                            container: 'swal2-top-end-container'
+                        }
+                    });
+                }
+            });
+        }
     });
 </script>

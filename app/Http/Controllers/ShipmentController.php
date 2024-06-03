@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Company;
 use App\Models\Shipper;
 use App\Models\Ship;
+use App\Models\Unit;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 use App\Imports\SeaShipmentImport;
@@ -39,7 +40,8 @@ class ShipmentController extends Controller
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships', 'groupSeaShipmentLines'));
+        $units = Unit::orderBy('name')->get();
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships', 'units', 'groupSeaShipmentLines'));
     }
 
     public function listSeaShipment() {
@@ -109,8 +111,9 @@ class ShipmentController extends Controller
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
         $companies = Company::orderBy('name')->get();
+        $units = Unit::orderBy('name')->get();
         return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 
-        'ships', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
+        'ships', 'units', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
     }
 
     public function updateSeaShipment(Request $request) {

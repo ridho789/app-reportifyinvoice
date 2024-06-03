@@ -16,6 +16,7 @@ class SeaShipmentLine extends Model
 
     protected $fillable = [
         'id_sea_shipment',
+        'id_unit',
         'date',
         'code',
         'marking',
@@ -30,6 +31,7 @@ class SeaShipmentLine extends Model
         'tot_cbm_1',
         'tot_cbm_2',
         'lts',
+        'qty',
         'desc',
         'state',
         'id_history'
