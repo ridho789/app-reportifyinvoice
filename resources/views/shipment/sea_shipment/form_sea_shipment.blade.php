@@ -293,7 +293,7 @@
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
                                             <input type="text" class="form-control text-center lts-input" name="lts[]" value="{{ $ssl->lts }}" 
-                                            oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
+                                            oninput="this.value = this.value.toUpperCase(); checkLTS(this);" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
                                             <input type="number" class="form-control text-center qty-input" name="qty[]" value="{{ $ssl->qty }}" min="1" placeholder="..." style="border: 0px;">
@@ -1152,6 +1152,24 @@
                     icon.classList.toggle('d-none');
                 });
             });
+        });
+
+        // Function to check the LTS input and add/remove required attribute
+        function checkLTS(element) {
+            const ltsValue = element.value.toUpperCase();
+            const parentRow = element.closest('tr');
+            const qtyInput = parentRow.querySelector('.qty-input');
+            const selectUnit = parentRow.querySelector('.select-unit');
+
+            if (!['LP', 'LPI', 'LPM'].includes(ltsValue)) {
+                qtyInput.removeAttribute('required');
+                selectUnit.removeAttribute('required');
+            }
+        }
+
+        // Apply the checkLTS function on page load for existing values
+        document.querySelectorAll('.lts-input').forEach(function(input) {
+            checkLTS(input);
         });
     });
 
