@@ -299,11 +299,11 @@
                                             <input type="number" class="form-control text-center qty-input" name="qty[]" value="{{ $ssl->qty }}" min="1" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=5%>
-                                            <select class="form-select text-center text-xs select-unit" name="id_unit" style="border: none;">
+                                            <select class="form-select text-center text-xs select-unit" name="id_unit[]" style="border: none;">
                                                 <option value="">-</option>
                                                 @foreach ($units as $u)
                                                 <option value="{{ $u->id_unit }}" 
-                                                    {{ old('id_unit', $seaShipment->id_unit) == $u->id_unit ? 'selected' : '' }}>{{ $u->name }}
+                                                    {{ old('id_unit', $ssl->id_unit) == $u->id_unit ? 'selected' : '' }}>{{ $u->name }}
                                                 </option>
                                                 @endforeach
                                             </select>

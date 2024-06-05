@@ -150,8 +150,17 @@
             @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
                 @foreach($groupSeaShipmentLines as $groupDate => $totals)
                     @php
+                        // Memisahkan bagian-bagian dari key
+                        $parts = explode('-', $groupDate);
+
+                        // Mengambil unit
+                        $unitType = $parts[3] ?? '';
+
                         $date = substr($groupDate, 0, 10);
                         $lts = substr($groupDate, strrpos($groupDate, '-') + 1);
+
+                        // Mengambil hanya nilai dari markings
+                        $markingsValues = array_values($totals['markings']);
 
                         $qty = $totals['total_qty_loose'];
                         $weight = $totals['total_weight'];
@@ -163,6 +172,11 @@
                         // Jika ada cas
                         if ($totals['cas']) {
                             $unit_price = $pricelist + intval($totals['cas']);
+
+                            // Jika LTS = LP. LPI, atau LPM
+                            if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
+                                $unit_price = intval(implode(', ', $markingsValues)) * intval($totals['cas']);
+                            }
                         }
 
                         // Jika ada selisih
@@ -192,14 +206,18 @@
                         }
 
                         $entryRow += ($bl ? 1 : 0) + ($permit ? 1 : 0) + ($transport ? 1 : 0) + ($insurance ? 1 : 0);
-
                         $checkLoopDate = $date;
                         
-                        $amount = $totals['total_cbm2'] * $unit_price;
+                        if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
+                            $amount = $unit_price;
 
-                        // Jika penagihan dengan berat
-                        if ($is_weight) {
-                            $amount = $weight * $unit_price;
+                        } else {
+                            $amount = $totals['total_cbm2'] * $unit_price;
+    
+                            // Jika beralih penagihan dengan berat
+                            if ($is_weight) {
+                                $amount = $weight * $unit_price;
+                            }
                         }
 
                         $totalQty += $qty;
@@ -207,7 +225,7 @@
                         $totalAmount += $amount + $amountCbmDiff + (intval($bl) + intval($permit) + intval($transport) + intval($insurance));
                         $totalCbm += $totals['total_cbm2'] + $totals['cbm_difference'];
 
-                        $groupedMarkings = collect($totals['markings'])->groupBy(function ($marking) {
+                        $groupedMarkings = collect(array_keys($totals['markings']))->groupBy(function ($marking) {
                             // Menentukan pola regex untuk ekstraksi prefix dan nomor
                             preg_match('/^(.*?)([-#\s\.\/]?)\s*(\d*)$/', $marking, $matches);
                             $prefix = $matches[1] ?? '';
@@ -257,9 +275,21 @@
                                     {{ $code ? $code : '' }} : {{ $totals['total_cbm2'] }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                 @else
                                     @if ($inv_type == 'separate')
-                                        {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                        @if (in_array($lts, ['LP', 'LPI', 'LPM']))
+                                            {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ implode(', ', $markingsValues) }} 
+                                            {{ $unitType }} x {{ 'Rp ' . number_format($totals['cas'] ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                        @else
+                                            {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 
+                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                        @endif
+
                                     @else
-                                        {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3
+                                        @if (in_array($lts, ['LP', 'LPI', 'LPM']))
+                                            {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ implode(', ', $markingsValues) }} 
+                                            {{ $unitType }} x {{ 'Rp ' . number_format($totals['cas'] ?? 0, 0, ',', '.') }} )
+                                        @else
+                                            {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3
+                                        @endif
                                     @endif
                                 @endif
                             @else
@@ -267,9 +297,20 @@
                                     {{ $code ? $code : '' }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                 @else
                                     @if ($inv_type == 'separate')
-                                        {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                        @if (in_array($lts, ['LP', 'LPI', 'LPM']))
+                                            {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ implode(', ', $markingsValues) }} 
+                                            {{ $unitType }} x {{ 'Rp ' . number_format($totals['cas'] ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                        @else
+                                            {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                        @endif
+
                                     @else
-                                        {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }}
+                                        @if (in_array($lts, ['LP', 'LPI', 'LPM']))
+                                            {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ implode(', ', $markingsValues) }} 
+                                            {{ $unitType }} x {{ 'Rp ' . number_format($totals['cas'] ?? 0, 0, ',', '.') }} )
+                                        @else
+                                            {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }}
+                                        @endif
                                     @endif
                                 @endif
                             @endif
@@ -282,12 +323,17 @@
                             <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
                         @endif
 
-                        <td width="15%" class="border_left_right text_center">
-                            {{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}
-                            @if ($totals['cas'])
-                                <br> <span style="font-size: smaller;">( +{{ number_format($totals['cas'] ?? 0, 0, ',', '.') }} )</span>
-                            @endif
-                        </td>
+                        @if (in_array($lts, ['LP', 'LPI', 'LPM']))
+                            <td width="15%" class="border_left_right text_center"></td>
+                        @else
+                            <td width="15%" class="border_left_right text_center">
+                                {{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}
+                                @if ($totals['cas'])
+                                    <br> <span style="font-size: smaller;">( +{{ number_format($totals['cas'] ?? 0, 0, ',', '.') }} )</span>
+                                @endif
+                            </td>
+                        @endif
+
                         <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
                     </tr>
 
@@ -383,8 +429,17 @@
             @else
                 @foreach($groupSeaShipmentLines as $groupDate => $totals)
                     @php
+                        // Memisahkan bagian-bagian dari key
+                        $parts = explode('-', $groupDate);
+
+                        // Mengambil unit
+                        $unitType = $parts[3] ?? '';
+                        
                         $date = substr($groupDate, 0, 10);
                         $lts = substr($groupDate, strrpos($groupDate, '-') + 1);
+
+                        // Mengambil hanya nilai dari markings
+                        $markingsValues = array_values($totals['markings']);
 
                         $qty = $totals['total_qty_pkgs'];
                         $cbm = $totals['total_cbm1'];
@@ -395,21 +450,32 @@
                         // Jika ada cas
                         if ($totals['cas']) {
                             $unit_price = $pricelist + intval($totals['cas']);
+
+                            // Jika LTS = LP. LPI, atau LPM
+                            if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
+                                $unit_price = intval(implode(', ', $markingsValues)) * intval($totals['cas']);
+                            }
                         }
 
                         $totalQty += $qty;
                         $totalCbm += $cbm;
                         $totalWeight += $weight;
-                        $amount = $cbm * $unit_price;
 
-                        // Jika beralih penagihan dengan berat
-                        if ($is_weight) {
-                            $amount = $weight * $unit_price;
+                        if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
+                            $amount = $unit_price;
+
+                        } else {
+                            $amount = $cbm * $unit_price;
+    
+                            // Jika beralih penagihan dengan berat
+                            if ($is_weight) {
+                                $amount = $weight * $unit_price;
+                            }
                         }
 
                         $totalAmount += $amount;
 
-                        $groupedMarkings = collect($totals['markings'])->groupBy(function ($marking) {
+                        $groupedMarkings = collect(array_keys($totals['markings']))->groupBy(function ($marking) {
                             // Menentukan pola regex untuk ekstraksi prefix dan nomor
                             preg_match('/^(.*?)([-#\s\.\/]?)\s*(\d*)$/', $marking, $matches);
                             $prefix = $matches[1] ?? '';
@@ -459,13 +525,23 @@
                                 @if (!$totals['cas'])
                                     BATAM {{ implode(', ', $mergedMarkings) }} : {{ $cbm }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                 @else
-                                    BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                    @if (in_array($lts, ['LP', 'LPI', 'LPM']))
+                                        BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 ( {{ implode(', ', $markingsValues) }} 
+                                        {{ $unitType }} x {{ 'Rp ' . number_format($totals['cas'] ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                    @else
+                                        BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                    @endif
                                 @endif
                             @else
                                 @if (!$totals['cas'])
                                     BATAM {{ implode(', ', $mergedMarkings) }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                 @else
-                                    BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                    @if (in_array($lts, ['LP', 'LPI', 'LPM']))
+                                        BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ implode(', ', $markingsValues) }} 
+                                        {{ $unitType }} x {{ 'Rp ' . number_format($totals['cas'] ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                    @else
+                                        BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                    @endif
                                 @endif
                             @endif
                         </td>
@@ -475,12 +551,17 @@
                         @else
                             <td width="10%" class="border_left_right text_center text_uppercase">{{ $cbm }} M3</td>
                         @endif
-                        <td width="15%" class="border_left_right text_center">
-                            {{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}
-                            @if ($totals['cas'])
+                        @if (in_array($lts, ['LP', 'LPI', 'LPM']))
+                            <td width="15%" class="border_left_right text_center"></td>
+                        @else
+                            <td width="15%" class="border_left_right text_center">
+
+                                {{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}
+                                @if ($totals['cas'])
                                 <br> <span style="font-size: smaller;">( +{{ number_format($totals['cas'] ?? 0, 0, ',', '.') }} )</span>
-                            @endif
-                        </td>
+                                @endif
+                            </td>
+                        @endif
                         <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
                     </tr>
 
