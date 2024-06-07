@@ -653,7 +653,7 @@
                                                 @foreach ($groupSeaShipmentLines as $date => $gsl)
                                                 @php
                                                     $checkSeaShipmentBill = null;
-                                                    if ($seaShipmentBill) {
+                                                    if (count($seaShipmentBill) > 0) {
                                                         $checkSeaShipmentBill = $seaShipmentBill->where('date', $date)->first();
                                                     }
                                                 @endphp
@@ -712,6 +712,56 @@
                                                                     value="{{ old('insurance', $checkSeaShipmentBill ? $checkSeaShipmentBill->insurance : '') }}" placeholder="...">
                                                                 </div>
                                                             </div>
+
+                                                            <div class="input-group input-group-static mt-4">
+                                                                <div>
+                                                                    <button id="addButton" class="btn btn-icon btn-3 btn-outline-primary btn-sm" type="button">
+                                                                        <span class="btn-inner--text">+ Add another bill</span>
+                                                                    </button>
+                                                                </div>
+
+                                                                <div id="inputGroupContainer" class="input-group input-group-static">
+                                                                    <!-- Input groups (another bill) will be appended here -->
+                                                                    @php
+                                                                        $checkSeaShipmentAnotherBill = null;
+                                                                        if (isset($seaShipmentAnotherBill) && count($seaShipmentAnotherBill) > 0) {
+                                                                            $checkSeaShipmentAnotherBill = $seaShipmentAnotherBill->where('date', $date)->all();
+                                                                        }
+                                                                    @endphp
+                                                                    @if($checkSeaShipmentAnotherBill)
+                                                                        @foreach($checkSeaShipmentAnotherBill as $data)
+                                                                            <div class="input-group input-group-static mt-4">
+                                                                                <div class="col-5">
+                                                                                    <label>Desc</label>
+                                                                                    <input type="text" class="form-control" name="desc[]" value="{{ old('desc.' . $loop->index, $data->desc) }}" 
+                                                                                    placeholder="...">
+                                                                                </div>
+                                                                                <div class="col-1"></div>
+                                                                                <div class="col-6">
+                                                                                    <label>Charge</label>
+                                                                                    <input type="text" class="form-control anotherBill" name="anotherBill[]" 
+                                                                                    value="{{ old('anotherBill.' . $loop->index, $data->charge) }}" placeholder="...">
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Template for input another bill -->
+                                                            <template id="inputGroupTemplate">
+                                                                <div class="input-group input-group-static mt-4">
+                                                                    <div class="col-5">
+                                                                        <label>Desc</label>
+                                                                        <input type="text" class="form-control" name="desc[]" placeholder="...">
+                                                                    </div>
+                                                                    <div class="col-1"></div>
+                                                                    <div class="col-6">
+                                                                        <label>Charge</label>
+                                                                        <input type="text" class="form-control anotherBill" name="anotherBill[]" placeholder="...">                    
+                                                                    </div>
+                                                                </div>
+                                                            </template>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -725,6 +775,7 @@
                     @else
                         <h5 class="text-sm">Form</h5>
                         <input type="hidden" name="id" value="{{ $seaShipment->id_sea_shipment }}">
+                        <input type="hidden" name="dateBL" value="{{ $seaShipment->date }}">
                         <div class="input-group input-group-static mb-4">
                             <label>Invoice No. <span class="text-danger">*</span></label>
                             @if ($seaShipment->no_inv)
@@ -769,6 +820,56 @@
                                 <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
                             </div>
                         </div>
+
+                        <div class="input-group input-group-static">
+                            <div>
+                                <button id="addButton" class="btn btn-icon btn-3 btn-outline-primary btn-sm" type="button">
+                                    <span class="btn-inner--text">+ Add another bill</span>
+                                </button>
+                            </div>
+
+                            <div id="inputGroupContainer" class="input-group input-group-static">
+                                <!-- Input groups (another bill) will be appended here -->
+                                @php
+                                    $checkSeaShipmentAnotherBill = null;
+                                    if (isset($seaShipmentAnotherBill) && count($seaShipmentAnotherBill) > 0) {
+                                        $checkSeaShipmentAnotherBill = $seaShipmentAnotherBill->where('date', $seaShipment->date)->all();
+                                    }
+                                @endphp
+                                @if($checkSeaShipmentAnotherBill)
+                                    @foreach($checkSeaShipmentAnotherBill as $data)
+                                        <div class="input-group input-group-static mb-4">
+                                            <div class="col-5">
+                                                <label>Desc</label>
+                                                <input type="text" class="form-control" name="desc[]" value="{{ old('desc.' . $loop->index, $data->desc) }}" 
+                                                placeholder="...">
+                                            </div>
+                                            <div class="col-1"></div>
+                                            <div class="col-6">
+                                                <label>Charge</label>
+                                                <input type="text" class="form-control anotherBill" name="anotherBill[]" 
+                                                value="{{ old('anotherBill.' . $loop->index, $data->charge) }}" placeholder="...">
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Template for input another bill -->
+                        <template id="inputGroupTemplate">
+                            <div class="input-group input-group-static mb-4">
+                                <div class="col-5">
+                                    <label>Desc</label>
+                                    <input type="text" class="form-control" name="desc[]" placeholder="...">
+                                </div>
+                                <div class="col-1"></div>
+                                <div class="col-6">
+                                    <label>Charge</label>
+                                    <input type="text" class="form-control anotherBill" name="anotherBill[]" placeholder="...">                    
+                                </div>
+                            </div>
+                        </template>
                         
                         @if ($isWeight)
                         <div class="input-group input-group-static">
@@ -1137,6 +1238,18 @@
                     }
                 });
             });
+
+            let priceAnotherBill = document.querySelectorAll(".anotherBill");
+            priceAnotherBill.forEach(function(anotherBill) {
+                if (anotherBill.value.trim() !== "") {
+                    anotherBill.value = formatCurrency(anotherBill.value);
+                }
+                anotherBill.addEventListener("input", function() {
+                    if (this.value.trim() !== "") {
+                        this.value = formatCurrency(this.value);
+                    }
+                });
+            });
         }
 
         $('#setPrintModal').on('shown.bs.modal', function() {
@@ -1171,6 +1284,37 @@
         document.querySelectorAll('.lts-input').forEach(function(input) {
             checkLTS(input);
         });
+
+        // Add to another bill
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        accordionItems.forEach(item => {
+            const addButton = item.querySelector('#addButton');
+            const inputGroupContainer = item.querySelector('#inputGroupContainer');
+            const inputGroupTemplate = item.querySelector('#inputGroupTemplate');
+
+            if (addButton && inputGroupContainer && inputGroupTemplate) {
+                // Disable addButton initially
+                addButton.disabled = true;
+
+                item.addEventListener('show.bs.collapse', function () {
+                    // Enable addButton when the accordion-item is opened
+                    addButton.disabled = false;
+                });
+
+                item.addEventListener('hide.bs.collapse', function () {
+                    // Disable addButton when the accordion-item is closed
+                    addButton.disabled = true;
+                });
+
+                addButton.addEventListener('click', function() {
+                    const newInputGroup = document.importNode(inputGroupTemplate.content, true);
+                    inputGroupContainer.appendChild(newInputGroup);
+                    formatInputs();
+                });
+            }
+        });
+
+
     });
 
     // Check LTS = LP, LPI or LPM

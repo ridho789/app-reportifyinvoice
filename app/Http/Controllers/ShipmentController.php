@@ -15,6 +15,7 @@ use App\Models\Cas;
 use App\Models\Insurance;
 use App\Models\Pricelist;
 use App\Models\SeaShipmentBill;
+use App\Models\SeaShipmentAnotherBill;
 use App\Models\BillRecap;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
@@ -59,6 +60,7 @@ class ShipmentController extends Controller
         $seaShipment = SeaShipment::where('id_sea_shipment', $id)->first();
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
         $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
+        $seaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
         $checkCbmDiff = false;
 
         $isWeight = false;
@@ -113,7 +115,7 @@ class ShipmentController extends Controller
         $companies = Company::orderBy('name')->get();
         $units = Unit::orderBy('name')->get();
         return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 
-        'ships', 'units', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
+        'ships', 'units', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
     }
 
     public function updateSeaShipment(Request $request) {
@@ -534,6 +536,7 @@ class ShipmentController extends Controller
         $totalBlOverall = 0;
         $totalPermitOverall = 0;
         $totalInsuranceOverall = 0;
+        $totalanotherBillOverall = 0;
 
         if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
             $dataBill = [
@@ -545,23 +548,12 @@ class ShipmentController extends Controller
                 'insurance' => $request->insurance
             ];
         
-            $resultBill = [];
-        
             if ($dataBill) {
                 foreach ($dataBill["dateBL"] as $index => $date) {
                     $transportValue = (int) preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]);
                     $blValue = (int) preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]);
                     $permitValue = (int) preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]);
                     $insuranceValue = (int) preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0]);
-        
-                    $resultBill[] = [
-                        "dateBL" => $dataBill["dateBL"][$index],
-                        "codeShipment" => $dataBill["codeShipment"][$index],
-                        "transport" => $transportValue,
-                        "bl" => $blValue,
-                        "permit" => $permitValue,
-                        "insurance" => $insuranceValue
-                    ];
         
                     $totalTransportOverall += $transportValue;
                     $totalBlOverall += $blValue;
@@ -576,6 +568,7 @@ class ShipmentController extends Controller
                         $checkSeaShipmentBill->permit = $permitValue;
                         $checkSeaShipmentBill->insurance = $insuranceValue;
                         $checkSeaShipmentBill->save();
+
                     } else {
                         SeaShipmentBill::create([
                             'id_sea_shipment' => $seaShipment->id_sea_shipment,
@@ -591,6 +584,66 @@ class ShipmentController extends Controller
             }
         }
 
+        // Another bill
+        $dataAnotherBill = [
+            'date' => $request->dateBL,
+            'desc' => $request->desc,
+            'charge' => $request->anotherBill
+        ];
+
+        $resultAnotherBill = [];
+
+        if ($dataAnotherBill) {
+            $dates = is_array($dataAnotherBill["date"]) ? $dataAnotherBill["date"] : [$dataAnotherBill["date"]];
+            $descs = is_array($dataAnotherBill["desc"]) ? $dataAnotherBill["desc"] : [$dataAnotherBill["desc"]];
+            $charges = is_array($dataAnotherBill["charge"]) ? $dataAnotherBill["charge"] : [$dataAnotherBill["charge"]];
+
+            $maxCount = max(count($descs), count($charges));
+
+            for ($index = 0; $index < $maxCount; $index++) {
+                $date = isset($dates[$index]) ? $dates[$index] : $dates[0];
+                $desc = isset($descs[$index]) ? $descs[$index] : null;
+                $charge = isset($charges[$index]) ? $charges[$index] : null;
+                $anotherBillValue = $charge ? preg_replace("/[^0-9]/", "", $charge) : null;
+
+                // Skip processing if both desc and charge are null or 0
+                if (is_null($desc) && ($anotherBillValue == 0 || is_null($anotherBillValue))) {
+                    $checkSeaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)
+                        ->where('date', $date)
+                        ->first();
+        
+                    if ($checkSeaShipmentAnotherBill) {
+                        $checkSeaShipmentAnotherBill->delete();
+                    }
+                    continue;
+                }
+
+                $resultAnotherBill[] = [
+                    "date" => $date,
+                    "desc" => $desc,
+                    "charge" => $anotherBillValue
+                ];
+    
+                $totalanotherBillOverall += $anotherBillValue;
+    
+                $checkSeaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)
+                    ->where('date', $date)->where('desc', $desc)->where('charge', $anotherBillValue)->first();
+                if ($checkSeaShipmentAnotherBill) {
+                    $checkSeaShipmentAnotherBill->desc = $desc;
+                    $checkSeaShipmentAnotherBill->charge = $anotherBillValue;
+                    $checkSeaShipmentAnotherBill->save();
+                    
+                } else {
+                    SeaShipmentAnotherBill::create([
+                        'id_sea_shipment' => $seaShipment->id_sea_shipment,
+                        'date' => $date,
+                        'desc' => $desc,
+                        'charge' => $anotherBillValue,
+                    ]);
+                }
+            }
+        }
+
         // update data in shipment
         $seaShipment->no_inv = $request->inv_no;
         $seaShipment->term = $request->term;
@@ -598,7 +651,7 @@ class ShipmentController extends Controller
         $seaShipment->printcount += 1;
         $seaShipment->printdate = Carbon::now()->addHours(7);
         $seaShipment->save();
-        
+
         $pdf = PDF::loadView('pdf.generate_invoice', [
             'customer' => $customer,
             'shipper' => $shipper,
@@ -618,7 +671,8 @@ class ShipmentController extends Controller
             'companyName' => $companyName,
             'bill_diff' => $bill_diff,
             'inv_type' => $inv_type,
-            'dataBill' => $dataBill
+            'dataBill' => $dataBill,
+            'dataAnotherBill' => $dataAnotherBill
         ])->setPaper('folio', 'portrait');
 
         // after print create data to bill recap
@@ -640,7 +694,7 @@ class ShipmentController extends Controller
             }
         }
 
-        $amountOther = $totalBlOverall + $totalPermitOverall + $totalTransportOverall + $totalInsuranceOverall;
+        $amountOther = $totalBlOverall + $totalPermitOverall + $totalTransportOverall + $totalInsuranceOverall + $totalanotherBillOverall;
         $amountDiff = $totalCbmDiffOverall * $bill_diff;
 
         if ($isWeight) {

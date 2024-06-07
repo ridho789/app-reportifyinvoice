@@ -145,8 +145,45 @@
                         ];
                     }
                 }
+                
+                // Another Bill
+                $totalanotherBillOverall = 0;
+                if ($dataAnotherBill) {
+                    $resultAnotherBill = [];
+                    $dates = is_array($dataAnotherBill["date"]) ? $dataAnotherBill["date"] : [$dataAnotherBill["date"]];
+                    $descs = is_array($dataAnotherBill["desc"]) ? $dataAnotherBill["desc"] : [$dataAnotherBill["desc"]];
+                    $charges = is_array($dataAnotherBill["charge"]) ? $dataAnotherBill["charge"] : [$dataAnotherBill["charge"]];
+
+                    $maxCount = max(count($descs), count($charges));
+
+                    for ($index = 0; $index < $maxCount; $index++) {
+                        $date = isset($dates[$index]) ? $dates[$index] : $dates[0];
+                        $desc = isset($descs[$index]) ? $descs[$index] : null;
+                        $charge = isset($charges[$index]) ? $charges[$index] : null;
+                        $anotherBillValue = $charge ? preg_replace("/[^0-9]/", "", $charge) : null;
+
+                        if (is_null($desc) && ($anotherBillValue == 0 || is_null($anotherBillValue))) {
+                            continue;
+                        }
+
+                        $resultAnotherBill[] = [
+                            "date" => $date,
+                            "desc" => $desc,
+                            "charge" => $anotherBillValue
+                        ];
+
+                        $totalanotherBillOverall += $anotherBillValue;
+                    }
+                }
+
+                // Set index bill
                 $billIndex = 0;
+
+                // Update row
+                $entryRow += count($resultAnotherBill);
+
             @endphp
+
             @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
                 @foreach($groupSeaShipmentLines as $groupDate => $totals)
                     @php
@@ -193,6 +230,7 @@
                         $permit = null;
                         $transport = null;
                         $insurance = null;
+                        $anotherBillData = null;
 
                         if ($checkLoopDate != $date) {
                             if (isset($resultBill[$billIndex])) {
@@ -202,9 +240,11 @@
                                 $transport = $resultBill[$billIndex]['transport'];
                                 $insurance = $resultBill[$billIndex]['insurance'];
                             }
-                            $billIndex++;
-                        }
 
+                            $billIndex++;
+                        
+                        }
+                        
                         $entryRow += ($bl ? 1 : 0) + ($permit ? 1 : 0) + ($transport ? 1 : 0) + ($insurance ? 1 : 0);
                         $checkLoopDate = $date;
                         
@@ -267,6 +307,7 @@
                             return implode(', ', $merged);
                         })->values()->toArray();
                     @endphp
+                    
                     <tr>
                         <td width="5%" class="border_left_right"></td>
                         <td width="30%" class="border_left_right text_center">
@@ -414,6 +455,20 @@
                     @endphp
                 @endforeach
 
+                <!-- another bill -->
+                @if (count($resultAnotherBill) > 0)
+                    @for ($d = 0; $d < count($resultAnotherBill); $d++)
+                    <tr>
+                        <td width="5%" class="border_left_right"></td>
+                        <td width="30%" class="border_left_right text_center">{{ $resultAnotherBill[$d]['desc'] }}</td>
+                        <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
+                        <td width="10%" class="border_left_right text_center text_uppercase"></td>
+                        <td width="15%" class="border_left_right text_center"></td>
+                        <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($resultAnotherBill[$d]['charge'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    @endfor
+                @endif
+
                 <!-- empty row -->
                 @for ($i = 1; $i <= (17 - $entryRow); $i++)
                     <tr>
@@ -446,7 +501,7 @@
                         $weight = $totals['total_weight'];
                         $unit_price = $pricelist;
                         $entryRow++;
-                        
+
                         // Jika ada cas
                         if ($totals['cas']) {
                             $unit_price = $pricelist + intval($totals['cas']);
@@ -473,7 +528,7 @@
                             }
                         }
 
-                        $totalAmount += $amount;
+                        $totalAmount += $amount + (isset($anotherBillData['charge']) ? intval($anotherBillData['charge']) : 0);
 
                         $groupedMarkings = collect(array_keys($totals['markings']))->groupBy(function ($marking) {
                             // Menentukan pola regex untuk ekstraksi prefix dan nomor
@@ -583,6 +638,20 @@
 
                 @endforeach
 
+                <!-- another bill -->
+                @if (count($resultAnotherBill) > 0)
+                    @for ($d = 0; $d < count($resultAnotherBill); $d++)
+                    <tr>
+                        <td width="5%" class="border_left_right"></td>
+                        <td width="30%" class="border_left_right text_center">{{ $resultAnotherBill[$d]['desc'] }}</td>
+                        <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
+                        <td width="10%" class="border_left_right text_center text_uppercase"></td>
+                        <td width="15%" class="border_left_right text_center"></td>
+                        <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($resultAnotherBill[$d]['charge'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    @endfor
+                @endif
+
                 <!-- empty row -->
                 @for ($i = 1; $i <= (17 - $entryRow); $i++)
                     <tr>
@@ -610,6 +679,10 @@
             </tr>
 
         </table>
+
+        @php
+            $totalAmount += intval($totalanotherBillOverall);
+        @endphp
 
         <table style="margin-top: -1px;">
             <tr>
