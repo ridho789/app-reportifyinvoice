@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ShipperController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\DescController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\BillRecapController;
 use App\Http\Controllers\PricelistController;
@@ -80,6 +81,11 @@ Route::group(['middleware' => ['auth', 'check.role.user:0']], function () {
     Route::get('/unit', [UnitController::class, 'index']);
     Route::post('unit-store', [UnitController::class, 'store']);
     Route::post('unit-update', [UnitController::class, 'update']);
+
+    // Desc
+    Route::get('/desc', [DescController::class, 'index']);
+    Route::post('desc-store', [DescController::class, 'store']);
+    Route::post('desc-update', [DescController::class, 'update']);
 
     // insurance
     Route::get('/insurance', [InsuranceController::class, 'index']);
