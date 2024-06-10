@@ -46,7 +46,7 @@ class ShipmentController extends Controller
     }
 
     public function listSeaShipment() {
-        $allSeaShipment = SeaShipment::orderBy('date')->get();
+        $allSeaShipment = SeaShipment::orderBy('etd')->get();
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');
         $ship = Ship::pluck('name', 'id_ship');
@@ -706,7 +706,7 @@ class ShipmentController extends Controller
         if (!$checkBillRecap) {
             BillRecap::create([
                 'id_sea_shipment' => $seaShipment->id_sea_shipment,
-                'inv_no' => $titleInv,
+                'inv_no' => $invNameGenerate,
                 'freight_type' => 'SEA FREIGHT',
                 'size' => $size,
                 'unit_price' => $pricelist,
@@ -714,7 +714,7 @@ class ShipmentController extends Controller
             ]);
 
         } else {
-            $checkBillRecap->inv_no = $titleInv;
+            $checkBillRecap->inv_no = $invNameGenerate;
             $checkBillRecap->size = $size;
             $checkBillRecap->unit_price = $pricelist;
             $checkBillRecap->amount = $allTotalAmount;

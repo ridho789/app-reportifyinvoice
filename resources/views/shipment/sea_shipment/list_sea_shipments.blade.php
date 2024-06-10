@@ -35,6 +35,7 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Origin</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etd</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Eta</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
                             </thead>
@@ -73,6 +74,13 @@
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $ss->eta)->format('d-M-y') ?? '-' }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        @if ($ss->is_printed)
+                                            <p class="text-sm font-weight-bold mb-0">Printed</p>
+                                        @else
+                                            <p class="text-sm font-weight-bold mb-0 text-primary">Not Printed</p>
+                                        @endif
                                     </td>
                                     <td>
                                         <a href="{{ url('sea_shipment-edit', ['id' => Crypt::encrypt($ss->id_sea_shipment)]) }}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit">
