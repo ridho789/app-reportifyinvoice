@@ -1287,33 +1287,47 @@
 
         // Add to another bill
         const accordionItems = document.querySelectorAll('.accordion-item');
-        accordionItems.forEach(item => {
-            const addButton = item.querySelector('#addButton');
-            const inputGroupContainer = item.querySelector('#inputGroupContainer');
-            const inputGroupTemplate = item.querySelector('#inputGroupTemplate');
+        if (accordionItems.length > 0) {
+            accordionItems.forEach(item => {
+                const addButton = item.querySelector('#addButton');
+                const inputGroupContainer = item.querySelector('#inputGroupContainer');
+                const inputGroupTemplate = item.querySelector('#inputGroupTemplate');
 
-            if (addButton && inputGroupContainer && inputGroupTemplate) {
-                // Disable addButton initially
-                addButton.disabled = true;
-
-                item.addEventListener('show.bs.collapse', function () {
-                    // Enable addButton when the accordion-item is opened
-                    addButton.disabled = false;
-                });
-
-                item.addEventListener('hide.bs.collapse', function () {
-                    // Disable addButton when the accordion-item is closed
+                if (addButton && inputGroupContainer && inputGroupTemplate) {
+                    // Disable addButton initially
                     addButton.disabled = true;
-                });
 
+                    item.addEventListener('show.bs.collapse', function () {
+                        // Enable addButton when the accordion-item is opened
+                        addButton.disabled = false;
+                    });
+
+                    item.addEventListener('hide.bs.collapse', function () {
+                        // Disable addButton when the accordion-item is closed
+                        addButton.disabled = true;
+                    });
+
+                    addButton.addEventListener('click', function() {
+                        const newInputGroup = document.importNode(inputGroupTemplate.content, true);
+                        inputGroupContainer.appendChild(newInputGroup);
+                        formatInputs();
+                    });
+                }
+            });
+
+        } else {
+            const addButton = document.getElementById('addButton');
+            const inputGroupContainer = document.getElementById('inputGroupContainer');
+            const inputGroupTemplate = document.getElementById('inputGroupTemplate').content;
+    
+            if (addButton) {
                 addButton.addEventListener('click', function() {
-                    const newInputGroup = document.importNode(inputGroupTemplate.content, true);
+                    const newInputGroup = document.importNode(inputGroupTemplate, true);
                     inputGroupContainer.appendChild(newInputGroup);
                     formatInputs();
                 });
             }
-        });
-
+        }
 
     });
 
