@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_sea_shipment_another_bill', function (Blueprint $table) {
-            $table->id('id_sea_shipment_another_bill');
+        Schema::create('tbl_sea_shipment_other_bill', function (Blueprint $table) {
+            $table->id('id_sea_shipment_other_bill');
             $table->date('date')->nullable();
-            $table->string('desc')->nullable();
             $table->string('charge')->nullable();
             $table->timestamps();
         });
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_sea_shipment_another_bill');
+        Schema::dropIfExists('tbl_sea_shipment_other_bill');
     }
 };

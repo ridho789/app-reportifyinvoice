@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class SeaShipmentAnotherBill extends Model
 {
     use HasFactory;
-    protected $table = 'tbl_sea_shipment_another_bill';
-    protected $primaryKey = 'id_sea_shipment_another_bill';
+    protected $table = 'tbl_sea_shipment_other_bill';
+    protected $primaryKey = 'id_sea_shipment_other_bill';
 
     protected $fillable = [
         'id_sea_shipment',
+        'id_desc',
         'date',
-        'desc',
         'charge',
     ];
 }

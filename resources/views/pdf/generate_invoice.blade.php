@@ -458,9 +458,12 @@
                 <!-- another bill -->
                 @if (count($resultAnotherBill) > 0)
                     @for ($d = 0; $d < count($resultAnotherBill); $d++)
+                    @php
+                        $checkDesc = $descsData->where('id_desc', $resultAnotherBill[$d]['desc'])->first();
+                    @endphp
                     <tr>
                         <td width="5%" class="border_left_right"></td>
-                        <td width="30%" class="border_left_right text_center">{{ $resultAnotherBill[$d]['desc'] }}</td>
+                        <td width="30%" class="border_left_right text_center">{{ $checkDesc->name }}</td>
                         <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
                         <td width="10%" class="border_left_right text_center text_uppercase"></td>
                         <td width="15%" class="border_left_right text_center"></td>
@@ -641,9 +644,12 @@
                 <!-- another bill -->
                 @if (count($resultAnotherBill) > 0)
                     @for ($d = 0; $d < count($resultAnotherBill); $d++)
+                    @php
+                        $checkDesc = $descsData->where('id_desc', $resultAnotherBill[$d]['desc'])->first();
+                    @endphp
                     <tr>
                         <td width="5%" class="border_left_right"></td>
-                        <td width="30%" class="border_left_right text_center">{{ $resultAnotherBill[$d]['desc'] }}</td>
+                        <td width="30%" class="border_left_right text_center">{{ $checkDesc->name }}</td>
                         <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
                         <td width="10%" class="border_left_right text_center text_uppercase"></td>
                         <td width="15%" class="border_left_right text_center"></td>

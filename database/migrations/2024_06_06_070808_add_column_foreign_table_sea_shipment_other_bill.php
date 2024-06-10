@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tbl_sea_shipment_another_bill', function (Blueprint $table) {
-            $table->unsignedBigInteger('id_sea_shipment')->after('id_sea_shipment_another_bill');
+        Schema::table('tbl_sea_shipment_other_bill', function (Blueprint $table) {
+            $table->unsignedBigInteger('id_sea_shipment')->after('id_sea_shipment_other_bill');
             $table->foreign('id_sea_shipment')->references('id_sea_shipment')->on('tbl_sea_shipment');
+
+            $table->unsignedBigInteger('id_desc')->nullable()->after('id_sea_shipment');
+            $table->foreign('id_desc')->references('id_desc')->on('tbl_descs');
         });
     }
 
@@ -22,9 +25,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tbl_sea_shipment_another_bill', function (Blueprint $table) {
+        Schema::table('tbl_sea_shipment_other_bill', function (Blueprint $table) {
             $table->dropForeign(['id_sea_shipment']);
             $table->dropColumn('id_sea_shipment');
+
+            $table->dropForeign(['id_desc']);
+            $table->dropColumn('id_desc');
         });
     }
 };

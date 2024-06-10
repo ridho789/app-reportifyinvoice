@@ -607,12 +607,12 @@
             
                                 <div class="input-group input-group-static mb-4">
                                     <div class="col-5">
-                                        <label>Banker (<span class="text-info">Opt</span>)</label>
+                                        <label>Banker</label>
                                         <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
                                     </div>
                                     <div class="col-1"></div>
                                     <div class="col-6">
-                                        <label>Account No. (<span class="text-info">Opt</span>)</label>
+                                        <label>Account No.</label>
                                         <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
                                     </div>
                                 </div>
@@ -678,44 +678,47 @@
                                                     <div id="collapseOne-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="headingOne-{{ $loop->index }}" 
                                                     data-bs-parent="#accordionRental">
                                                         <div class="accordion-body">
+                                                            @php
+                                                                $marginTopCode = $checkCbmDiff ? '3.5px' : '3px';
+                                                            @endphp
+                                                            <div class="input-group input-group-static mb-4" style="margin-top: {{ $marginTopCode }};">
+                                                                <label>Code - Narita / CNG / Other</label>
+                                                                <input type="text" class="form-control" id="codeShipment-{{ $loop->index }}" name="codeShipment[]" 
+                                                                value="{{ old('codeShipment', $checkSeaShipmentBill ? $checkSeaShipmentBill->code : '') }}" 
+                                                                oninput="this.value = this.value.toUpperCase()" placeholder="...">
+                                                            </div>
+
                                                             <div class="input-group input-group-static mb-4">
                                                                 <div class="col-5">
-                                                                    <label>Code (<span class="text-info">Opt</span>)</label>
-                                                                    <input type="text" class="form-control" id="codeShipment-{{ $loop->index }}" name="codeShipment[]" 
-                                                                    value="{{ old('codeShipment', $checkSeaShipmentBill ? $checkSeaShipmentBill->code : '') }}" 
-                                                                    oninput="this.value = this.value.toUpperCase()" placeholder="...">
+                                                                    <label>BL</label>
+                                                                    <input type="text" class="form-control bl" id="bl-{{ $loop->index }}" name="bl[]" 
+                                                                    value="{{ old('bl', $checkSeaShipmentBill ? $checkSeaShipmentBill->bl : '') }}" placeholder="...">
                                                                 </div>
                                                                 <div class="col-1"></div>
                                                                 <div class="col-6">
-                                                                    <label>Transport Bill (<span class="text-info">Opt</span>)</label>
+                                                                    <label>Permit</label>
+                                                                    <input type="text" class="form-control permit" id="permit-{{ $loop->index }}" name="permit[]" 
+                                                                    value="{{ old('permit', $checkSeaShipmentBill ? $checkSeaShipmentBill->permit : '') }}" placeholder="...">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="input-group input-group-static mb-4">
+                                                                <div class="col-5">
+                                                                    <label>Insurance</label>
+                                                                    <input type="text" class="form-control insurance" id="insurance-{{ $loop->index }}" name="insurance[]" 
+                                                                    value="{{ old('insurance', $checkSeaShipmentBill ? $checkSeaShipmentBill->insurance : '') }}" placeholder="...">
+                                                                </div>
+                                                                <div class="col-1"></div>
+                                                                <div class="col-6">
+                                                                    <label>Transport</label>
                                                                     <input type="text" class="form-control transport" name="transport[]" id="transport-{{ $loop->index }}" 
                                                                     value="{{ old('transport', $checkSeaShipmentBill ? $checkSeaShipmentBill->transport : '') }}" placeholder="...">
                                                                 </div>
                                                             </div>
 
-                                                            <div class="input-group input-group-static mb-0">
-                                                                <div class="col-3">
-                                                                    <label>BL (<span class="text-info">Opt</span>)</label>
-                                                                    <input type="text" class="form-control bl" id="bl-{{ $loop->index }}" name="bl[]" 
-                                                                    value="{{ old('bl', $checkSeaShipmentBill ? $checkSeaShipmentBill->bl : '') }}" placeholder="...">
-                                                                </div>
-                                                                <div class="col-1"></div>
-                                                                <div class="col-3">
-                                                                    <label>Permit (<span class="text-info">Opt</span>)</label>
-                                                                    <input type="text" class="form-control permit" id="permit-{{ $loop->index }}" name="permit[]" 
-                                                                    value="{{ old('permit', $checkSeaShipmentBill ? $checkSeaShipmentBill->permit : '') }}" placeholder="...">
-                                                                </div>
-                                                                <div class="col-1"></div>
-                                                                <div class="col-4">
-                                                                    <label>Insurance (<span class="text-info">Opt</span>)</label>
-                                                                    <input type="text" class="form-control insurance" id="insurance-{{ $loop->index }}" name="insurance[]" 
-                                                                    value="{{ old('insurance', $checkSeaShipmentBill ? $checkSeaShipmentBill->insurance : '') }}" placeholder="...">
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="input-group input-group-static mt-4">
+                                                            <div class="input-group input-group-static">
                                                                 <div>
-                                                                    <button id="addButton" class="btn btn-icon btn-3 btn-outline-primary btn-sm" type="button">
+                                                                    <button id="addButton" class="btn btn-outline-primary btn-sm" type="button">
                                                                         <span class="btn-inner--text">+ Add another bill</span>
                                                                     </button>
                                                                 </div>
@@ -730,11 +733,22 @@
                                                                     @endphp
                                                                     @if($checkSeaShipmentAnotherBill)
                                                                         @foreach($checkSeaShipmentAnotherBill as $data)
-                                                                            <div class="input-group input-group-static mt-4">
+                                                                            <div class="input-group input-group-static mb-4">
                                                                                 <div class="col-5">
-                                                                                    <label>Desc</label>
-                                                                                    <input type="text" class="form-control" name="desc[]" value="{{ old('desc.' . $loop->index, $data->desc) }}" 
-                                                                                    placeholder="...">
+                                                                                    <div class="input-group input-group-static mb-1">
+                                                                                        <label class="text-sm">Desc</label>
+                                                                                    </div>
+                                                                                    <div class="input-group input-group-static mb-0">
+                                                                                        <select class="form-select select-company" name="id_desc[]" 
+                                                                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                                                                            <option value="">...</option>
+                                                                                            @foreach ($descs as $d)
+                                                                                            <option value="{{ $d->id_desc }}" {{ old('id_desc.' . $loop->index, $data->id_desc) == 
+                                                                                                $d->id_desc ? 'selected' : '' }}>{{ $d->name }}
+                                                                                            </option>
+                                                                                            @endforeach
+                                                                                        </select>
+                                                                                    </div>
                                                                                 </div>
                                                                                 <div class="col-1"></div>
                                                                                 <div class="col-6">
@@ -750,10 +764,20 @@
 
                                                             <!-- Template for input another bill -->
                                                             <template id="inputGroupTemplate">
-                                                                <div class="input-group input-group-static mt-4">
+                                                                <div class="input-group input-group-static mb-4">
                                                                     <div class="col-5">
-                                                                        <label>Desc</label>
-                                                                        <input type="text" class="form-control" name="desc[]" placeholder="...">
+                                                                        <div class="input-group input-group-static mb-1">
+                                                                            <label class="text-sm">Desc</label>
+                                                                        </div>
+                                                                        <div class="input-group input-group-static mb-0">
+                                                                            <select class="form-select select-company" name="id_desc[]" 
+                                                                            style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                                                                <option value="">...</option>
+                                                                                @foreach ($descs as $d)
+                                                                                <option value="{{ $d->id_desc }}" {{ old('id_desc') == $d->id_desc ? 'selected' : '' }}>{{ $d->name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="col-1"></div>
                                                                     <div class="col-6">
@@ -811,19 +835,19 @@
     
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
-                                <label>Banker (<span class="text-info">Optional</span>)</label>
+                                <label>Banker</label>
                                 <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <label>Account No. (<span class="text-info">Optional</span>)</label>
+                                <label>Account No.</label>
                                 <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
                             </div>
                         </div>
 
                         <div class="input-group input-group-static">
                             <div>
-                                <button id="addButton" class="btn btn-icon btn-3 btn-outline-primary btn-sm" type="button">
+                                <button id="addButton" class="btn btn-outline-primary btn-sm" type="button">
                                     <span class="btn-inner--text">+ Add another bill</span>
                                 </button>
                             </div>
@@ -840,9 +864,20 @@
                                     @foreach($checkSeaShipmentAnotherBill as $data)
                                         <div class="input-group input-group-static mb-4">
                                             <div class="col-5">
-                                                <label>Desc</label>
-                                                <input type="text" class="form-control" name="desc[]" value="{{ old('desc.' . $loop->index, $data->desc) }}" 
-                                                placeholder="...">
+                                                <div class="input-group input-group-static mb-1">
+                                                    <label class="text-sm">Desc</label>
+                                                </div>
+                                                <div class="input-group input-group-static mb-0">
+                                                    <select class="form-select select-company" name="id_desc[]" 
+                                                    style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                                        <option value="">...</option>
+                                                        @foreach ($descs as $d)
+                                                        <option value="{{ $d->id_desc }}" {{ old('id_desc.' . $loop->index, $data->id_desc) == 
+                                                            $d->id_desc ? 'selected' : '' }}>{{ $d->name }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="col-1"></div>
                                             <div class="col-6">
@@ -860,8 +895,18 @@
                         <template id="inputGroupTemplate">
                             <div class="input-group input-group-static mb-4">
                                 <div class="col-5">
-                                    <label>Desc</label>
-                                    <input type="text" class="form-control" name="desc[]" placeholder="...">
+                                    <div class="input-group input-group-static mb-1">
+                                        <label class="text-sm">Desc</label>
+                                    </div>
+                                    <div class="input-group input-group-static mb-0">
+                                        <select class="form-select select-company" name="id_desc[]" 
+                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                            <option value="">...</option>
+                                            @foreach ($descs as $d)
+                                            <option value="{{ $d->id_desc }}" {{ old('id_desc') == $d->id_desc ? 'selected' : '' }}>{{ $d->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="col-1"></div>
                                 <div class="col-6">

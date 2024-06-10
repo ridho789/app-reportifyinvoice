@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\Shipper;
 use App\Models\Ship;
 use App\Models\Unit;
+use App\Models\Desc;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 use App\Imports\SeaShipmentImport;
@@ -114,8 +115,9 @@ class ShipmentController extends Controller
         $ships = Ship::orderBy('name')->get();
         $companies = Company::orderBy('name')->get();
         $units = Unit::orderBy('name')->get();
+        $descs = Desc::orderBy('name')->get();
         return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 
-        'ships', 'units', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
+        'ships', 'units', 'descs', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
     }
 
     public function updateSeaShipment(Request $request) {
@@ -323,7 +325,6 @@ class ShipmentController extends Controller
             // amount
             $cbm = $totals['total_cbm2'] != 0 ? $totals['total_cbm2'] : $totals['total_cbm1'];
             $weight = $totals['total_weight'];
-
             
             if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
                 $qtyUnit = intval($group->first()->qty);
@@ -450,6 +451,7 @@ class ShipmentController extends Controller
         $customer = Customer::where('id_customer', $seaShipment->id_customer)->first();
         $shipper = Shipper::where('id_shipper', $seaShipment->id_shipper)->first();
         $company = Company::where('id_company', $request->id_company)->first();
+        $descsData = Desc::orderBy('name')->get();
 
         // update company if changed in customer
         if ($customer->id_company != $request->id_company) {
@@ -587,7 +589,7 @@ class ShipmentController extends Controller
         // Another bill
         $dataAnotherBill = [
             'date' => $request->dateBL,
-            'desc' => $request->desc,
+            'desc' => $request->id_desc,
             'charge' => $request->anotherBill
         ];
 
@@ -627,9 +629,9 @@ class ShipmentController extends Controller
                 $totalanotherBillOverall += $anotherBillValue;
     
                 $checkSeaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)
-                    ->where('date', $date)->where('desc', $desc)->where('charge', $anotherBillValue)->first();
+                    ->where('date', $date)->where('id_desc', $desc)->where('charge', $anotherBillValue)->first();
                 if ($checkSeaShipmentAnotherBill) {
-                    $checkSeaShipmentAnotherBill->desc = $desc;
+                    $checkSeaShipmentAnotherBill->id_desc = $desc;
                     $checkSeaShipmentAnotherBill->charge = $anotherBillValue;
                     $checkSeaShipmentAnotherBill->save();
                     
@@ -637,7 +639,7 @@ class ShipmentController extends Controller
                     SeaShipmentAnotherBill::create([
                         'id_sea_shipment' => $seaShipment->id_sea_shipment,
                         'date' => $date,
-                        'desc' => $desc,
+                        'id_desc' => $desc,
                         'charge' => $anotherBillValue,
                     ]);
                 }
@@ -672,7 +674,8 @@ class ShipmentController extends Controller
             'bill_diff' => $bill_diff,
             'inv_type' => $inv_type,
             'dataBill' => $dataBill,
-            'dataAnotherBill' => $dataAnotherBill
+            'dataAnotherBill' => $dataAnotherBill,
+            'descsData' => $descsData
         ])->setPaper('folio', 'portrait');
 
         // after print create data to bill recap
