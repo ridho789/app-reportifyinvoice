@@ -16,6 +16,7 @@ class Customer extends Model
 
     protected $fillable = [
         'name',
+        'discount',
         'shipper_ids',
         'bill_diff',
         'inv_type',

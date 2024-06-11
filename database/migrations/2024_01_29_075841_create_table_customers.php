@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_customer');
             $table->unsignedBigInteger('id_history')->nullable();
             $table->string('name');
+            $table->string('discount')->nullable();
             $table->string('shipper_ids')->nullable();
             $table->string('bill_diff')->nullable();
             $table->string('inv_type')->nullable();

@@ -41,13 +41,19 @@
                         <form action="{{ url('customer-store') }}" method="POST">
                             @csrf
                             <div class="row">
-                                <div class="col-lg-6 mb-4">
+                                <div class="col-lg-4 mb-4">
                                     <div class="input-group input-group-static">
                                         <label>Enter a customer</label>
                                         <input type="text" name="customer" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 mb-4">
+                                <div class="col-lg-4 mb-4">
+                                    <div class="input-group input-group-static">
+                                        <label>Enter a discount</label>
+                                        <input type="text" name="discount" id="discount" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 mb-4">
                                     <div class="input-group input-group-static text-xs">
                                         @if (count($companies) > 0)
                                             <label style="margin-left: -1px; margin-bottom: 11px;">Select a company</label>
@@ -102,13 +108,19 @@
                             @csrf
                             <input type="hidden" id="edit-id" name="id">
                             <div class="row">
-                                <div class="col-lg-6 mb-4">
+                                <div class="col-lg-4 mb-4">
                                     <div class="input-group input-group-static">
                                         <label>Enter a customer</label>
                                         <input type="text" name="customer" id="edit-customer" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 mb-4">
+                                <div class="col-lg-4 mb-4">
+                                    <div class="input-group input-group-static">
+                                        <label>Enter a discount</label>
+                                        <input type="text" name="discount" id="edit-discount" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 mb-4">
                                     <div class="input-group input-group-static text-xs">
                                         @if (count($companies) > 0)
                                             <label style="margin-left: -1px; margin-bottom: 11px;">Select a company</label>
@@ -180,7 +192,11 @@
                                         </div>
                                     </td>
                                     <td class="name-customer-selected">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $c->name }}</p>
+                                        @if ($c->discount && $c->discount > 0)
+                                            <p class="text-sm font-weight-normal text-primary mb-0">{{ $c->name }}</p>
+                                        @else
+                                            <p class="text-sm font-weight-normal mb-0">{{ $c->name }}</p>
+                                        @endif
                                     </td>
                                     <td class="shipper-selected align-middle text-center text-sm">
                                         @php
@@ -210,6 +226,7 @@
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
                                     </td>
+                                    <td style="display: none;" class="discount-selected">{{ 'Rp ' . number_format($c->discount ?? 0, 0, ',', '.') }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -250,6 +267,26 @@
         }
     }, 3500);
 
+    function formatCurrency(num) {
+        num = num.toString().replace(/[^\d-]/g, '');
+
+        num = num.replace(/-+/g, (match, offset) => offset > 0 ? "" : "-");
+
+        let isNegative = false;
+        if (num.startsWith("-")) {
+            isNegative = true;
+            num = num.slice(1);
+        }
+
+        let formattedNum = "Rp " + Math.abs(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+        if (isNegative) {
+            formattedNum = "-" + formattedNum;
+        }
+
+        return formattedNum;
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         const toggleFormButton = document.getElementById('btn-new-customer');
         const myForm = document.getElementById('form-new-customer');
@@ -274,6 +311,7 @@
                 var row = this.closest("tr");
                 var id = row.getAttribute("data-id");
                 var customer = row.querySelector(".name-customer-selected").textContent;
+                var discount = row.querySelector(".discount-selected").textContent;
                 var company = row.getAttribute("data-id-company");
                 var shipperIds = row.getAttribute("data-shipper").split(',');
                 $('#edit-shipper').val(shipperIds).trigger('change');
@@ -291,6 +329,7 @@
 
                 document.getElementById("edit-id").value = id;
                 document.getElementById("edit-customer").value = customer.trim();
+                document.getElementById("edit-discount").value = discount.trim();
                 $("#edit-company").val(company);
                 $("#edit-company").select2({
                     placeholder: "Please choose..",
@@ -304,6 +343,22 @@
                 if (myForm.style.display === 'block') {
                     myForm.style.display = 'none';
                 }
+            });
+        });
+
+        // Input discount
+        let priceDiscount = document.querySelectorAll("#discount");
+        priceDiscount.forEach(function(discount) {
+            discount.addEventListener("input", function() {
+                this.value = formatCurrency(this.value);
+            });
+        });
+
+        // Edit discount
+        let editDiscounts = document.querySelectorAll("#edit-discount");
+        editDiscounts.forEach(function(editDiscount) {
+            editDiscount.addEventListener("input", function() {
+                this.value = formatCurrency(this.value);
             });
         });
     });

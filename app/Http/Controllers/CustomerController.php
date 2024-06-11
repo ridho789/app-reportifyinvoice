@@ -20,12 +20,14 @@ class CustomerController extends Controller
 
     public function store(Request $request) {
         $shipperIds = $request->id_shipper ?? [];
+        $numericDiscount = preg_replace("/[^0-9]/", "", explode(",", $request->discount)[0]);
         
         $customer = Customer::updateOrCreate(
             ['name' => $request->customer],
             [
                 'shipper_ids' => implode(',', $shipperIds),
-                'id_company' => $request->id_company
+                'id_company' => $request->id_company,
+                'discount' => $numericDiscount
             ]
         );
     
@@ -42,6 +44,7 @@ class CustomerController extends Controller
     }
 
     public function update(Request $request) {
+        $numericEditDiscount = preg_replace("/[^0-9]/", "", explode(",", $request->discount)[0]);
         $existingCustomer = Customer::where('id_customer', $request->id)->firstOrFail();
         $currentCustomer = $existingCustomer->name;
     
@@ -62,6 +65,7 @@ class CustomerController extends Controller
 
             } else {
                 $existingCustomer->name = $request->customer;
+                $existingCustomer->discount = $numericEditDiscount;
                 $existingCustomer->id_company = $request->id_company;
                 $existingCustomer->shipper_ids = $shipperIds;
                 $existingCustomer->save();
@@ -70,6 +74,7 @@ class CustomerController extends Controller
             }
 
         } else {
+            $existingCustomer->discount = $numericEditDiscount;
             $existingCustomer->id_company = $request->id_company;
             $existingCustomer->shipper_ids = $shipperIds;
             $existingCustomer->save();
