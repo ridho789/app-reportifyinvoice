@@ -740,7 +740,7 @@
                                                                                     </div>
                                                                                     <div class="input-group input-group-static mb-0">
                                                                                         <select class="form-select select-company" name="id_desc[]" 
-                                                                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                                                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                                                                             <option value="">...</option>
                                                                                             @foreach ($descs as $d)
                                                                                             <option value="{{ $d->id_desc }}" {{ old('id_desc.' . $loop->index, $data->id_desc) == 
@@ -771,7 +771,7 @@
                                                                         </div>
                                                                         <div class="input-group input-group-static mb-0">
                                                                             <select class="form-select select-company" name="id_desc[]" 
-                                                                            style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                                                            style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                                                                 <option value="">...</option>
                                                                                 @foreach ($descs as $d)
                                                                                 <option value="{{ $d->id_desc }}" {{ old('id_desc') == $d->id_desc ? 'selected' : '' }}>{{ $d->name }}</option>
@@ -869,7 +869,7 @@
                                                 </div>
                                                 <div class="input-group input-group-static mb-0">
                                                     <select class="form-select select-company" name="id_desc[]" 
-                                                    style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                                    style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                                         <option value="">...</option>
                                                         @foreach ($descs as $d)
                                                         <option value="{{ $d->id_desc }}" {{ old('id_desc.' . $loop->index, $data->id_desc) == 
@@ -900,7 +900,7 @@
                                     </div>
                                     <div class="input-group input-group-static mb-0">
                                         <select class="form-select select-company" name="id_desc[]" 
-                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                             <option value="">...</option>
                                             @foreach ($descs as $d)
                                             <option value="{{ $d->id_desc }}" {{ old('id_desc') == $d->id_desc ? 'selected' : '' }}>{{ $d->name }}</option>
