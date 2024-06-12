@@ -62,7 +62,7 @@
 
                         @if (count($customers) > 0)
                             <div class="input-group input-group-static mb-2">
-                                <label>Customer (<span class="text-info">Optional</span>)</label>
+                                <label>Customer </label>
                             </div>
                             <div class="input-group input-group-static text-xs mb-4">
                                 <select class="form-select select-new-cust" name="id_customer" multiple style="width: 100%;">
@@ -73,7 +73,7 @@
                             </div>
                         @else
                             <div class="input-group input-group-static mb-2">
-                                <label>Customer (<span class="text-info">Optional</span>)</label>
+                                <label>Customer </label>
                             </div>
                             <div class="input-group input-group-static text-xs mb-4">
                                 <select class="form-control" disabled>
@@ -84,7 +84,7 @@
 
                         @if (count($shippers) > 0)
                             <div class="input-group input-group-static mb-2">
-                                <label>Shipper (<span class="text-info">Optional</span>)</label>
+                                <label>Shipper </label>
                             </div>
                             <div class="input-group input-group-static text-xs mb-4">
                                 <select class="form-select select-new-shipper" name="id_shipper" multiple style="width: 100%;">
@@ -95,7 +95,7 @@
                             </div>
                         @else
                             <div class="input-group input-group-static mb-2">
-                                <label>Shipper (<span class="text-info">Optional</span>)</label>
+                                <label>Shipper </label>
                             </div>
                             <div class="input-group input-group-static text-xs mb-4">
                                 <select class="form-control" disabled>
@@ -117,10 +117,10 @@
                         </div>
 
                         <div class="input-group input-group-static mb-1">
-                            <label>Origin (<span class="text-info">Optional</span>)</label>
+                            <label>Origin <span class="text-danger">*</span></label>
                         </div>
                         <div class="input-group input-group-static mb-4">
-                            <select class="form-select text-left" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                            <select class="form-select text-left" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
                                 <option value="">...</option>
                                 <option value="BTH-JKT">BTH-JKT</option>
                                 <option value="BTH-SIN">BTH-SIN</option>
@@ -133,7 +133,7 @@
                             <div class="col-5">
                                 @if (count($units) > 0)
                                     <div class="input-group input-group-static">
-                                        <label>Unit (<span class="text-info">Optional</span>)</label>
+                                        <label>Unit </label>
                                     </div>
                                     <div class="input-group input-group-static text-xs">
                                         <select class="form-select select-new-unit" name="id_unit" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
@@ -145,7 +145,7 @@
                                     </div>
                                 @else
                                     <div class="input-group input-group-static">
-                                        <label>Unit (<span class="text-info">Optional</span>)</label>
+                                        <label>Unit </label>
                                     </div>
                                     <div class="input-group input-group-static text-xs">
                                         <select class="form-control" disabled>
@@ -156,19 +156,19 @@
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <label>Desc (<span class="text-info">Optional</span>)</label>
+                                <label>Desc </label>
                                 <input type="text" class="form-control" id="new-desc" name="new_desc" value="{{ old('new-desc') }}" placeholder="...">
                             </div>
                         </div>
 
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
-                                <label>Start Period (<span class="text-info">Optional</span>)</label>
+                                <label>Start Period </label>
                                 <input type="date" class="form-control start-period" id="new_start_period" name="new_start_period" value="{{ old('new_start_period') }}">
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <label>End Period (<span class="text-info">Optional</span>)</label>
+                                <label>End Period </label>
                                 <input type="date" class="form-control end-period" id="new_end_period" name="new_end_period" value="{{ old('new_end_period') }}">
                             </div>
                         </div>
@@ -200,7 +200,7 @@
 
                         @if (count($customers) > 0)
                             <div class="input-group input-group-static mb-1">
-                                <label>Customer (<span class="text-info">Optional</span>)</label>
+                                <label>Customer </label>
                             </div>
                             <div class="input-group input-group-static text-xs mb-4">
                                 <select class="form-select select-new-cust" id="customer" name="id_customer" multiple style="width: 100%;">
@@ -211,7 +211,7 @@
                             </div>
                         @else
                             <div class="input-group input-group-static mb-1">
-                                <label>Customer (<span class="text-info">Optional</span>)</label>
+                                <label>Customer </label>
                             </div>
                             <div class="input-group input-group-static text-xs mb-4">
                                 <select class="form-control" disabled>
@@ -222,7 +222,7 @@
 
                         @if (count($shippers) > 0)
                             <div class="input-group input-group-static mb-1">
-                                <label>Shipper (<span class="text-info">Optional</span>)</label>
+                                <label>Shipper </label>
                             </div>
                             <div class="input-group input-group-static text-xs mb-4">
                                 <select class="form-select select-new-shipper" id="shipper" name="id_shipper" multiple style="width: 100%;">
@@ -233,7 +233,7 @@
                             </div>
                         @else
                             <div class="input-group input-group-static mb-1">
-                                <label>Shipper (<span class="text-info">Optional</span>)</label>
+                                <label>Shipper </label>
                             </div>
                             <div class="input-group input-group-static text-xs mb-4">
                                 <select class="form-control" disabled>
@@ -255,10 +255,10 @@
                         </div>
 
                         <div class="input-group input-group-static mb-1">
-                            <label>Origin (<span class="text-info">Optional</span>)</label>
+                            <label>Origin <span class="text-danger">*</span></label>
                         </div>
                         <div class="input-group input-group-static mb-4">
-                            <select class="form-select text-left" id="origin" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                            <select class="form-select text-left" id="origin" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
                                 <option value="">...</option>
                                 <option value="BTH-JKT">BTH-JKT</option>
                                 <option value="BTH-SIN">BTH-SIN</option>
@@ -271,7 +271,7 @@
                             <div class="col-5">
                                 @if (count($units) > 0)
                                     <div class="input-group input-group-static">
-                                        <label>Unit (<span class="text-info">Optional</span>)</label>
+                                        <label>Unit </label>
                                     </div>
                                     <div class="input-group input-group-static text-xs">
                                         <select class="form-select select-new-unit" id="id_unit" name="id_unit" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
@@ -283,7 +283,7 @@
                                     </div>
                                 @else
                                     <div class="input-group input-group-static">
-                                        <label>Unit (<span class="text-info">Optional</span>)</label>
+                                        <label>Unit </label>
                                     </div>
                                     <div class="input-group input-group-static text-xs">
                                         <select class="form-control" disabled>
@@ -294,19 +294,19 @@
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <label>Desc (<span class="text-info">Optional</span>)</label>
+                                <label>Desc </label>
                                 <input type="text" class="form-control" id="desc" name="desc" value="{{ old('desc') }}" placeholder="...">
                             </div>
                         </div>
 
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
-                                <label>Start Period (<span class="text-info">Optional</span>)</label>
+                                <label>Start Period </label>
                                 <input type="date" class="form-control start-period" id="start_period" name="start_period" value="{{ old('start_period') }}">
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <label>End Period (<span class="text-info">Optional</span>)</label>
+                                <label>End Period </label>
                                 <input type="date" class="form-control end-period" id="end_period" name="end_period" value="{{ old('end_period') }}">
                             </div>
                         </div>
