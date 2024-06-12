@@ -299,10 +299,12 @@ class ShipmentController extends Controller
             // set cas
             $cas = null;
             $lts = $group->first()->lts;
+            $idUnit = $group->first()->id_unit;
 
             $cas = Cas::where('id_customer', $seaShipment->id_customer)
                     ->where('id_shipper', $seaShipment->id_shipper)
                     ->where('lts', $lts)
+                    ->where('id_unit', $idUnit)
                     ->where(function ($query) use ($seaShipment) {
                         $query->whereNull('start_period')
                             ->whereNull('end_period')
@@ -311,9 +313,9 @@ class ShipmentController extends Controller
                             ->orWhere('start_period', '>=', $seaShipment->date)
                             ->whereNull('end_period');
                     })->value('charge') ?? 
-                Cas::where('id_customer', $seaShipment->id_customer)->whereNull('id_shipper')->where('lts', $lts)->value('charge') ??
-                Cas::whereNull('id_customer')->where('id_shipper', $seaShipment->id_shipper)->where('lts', $lts)->value('charge') ??
-                Cas::whereNull('id_customer')->whereNull('id_shipper')->where('lts', $lts)->value('charge');
+                Cas::where('id_customer', $seaShipment->id_customer)->whereNull('id_shipper')->where('lts', $lts)->where('id_unit', $idUnit)->value('charge') ??
+                Cas::whereNull('id_customer')->where('id_shipper', $seaShipment->id_shipper)->where('lts', $lts)->where('id_unit', $idUnit)->value('charge') ??
+                Cas::whereNull('id_customer')->whereNull('id_shipper')->where('lts', $lts)->where('id_unit', $idUnit)->value('charge');
 
             $totals['cas'] = $cas;
             $totalCasOverall += $totals['cas'];
