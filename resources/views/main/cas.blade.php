@@ -115,6 +115,20 @@
                                 <input type="text" class="form-control" id="new-charge" name="new_charge" value="{{ old('new-charge') }}" placeholder="..." required>
                             </div>
                         </div>
+
+                        <div class="input-group input-group-static mb-1">
+                            <label>Origin (<span class="text-info">Optional</span>)</label>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select text-left" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                <option value="">...</option>
+                                <option value="BTH-JKT">BTH-JKT</option>
+                                <option value="BTH-SIN">BTH-SIN</option>
+                                <option value="SIN-BTH">SIN-BTH</option>
+                                <option value="SIN-JKT">SIN-JKT</option>
+                            </select>
+                        </div>
+
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 @if (count($units) > 0)
@@ -239,6 +253,20 @@
                                 <input type="text" class="form-control" id="charge" name="charge" value="{{ old('charge') }}" placeholder="..." required>
                             </div>
                         </div>
+
+                        <div class="input-group input-group-static mb-1">
+                            <label>Origin (<span class="text-info">Optional</span>)</label>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select text-left" id="origin" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                <option value="">...</option>
+                                <option value="BTH-JKT">BTH-JKT</option>
+                                <option value="BTH-SIN">BTH-SIN</option>
+                                <option value="SIN-BTH">SIN-BTH</option>
+                                <option value="SIN-JKT">SIN-JKT</option>
+                            </select>
+                        </div>
+
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 @if (count($units) > 0)
@@ -332,6 +360,7 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Lts</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Charge</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Origin</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Unit</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Desc</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start Period</th>
@@ -360,6 +389,9 @@
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="charge-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($c->charge ?? 0, 0, ',', '.') }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="origin-selected text-sm font-weight-normal mb-0">{{ $c->origin ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="unit-selected text-sm font-weight-normal mb-0">{{ $unit[$c->id_unit] ?? '-' }}</p>
@@ -514,6 +546,7 @@
                 var shipper = row.getAttribute("data-id-shipper");
                 var lts = row.querySelector(".lts-selected").textContent;
                 var charge = row.querySelector(".charge-selected").textContent.trim();
+                var origin = row.querySelector(".origin-selected").textContent;
                 var desc = row.querySelector(".desc-selected").textContent;
 
                 const chargeConvert = parseFloat(charge);
@@ -522,6 +555,7 @@
                 document.getElementById("id").value = id;
                 document.getElementById("lts").value = lts;
                 document.getElementById("charge").value = charge;
+                document.getElementById("origin").value = origin;
                 document.getElementById("id_unit").value = unit;
 
                 $("#customer").val(customer);

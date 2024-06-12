@@ -63,10 +63,10 @@ class CasImport implements ToCollection
 
             // Unit
             $IdUnit = null;
-            if ($row[4]) {
-                $checkUnit = Unit::where('name', 'like', '%' . $row[0] . '%')->first();
+            if ($row[5]) {
+                $checkUnit = Unit::where('name', 'like', '%' . $row[5] . '%')->first();
                 if (empty($checkUnit)) {
-                    $checkUnit = Unit::create(['name' => strtoupper($row[4])]);
+                    $checkUnit = Unit::create(['name' => strtoupper($row[5])]);
                 }
 
                 // IdShipper
@@ -76,12 +76,18 @@ class CasImport implements ToCollection
             $startPeriod = null;
             $endPeriod = null;
     
-            if ($row[6]) {
-                $startPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]);
+            if ($row[7]) {
+                $startPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[7]);
             }
     
-            if ($row[7]) {
-                $endPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[7]);
+            if ($row[8]) {
+                $endPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[8]);
+            }
+
+            if ($startPeriod && $endPeriod && ($startPeriod > $endPeriod)) {
+                $errorMessage = 'Error importing data: End Period cannot be earlier than Start Period in the row: ' . $currentRow;
+                $this->logErrors[] = $errorMessage;
+                continue;
             }
             
             $dataCas = [
@@ -89,8 +95,9 @@ class CasImport implements ToCollection
                 'id_shipper' => $IdShipper,
                 'lts' => strtoupper($row[2]),
                 'charge' => $row[3],
+                'origin' => $row[4],
                 'id_unit' => $IdUnit,
-                'desc' => $row[5],
+                'desc' => $row[6],
                 'start_period' => $startPeriod,
                 'end_period' => $endPeriod
             ];

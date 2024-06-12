@@ -73,6 +73,12 @@ class PricelistImport implements ToCollection
                 $endPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]);
             }
 
+            if ($startPeriod && $endPeriod && ($startPeriod > $endPeriod)) {
+                $errorMessage = 'Error importing data: End Period cannot be earlier than Start Period in the row: ' . $currentRow;
+                $this->logErrors[] = $errorMessage;
+                continue;
+            }
+
             $dataPricelist = [
                 'id_customer' => $IdCustomer,
                 'id_shipper' => $IdShipper,
