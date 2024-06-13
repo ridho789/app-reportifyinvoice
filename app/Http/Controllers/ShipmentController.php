@@ -148,28 +148,35 @@ class ShipmentController extends Controller
 
         foreach ($request->id_sea_shipment_line as $index => $idSeaShipmentLine) {
             $seaShipmentLine = SeaShipmentLine::find($idSeaShipmentLine);
-            
+        
+            $data = [
+                'date' => $request->bldate[$index],
+                'code' => strtoupper($request->code[$index]),
+                'marking' => strtoupper($request->marking[$index]),
+                'qty_pkgs' => $request->qty_pkgs[$index],
+                'qty_loose' => $request->qty_loose[$index],
+                'unit_qty_pkgs' => $request->unit_qty_pkgs[$index],
+                'unit_qty_loose' => $request->unit_qty_loose[$index],
+                'weight' => $request->weight[$index],
+                'dimension_p' => $request->p[$index],
+                'dimension_l' => $request->l[$index],
+                'dimension_t' => $request->t[$index],
+                'tot_cbm_1' => $request->cbm1[$index],
+                'tot_cbm_2' => $request->cbm2[$index],
+                'lts' => strtoupper($request->lts[$index]),
+                'qty' => $request->qty[$index],
+                'id_unit' => $request->id_unit[$index],
+                'desc' => strtoupper($request->desc[$index]),
+                'state' => $request->state[$index],
+                'id_sea_shipment' => $request->id_sea_shipment,
+            ];
+        
             if ($seaShipmentLine) {
-                $seaShipmentLine->update([
-                    'date' => $request->bldate[$index],
-                    'code' => strtoupper($request->code[$index]),
-                    'marking' => strtoupper($request->marking[$index]),
-                    'qty_pkgs' => $request->qty_pkgs[$index],
-                    'qty_loose' => $request->qty_loose[$index],
-                    'unit_qty_pkgs' => $request->unit_qty_pkgs[$index],
-                    'unit_qty_loose' => $request->unit_qty_loose[$index],
-                    'weight' => $request->weight[$index],
-                    'dimension_p' => $request->p[$index],
-                    'dimension_l' => $request->l[$index],
-                    'dimension_t' => $request->t[$index],
-                    'tot_cbm_1' => $request->cbm1[$index],
-                    'tot_cbm_2' => $request->cbm2[$index],
-                    'lts' => strtoupper($request->lts[$index]),
-                    'qty' => $request->qty[$index],
-                    'id_unit' => $request->id_unit[$index],
-                    'desc' => strtoupper($request->desc[$index]),
-                    'state' => $request->state[$index],
-                ]);
+                $seaShipmentLine->update($data);
+
+            } else {
+                // Buat data baru di SeaShipmentLine jika tidak ada
+                SeaShipmentLine::create($data + ['id_sea_shipment_line' => $idSeaShipmentLine]);
             }
         }
 

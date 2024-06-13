@@ -218,7 +218,7 @@
                                     </tr>
 
                                 </thead>
-                                <tbody>
+                                <tbody id="shipmentTableBody">
                                     @foreach($seaShipmentLines as $ssl)
                                     <tr>
                                         <input type="hidden" name="id_sea_shipment_line[]" value="{{ $ssl->id_sea_shipment_line }}">
@@ -228,7 +228,7 @@
                                             </div>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <input type="date" class="form-control text-center" name="bldate[]" value="{{ $ssl->date }}" style="border: 0px;">
+                                            <input type="date" class="form-control text-center" name="bldate[]" value="{{ $ssl->date }}" style="border: 0px;" required>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
                                             <input type="text" class="form-control text-center" name="code[]" value="{{ $ssl->code }}" 
@@ -319,9 +319,16 @@
                                             </select>
                                         </td>
                                     </tr>
+                                    <!-- inside new line -->
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div class="mb-1">
+                            <button id="addRowButton" class="btn btn-outline-primary btn-sm" type="button" style="border: none;">
+                                <span class="btn-inner--text"><u>+</u> Add new line</span>
+                            </button>
                         </div>
 
                         <div>
@@ -1423,6 +1430,233 @@
         if (isValid) {
             const printModal = new bootstrap.Modal(document.getElementById('setPrintModal'));
             printModal.show();
+        }
+    });
+
+    // Add new line
+    document.getElementById('addRowButton').addEventListener('click', function () {
+        const tableBody = document.getElementById('shipmentTableBody');
+        const rowCount = tableBody.rows.length + 1;
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+        <input type="hidden" name="id_sea_shipment_line[]" value="">
+        <td class="align-middle text-center text-sm" width="2.5%">
+            <div class="d-flex px-3 py-1">${rowCount}.</div>
+        </td>
+        <td class="align-middle text-center" width="7.5%">
+            <input type="date" class="form-control text-center" name="bldate[]" value="" style="border: 0px;" required>
+        </td>
+        <td class="align-middle text-center" width="7.5%">
+            <input type="text" class="form-control text-center" name="code[]" value="" 
+            oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
+        </td>
+        <td class="align-middle text-center" width="15.5%">
+            <input type="text" class="form-control text-center" name="marking[]" value="" 
+            oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;" required>
+        </td>
+        <!-- qty -->
+        <td class="align-middle text-center" width="5%">
+            <input type="number" class="form-control text-center" name="qty_pkgs[]" value="" 
+            placeholder="..." style="border: 0px;" min="1">
+        </td>
+        <td class="align-middle" width="5%">
+            <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
+                <option value="">-</option>
+                <option value="cse">CSE</option>
+                <option value="ctn">CTN</option>
+                <option value="pkg">PKG</option>
+                <option value="plt">PLT</option>
+            </select>
+        </td>
+        <td class="align-middle text-center" width="5%">
+            <input type="number" class="form-control text-center" name="qty_loose[]" value="" 
+            placeholder="..." style="border: 0px;" min="1">
+        </td>
+        <td class="align-middle" width="5%">
+            <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
+                <option value="">-</option>
+                <option value="cse">CSE</option>
+                <option value="ctn">CTN</option>
+                <option value="pkg">PKG</option>
+                <option value="plt">PLT</option>
+            </select>
+        </td>
+        <!-- ### -->
+        <td class="align-middle text-center" width="5%">
+            <input type="text" class="form-control text-center" name="weight[]" value="" placeholder="..." style="border: 0px;">
+        </td>
+        <!-- dimension -->
+        <td class="align-middle text-center" width="5%">
+            <input type="number" class="form-control text-center" name="p[]" value="" 
+            placeholder="..." style="border: 0px;" min="1" required>
+        </td>
+        <td class="align-middle text-center" width="5%">
+            <input type="number" class="form-control text-center" name="l[]" value="" 
+            placeholder="..." style="border: 0px;" min="1" required>
+        </td>
+        <td class="align-middle text-center" width="5%">
+            <input type="number" class="form-control text-center" name="t[]" value="" 
+            placeholder="..." style="border: 0px;" min="1" required>
+        </td>
+        <!-- ### -->
+        <!-- total cbm -->
+        <td class="align-middle text-center" width="5%">
+            <input type="text" class="form-control text-center" name="cbm1[]" value="" placeholder="..." style="border: 0px;">
+        </td>
+        <td class="align-middle text-center" width="5%">
+            <input type="text" class="form-control text-center" name="cbm2[]" value="" placeholder="..." style="border: 0px;">
+        </td>
+        <!-- ### -->
+        <td class="align-middle text-center" width="5%">
+            <input type="text" class="form-control text-center lts-input" name="lts[]" value="" 
+            oninput="this.value = this.value.toUpperCase(); checkLTS(this);" placeholder="..." style="border: 0px;">
+        </td>
+        <td class="align-middle text-center" width="5%">
+            <input type="number" class="form-control text-center qty-input" name="qty[]" value="" min="1" placeholder="..." style="border: 0px;">
+        </td>
+        <td class="align-middle" width="5%">
+            <select class="form-select text-center text-xs select-unit" name="id_unit[]" style="border: none;">
+                <option value="">-</option>
+                @foreach ($units as $u)
+                <option value="{{ $u->id_unit }}">{{ $u->name }}</option>
+                @endforeach
+            </select>
+        </td>
+        <td class="align-middle text-center" width="7.5%">
+            <input type="text" class="form-control text-center" name="desc[]" value="" placeholder="..." style="border: 0px;">
+        </td>
+        <td class="align-middle" width="7.5%">
+            <select class="form-select text-center text-xs" name="state[]" style="border: 0px;">
+                <option value="">-</option>
+                <option value="hold">HOLD</option>
+                <option value="continue">CONTINUE</option>
+            </select>
+        </td>
+        `;
+        tableBody.appendChild(newRow);
+
+        // Update row numbers for all rows
+        updateRowNumbers();
+
+        // Trigger function
+        updateTotalShips();
+        calculateTotalPackages();
+        calculateTotalWeight();
+        calculateTotalVolume();
+
+        // Update CBM
+        var inputsP = document.querySelectorAll('input[name="p[]"]');
+        var inputsL = document.querySelectorAll('input[name="l[]"]');
+        var inputsT = document.querySelectorAll('input[name="t[]"]');
+
+        inputsP.forEach(function(input, index) {
+            input.addEventListener('input', function() {
+                updateCBM(index);
+
+                // update volume
+                calculateTotalVolume();
+            });
+        });
+
+        inputsL.forEach(function(input, index) {
+            input.addEventListener('input', function() {
+                updateCBM(index);
+
+                // update volume
+                calculateTotalVolume();
+            });
+        });
+
+        inputsT.forEach(function(input, index) {
+            input.addEventListener('input', function() {
+                updateCBM(index);
+
+                // update volume
+                calculateTotalVolume();
+            });
+        });
+
+        function updateCBM(index) {
+            var row = inputsP[index].closest('tr');
+            var p = parseFloat(inputsP[index].value);
+            var l = parseFloat(inputsL[index].value);
+            var t = parseFloat(inputsT[index].value);
+
+            var volume = ((p * l * t) / 1000000).toFixed(3);
+
+            var inputCBM1 = row.querySelector('input[name="cbm1[]"]');
+            var inputCBM2 = row.querySelector('input[name="cbm2[]"]');
+
+            var inputQtyPkgs = row.querySelector('input[name="qty_pkgs[]"]');
+            var inputQtyLoose = row.querySelector('input[name="qty_loose[]"]');
+
+            if (inputQtyPkgs.value && inputQtyPkgs.value != '-') {
+                inputCBM1.value = volume * inputQtyPkgs.value;
+            } else {
+                inputCBM1.value = '';
+            }
+
+            if (inputQtyLoose.value && inputQtyLoose.value != '-') {
+                inputCBM2.value = volume * inputQtyLoose.value;
+            } else {
+                inputCBM2.value = '';
+            }
+        }
+
+        // set value unit qty pkgs and unit qty looose
+        var QtyPkgs = document.querySelectorAll('input[name="qty_pkgs[]"]');
+        QtyPkgs.forEach(function(input, index) {
+            input.addEventListener('change', function() {
+                // update CBM
+                updateCBM(index);
+
+                // update total package
+                calculateTotalPackages();
+
+                var row = input.closest('tr');
+                var unitQtyPkgs = row.querySelector('select[name="unit_qty_pkgs[]"]');
+
+                if (!input.value || input.value === '0') {
+                    unitQtyPkgs.value = '';
+                    unitQtyPkgs.removeAttribute('required');
+
+                } else {
+                    unitQtyPkgs.setAttribute('required', 'required');
+                }
+            });
+        });
+
+        var QtyLoose = document.querySelectorAll('input[name="qty_loose[]"]');
+        QtyLoose.forEach(function(input, index) {
+            input.addEventListener('change', function() {
+                // update CBM
+                updateCBM(index);
+
+                // update volume
+                calculateTotalVolume();
+                
+                var row = QtyLoose[index].closest('tr');
+                var unitQtyLoose = row.querySelector('select[name="unit_qty_loose[]"]');
+
+                if (!input.value || input.value === '0') {
+                    unitQtyLoose.value = '';
+                    unitQtyLoose.removeAttribute('required');
+
+                }else {
+                    unitQtyLoose.setAttribute('required', 'required');
+                }
+            });
+        });
+
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#shipmentTableBody tr');
+            rows.forEach((row, index) => {
+                const numberCell = row.querySelector('td:first-child div');
+                if (numberCell) {
+                    numberCell.innerText = `${index + 1}.`;
+                }
+            });
         }
     });
 </script>
