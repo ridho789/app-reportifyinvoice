@@ -87,6 +87,14 @@
                                         @endif
                                     </div>
                                 </div>
+                                <div class="col-lg-12 mb-3">
+                                    <div class="form-check form-check-inline" style="padding-left: 0;">
+                                        <input type="hidden" id="is-bill-weight-hidden" name="input_is_bill_weight" value="0">
+                                        <input class="form-check-input" type="checkbox" id="isBillWeight" 
+                                        onclick="document.getElementById('is-bill-weight-hidden').value = this.checked ? 1 : 0;">
+                                        <label class="form-check-label" for="isBillWeight">Click to enable weighted billing in invoice printing</label>
+                                    </div>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                         </form>
@@ -152,6 +160,13 @@
                                                 <option value="">No data available</option>
                                             </select>
                                         @endif
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    <div class="form-check form-check-inline" style="padding-left: 0;">
+                                        <input type="hidden" id="edit-is-bill-weight-hidden" name="value_is_bill_weight">
+                                        <input class="form-check-input" type="checkbox" id="editIsBillWeight">
+                                        <label class="form-check-label" for="editIsBillWeight">Click to enable weighted billing in invoice printing</label>
                                     </div>
                                 </div>
                             </div>
@@ -226,7 +241,8 @@
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
                                     </td>
-                                    <td style="display: none;" class="discount-selected">{{ 'Rp ' . number_format($c->discount ?? 0, 0, ',', '.') }}</td>
+                                    <td style="display: none;" class="discount-selected">{{ 'Rp ' . number_format(floatval($c->discount ?? 0), 0, ',', '.') ?? '-' }}</td>
+                                    <td style="display: none;" class="bill-weight-selected">{{ $c->is_bill_weight ?? '-' }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -336,6 +352,11 @@
                     maximumSelectionLength: 1
                 });
 
+                // Is bill weight
+                var billWeight = row.querySelector(".bill-weight-selected").textContent;
+                var isDBillWeightCheckboxEditForm = document.getElementById('editIsBillWeight');
+                isDBillWeightCheckboxEditForm.checked = parseInt(billWeight) === 1;
+
                 if (myEditForm.style.display === 'none') {
                     myEditForm.style.display = 'block';
                 }
@@ -360,6 +381,24 @@
             editDiscount.addEventListener("input", function() {
                 this.value = formatCurrency(this.value);
             });
+        });
+
+        // Elemen checkbox form add
+        var isBillWeightCheckbox = document.getElementById('isBillWeight');
+        isBillWeightCheckbox.addEventListener('click', function () {
+            var isBillWeight = isBillWeightCheckbox.checked ? 1 : 0;
+            var hiddenValueBillWeight = document.querySelector("input[name='input_is_bill_weight']");
+            hiddenValueBillWeight.value = isBillWeight;
+        });
+
+        // Elemen checkbox form edit
+        var isBillWeightCheckboxEdit = document.getElementById('editIsBillWeight');
+        isBillWeightCheckboxEdit.addEventListener('click', function () {
+            var isBillWeightEdit = isBillWeightCheckboxEdit.checked ? 1 : 0;
+            
+            // Setel nilai checkbox ke input tersembunyi
+            var hiddenEditValueBillWeight = document.querySelector("input[name='value_is_bill_weight']");
+            hiddenEditValueBillWeight.value = isBillWeightEdit;
         });
     });
 </script>

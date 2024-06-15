@@ -27,7 +27,8 @@ class CustomerController extends Controller
             [
                 'shipper_ids' => implode(',', $shipperIds),
                 'id_company' => $request->id_company,
-                'discount' => $numericDiscount
+                'discount' => $numericDiscount,
+                'is_bill_weight' => $request->input_is_bill_weight
             ]
         );
     
@@ -68,6 +69,7 @@ class CustomerController extends Controller
                 $existingCustomer->discount = $numericEditDiscount;
                 $existingCustomer->id_company = $request->id_company;
                 $existingCustomer->shipper_ids = $shipperIds;
+                $existingCustomer->is_bill_weight = $request->value_is_bill_weight;
                 $existingCustomer->save();
     
                 return redirect()->back();
@@ -77,6 +79,7 @@ class CustomerController extends Controller
             $existingCustomer->discount = $numericEditDiscount;
             $existingCustomer->id_company = $request->id_company;
             $existingCustomer->shipper_ids = $shipperIds;
+            $existingCustomer->is_bill_weight = $request->value_is_bill_weight;
             $existingCustomer->save();
     
             return redirect()->back();

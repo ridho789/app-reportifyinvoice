@@ -286,7 +286,7 @@
 
                             $customerPrice = $pricelist;
                             $qty = $totals['total_qty_loose'];
-                            $weight = $totals['total_weight'];
+                            $weight = $totals['total_weight'] / 1000;
                             $cas = $totals['cas'];
 
                             // Jika invoice kedua (tidak ada cas)
@@ -454,7 +454,7 @@
                             <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
 
                             @if ($is_weight)
-                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight / 1000 }} T</td>
+                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight }} T</td>
                             @else
                                 <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
                             @endif
@@ -594,7 +594,7 @@
                             $customerPrice = $pricelist;
                             $qty = $totals['total_qty_pkgs'];
                             $cbm = $totals['total_cbm1'];
-                            $weight = $totals['total_weight'];
+                            $weight = $totals['total_weight'] / 1000;
                             $cas = $totals['cas'];
 
                             // Jika invoice kedua (tidak ada cas)
@@ -707,7 +707,7 @@
                             </td>
                             <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
                             @if ($is_weight)
-                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight / 1000 }} T</td>
+                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight }} T</td>
                             @else
                                 <td width="10%" class="border_left_right text_center text_uppercase">{{ $cbm }} M3</td>
                             @endif
@@ -778,7 +778,7 @@
                     @endif
                     <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $totalQty }}</td>
                     @if ($is_weight)
-                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalWeight / 1000 }} T</td>
+                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalWeight }} T</td>
                     @else
                         <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3</td>
                     @endif

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('shipper_ids')->nullable();
             $table->string('bill_diff')->nullable();
             $table->string('inv_type')->nullable();
+            $table->boolean('is_bill_weight')->nullable()->default(false);
             $table->timestamps();
         });
     }

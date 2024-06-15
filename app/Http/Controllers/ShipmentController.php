@@ -289,6 +289,11 @@ class ShipmentController extends Controller
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
         $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
 
+        $customer = Customer::where('id_customer', $seaShipment->id_customer)->first();
+        $shipper = Shipper::where('id_shipper', $seaShipment->id_shipper)->first();
+        $company = Company::where('id_company', $request->id_company)->first();
+        $descsData = Desc::orderBy('name')->get();
+
         // set pricelist
         $pricelist = 0;
 
@@ -405,7 +410,7 @@ class ShipmentController extends Controller
 
             // amount
             $cbm = $totals['total_cbm2'] != 0 ? $totals['total_cbm2'] : $totals['total_cbm1'];
-            $weight = $totals['total_weight'];
+            $weight = $totals['total_weight'] / 1000;
             
             if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
                 $qtyUnit = $totals['total_qty_unit'];
@@ -493,7 +498,7 @@ class ShipmentController extends Controller
 
         // Check billing with weight or cbm
         $totalCbmOverall = $totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall;
-        if (($totalWeightOverall / 1000) > $totalCbmOverall) {
+        if ((($totalWeightOverall / 1000) > $totalCbmOverall) || $customer->is_bill_weight) {
             $isWeight = true;
 
         }else {
@@ -530,11 +535,6 @@ class ShipmentController extends Controller
         $month = ltrim(date("m", strtotime($seaShipment->date)), '0');
         $monthRoman = romanNumerals($month);
         $year = date("Y", strtotime($seaShipment->date));
-        
-        $customer = Customer::where('id_customer', $seaShipment->id_customer)->first();
-        $shipper = Shipper::where('id_shipper', $seaShipment->id_shipper)->first();
-        $company = Company::where('id_company', $request->id_company)->first();
-        $descsData = Desc::orderBy('name')->get();
 
         // update company if changed in customer
         if ($customer->id_company != $request->id_company) {

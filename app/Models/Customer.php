@@ -20,6 +20,7 @@ class Customer extends Model
         'shipper_ids',
         'bill_diff',
         'inv_type',
+        'is_bill_weight',
         'id_company',
         'id_history',
     ];
