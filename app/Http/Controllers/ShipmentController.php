@@ -364,7 +364,10 @@ class ShipmentController extends Controller
                 })->sum('tot_cbm_1'),
                 'total_cbm2' => $group->filter(function ($item) {
                     return is_numeric($item->tot_cbm_2);
-                })->sum('tot_cbm_2')
+                })->sum('tot_cbm_2'),
+                'total_qty_unit' => $group->filter(function ($item) {
+                    return is_numeric($item->qty);
+                })->sum('qty'),
             ];
 
             $totalWeightOverall += $totals['total_weight'];
@@ -405,7 +408,7 @@ class ShipmentController extends Controller
             $weight = $totals['total_weight'];
             
             if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
-                $qtyUnit = intval($group->first()->qty);
+                $qtyUnit = $totals['total_qty_unit'];
                 $totalAmountUnit += $qtyUnit * $totals['cas'];
                 
             } else {
@@ -446,6 +449,7 @@ class ShipmentController extends Controller
             $totalWeightOverall = 0;
             $totalAmountWeightOverall = 0;
             $totalAmountCbmOverall = 0;
+            $totalAmountUnit = 0;
 
             $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
                 // unit
@@ -472,6 +476,7 @@ class ShipmentController extends Controller
             $totalWeightOverall = 0;
             $totalAmountWeightOverall = 0;
             $totalAmountCbmOverall = 0;
+            $totalAmountUnit = 0;
 
             $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
                 // unit

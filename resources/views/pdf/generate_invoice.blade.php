@@ -294,8 +294,6 @@
                                 if ($customerPrice > 0 && $customerPrice > intval($customer->discount)) {
                                     $customerPrice -= intval($customer->discount);
                                 }
-
-                                $cas = 0;
                             }
 
                             $unit_price = $customerPrice;
@@ -309,7 +307,7 @@
 
                                 // Jika LTS = LP. LPI, atau LPM
                                 if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
-                                    $unit_price = intval(implode(', ', $markingsValues)) * intval($cas);
+                                    $unit_price = $totals['total_qty_unit'] * intval($cas);
                                 }
                             }
 
@@ -414,7 +412,7 @@
                                     @else
                                         @if ($inv_type == 'separate')
                                             @if (in_array($lts, ['LP', 'LPI', 'LPM']))
-                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ implode(', ', $markingsValues) }} 
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ $totals['total_qty_unit'] }} 
                                                 {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                             @else
                                                 {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 
@@ -423,7 +421,7 @@
 
                                         @else
                                             @if (in_array($lts, ['LP', 'LPI', 'LPM']))
-                                                {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ implode(', ', $markingsValues) }} 
+                                                {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ $totals['total_qty_unit'] }} 
                                                 {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} )
                                             @else
                                                 {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3
@@ -436,7 +434,7 @@
                                     @else
                                         @if ($inv_type == 'separate')
                                             @if (in_array($lts, ['LP', 'LPI', 'LPM']))
-                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ implode(', ', $markingsValues) }} 
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ $totals['total_qty_unit'] }} 
                                                 {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                             @else
                                                 {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
@@ -444,7 +442,7 @@
 
                                         @else
                                             @if (in_array($lts, ['LP', 'LPI', 'LPM']))
-                                                {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ implode(', ', $markingsValues) }} 
+                                                {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ $totals['total_qty_unit'] }} 
                                                 {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} )
                                             @else
                                                 {{ $customer->name }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }}
@@ -456,7 +454,7 @@
                             <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
 
                             @if ($is_weight)
-                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight }} KG</td>
+                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight / 1000 }} T</td>
                             @else
                                 <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
                             @endif
@@ -466,9 +464,6 @@
                             @else
                                 <td width="15%" class="border_left_right text_center">
                                     {{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}
-                                    @if ($cas)
-                                        <br> <span style="font-size: smaller;">( +{{ number_format($cas ?? 0, 0, ',', '.') }} )</span>
-                                    @endif
                                 </td>
                             @endif
 
@@ -607,8 +602,6 @@
                                 if ($customerPrice > 0 && $customerPrice > intval($customer->discount)) {
                                     $customerPrice -= intval($customer->discount);
                                 }
-
-                                $cas = 0;
                             }
 
                             $unit_price = $customerPrice;
@@ -620,7 +613,7 @@
 
                                 // Jika LTS = LP. LPI, atau LPM
                                 if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
-                                    $unit_price = intval(implode(', ', $markingsValues)) * intval($cas);
+                                    $unit_price = $totals['total_qty_unit'] * intval($cas);
                                 }
                             }
 
@@ -693,7 +686,7 @@
                                         BATAM {{ implode(', ', $mergedMarkings) }} : {{ $cbm }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                     @else
                                         @if (in_array($lts, ['LP', 'LPI', 'LPM']))
-                                            BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 ( {{ implode(', ', $markingsValues) }} 
+                                            BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 ( {{ $totals['total_qty_unit'] }} 
                                             {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                         @else
                                             BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
@@ -704,7 +697,7 @@
                                         BATAM {{ implode(', ', $mergedMarkings) }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                     @else
                                         @if (in_array($lts, ['LP', 'LPI', 'LPM']))
-                                            BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ implode(', ', $markingsValues) }} 
+                                            BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ $totals['total_qty_unit'] }} 
                                             {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                         @else
                                             BATAM {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
@@ -714,7 +707,7 @@
                             </td>
                             <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
                             @if ($is_weight)
-                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight }} KG</td>
+                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight / 1000 }} T</td>
                             @else
                                 <td width="10%" class="border_left_right text_center text_uppercase">{{ $cbm }} M3</td>
                             @endif
@@ -722,11 +715,7 @@
                                 <td width="15%" class="border_left_right text_center"></td>
                             @else
                                 <td width="15%" class="border_left_right text_center">
-
                                     {{ 'Rp ' . number_format($unit_price ?? 0, 0, ',', '.') }}
-                                    @if ($cas)
-                                    <br> <span style="font-size: smaller;">( +{{ number_format($cas ?? 0, 0, ',', '.') }} )</span>
-                                    @endif
                                 </td>
                             @endif
                             <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amount ?? 0, 0, ',', '.') }}</td>
@@ -782,10 +771,14 @@
 
                 <tr>
                     <td width="5%" class="border_left_right"></td>
-                    <td width="30%" class="border_left_right text_center">Total</td>
+                    @if ($is_weight)
+                        <td width="30%" class="border_left_right text_center">Total {{ $totalCbm }} M3</td>
+                    @else
+                        <td width="30%" class="border_left_right text_center">Total</td>
+                    @endif
                     <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $totalQty }}</td>
                     @if ($is_weight)
-                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalWeight }} KG</td>
+                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalWeight / 1000 }} T</td>
                     @else
                         <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3</td>
                     @endif
