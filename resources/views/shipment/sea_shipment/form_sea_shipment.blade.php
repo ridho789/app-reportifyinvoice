@@ -337,7 +337,7 @@
                         </div>
                     </form>
                     @else
-                    <form id="form-sea-freight" method="POST" action="#">
+                    <form id="form-sea-freight" method="POST" action="{{ url('sea_shipment-store') }}">
                         @csrf
                         <div class="table-responsive">
                             <table class="table table-bordered align-items-center mb-0">
@@ -365,10 +365,10 @@
                                             </div>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
-                                            <input type="date" class="form-control" name="dates">
+                                            <input type="date" class="form-control" name="date">
                                         </td>
                                         <td class="align-middle text-center" width=10%>
-                                            <select class="form-select text-xs select-cust" name="id_customer">
+                                            <select class="form-select text-xs select-cust" name="id_customer" required>
                                                 <option value="">...</option>
                                                 @foreach ($customers as $c)
                                                 <option value="{{ $c->id_customer }}" data-shipper-ids="{{ $c->shipper_ids }}">{{ $c->name }}</option>
@@ -376,7 +376,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=10%>
-                                            <select class="form-select text-xs select-shipper" name="id_shipper">
+                                            <select class="form-select text-xs select-shipper" name="id_shipper" required>
                                                 <option value="">...</option>
                                                 @foreach ($shippers as $s)
                                                 <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
@@ -393,7 +393,7 @@
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
                                             <!-- <input type="text" class="form-control text-center" name="origin" oninput="this.value = this.value.toUpperCase()" placeholder="..."> -->
-                                            <select class="form-select text-center text-xs" name="origin" style="border: 0px;">
+                                            <select class="form-select text-center text-xs" name="origin" style="border: 0px;" required>
                                                 <option value="">...</option>
                                                 <option value="BTH-JKT">BTH-JKT</option>
                                                 <option value="BTH-SIN">BTH-SIN</option>
@@ -414,7 +414,7 @@
                                             <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." readonly>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
-                                            <input type="date" class="form-control" name="etd" required>
+                                            <input type="date" class="form-control" name="etd">
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
                                             <input type="date" class="form-control" name="eta">
@@ -437,10 +437,10 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Code</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Marking</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="4">Quantity</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Weight <br> kg</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">W <br> kg</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="3">Dimension</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="2">Total CBM</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Lartas</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Lts</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Qty</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Unit</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Desc</th>
@@ -457,11 +457,11 @@
                                     </tr>
 
                                 </thead>
-                                <tbody>
+                                <tbody id="shipmentTableBody">
                                     <tr>
                                         <td width=2.5%>
-                                            <div class="d-flex px-3 py-1">
-                                                <input type="text" class="form-control text-center" placeholder="..." style="border: 0px;">
+                                            <div class="align-middle text-center text-sm d-flex px-3 py-1">
+                                                1.
                                             </div>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
@@ -469,15 +469,15 @@
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
                                             <input type="text" class="form-control text-center" name="code[]" oninput="this.value = this.value.toUpperCase()" 
-                                            placeholder="..." style="border: 0px;">
+                                            placeholder="..." style="border: 0px;" required>
                                         </td>
-                                        <td class="align-middle text-center" width=10%>
+                                        <td class="align-middle text-center" width=15.5%>
                                             <input type="text" class="form-control text-center" name="marking[]" oninput="this.value = this.value.toUpperCase()" 
-                                            placeholder="..." style="border: 0px;">
+                                            placeholder="..." style="border: 0px;" required>
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="qty_pkgs[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="qty_pkgs[]" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
@@ -489,7 +489,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="qty_loose[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="qty_loose[]" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
@@ -506,13 +506,13 @@
                                         </td>
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="p[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="p[]" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="l[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="l[]" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="t[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="t[]" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <!-- ### -->
                                         <!-- total cbm -->
@@ -528,10 +528,17 @@
                                             placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="qty[]" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center" name="qty[]" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="unit[]" placeholder="..." style="border: 0px;">
+                                            <select class="form-select text-center text-xs select-unit" name="id_unit[]" style="border: none;">
+                                                <option value="">-</option>
+                                                @foreach ($units as $u)
+                                                <option value="{{ $u->id_unit }}" 
+                                                    {{ old('id_unit') == $u->id_unit ? 'selected' : '' }}>{{ $u->name }}
+                                                </option>
+                                                @endforeach
+                                            </select>
                                         </td>
                                         <td class="align-middle text-center">
                                             <input type="text" class="form-control text-center" name="desc[]" placeholder="..." style="border: 0px;">
@@ -547,6 +554,13 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <div class="mb-1">
+                            <button id="addRowButton" class="btn btn-outline-primary btn-sm" type="button" style="border: none;">
+                                <span class="btn-inner--text"><u>+</u> Add new line</span>
+                            </button>
+                        </div>
+
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                         </div>
@@ -941,6 +955,27 @@
     </div>
 </div>
 @endif
+
+<!-- Error -->
+@if(session('isValid') === false)
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'The shipment data entered is already in the system',
+            position: 'top',
+            width: '445px',
+            toast: true,
+            showConfirmButton: false,
+            timer: 6500,
+            timerProgressBar: true,
+            customClass: {
+                container: 'swal2-top-end-container'
+            }
+        });
+    </script>
+@endif
+
 <script>
     // select2
     $(document).ready(function() {
@@ -1169,7 +1204,12 @@
     }
 
     // Original payment due date
-    var originalPaymentDue = document.getElementById('payment_due').value;
+    var paymentDueElement = document.getElementById('payment_due');
+    var originalPaymentDue = null;
+
+    if (paymentDueElement) {
+        originalPaymentDue = paymentDueElement.value;
+    }
 
     // Function to update payment due date based on term
     function updatePaymentDue() {
@@ -1180,12 +1220,19 @@
             document.getElementById('payment_due').valueAsDate = newPaymentDue;
 
         } else {
-            document.getElementById('payment_due').valueAsDate = new Date(originalPaymentDue);
+            var paymentDueElement = document.getElementById('payment_due');
+            if (paymentDueElement) {
+                document.getElementById('payment_due').valueAsDate = new Date(originalPaymentDue);
+            }
         }
     }
 
     // Event listener for term input
-    document.getElementById('term').addEventListener('input', updatePaymentDue);
+    var termElement = document.getElementById('term');
+
+    if (termElement) {
+        termElement.addEventListener('input', updatePaymentDue);
+    }
 
     // Currency
     function formatCurrency(num) {
@@ -1217,17 +1264,32 @@
         }
 
         // Original payment due date
-        var originalPaymentDue = document.getElementById('payment_due').value;
+        var paymentDueElement = document.getElementById('payment_due');
+        var originalPaymentDue = null;
+
+        if (paymentDueElement) {
+            originalPaymentDue = paymentDueElement.value;
+        }
 
         // Function to update payment due date based on term
-        var term = parseInt(document.getElementById('term').value);
+        var termElement = document.getElementById('term');
+        var term = 0;
+        if (termElement) {
+            var termValue = termElement.value;
+            if (!isNaN(termValue)) {
+                term = parseInt(termValue, 10);
+            }
+        }
 
         if (!isNaN(term) && term > 0) {
             var newPaymentDue = addDays(originalPaymentDue, term);
             document.getElementById('payment_due').valueAsDate = newPaymentDue;
 
         } else {
-            document.getElementById('payment_due').valueAsDate = new Date(originalPaymentDue);
+            var paymentDueElement = document.getElementById('payment_due');
+            if (paymentDueElement) {
+                document.getElementById('payment_due').valueAsDate = new Date(originalPaymentDue);
+            }
         }
 
         function formatInputs() {
@@ -1370,7 +1432,11 @@
         } else {
             const addButton = document.getElementById('addButton');
             const inputGroupContainer = document.getElementById('inputGroupContainer');
-            const inputGroupTemplate = document.getElementById('inputGroupTemplate').content;
+
+            const inputGroupTemplateElement = document.getElementById('inputGroupTemplate');
+            if (inputGroupTemplateElement) {
+                const inputGroupTemplate = inputGroupTemplateElement.content;
+            }
     
             if (addButton) {
                 addButton.addEventListener('click', function() {
@@ -1384,54 +1450,57 @@
     });
 
     // Check LTS = LP, LPI or LPM
-    document.querySelector('.btn-print').addEventListener('click', function(event) {
-        let isValid = true;
-        const rows = document.querySelectorAll('tbody tr');
-        
-        rows.forEach(row => {
-            const ltsInput = row.querySelector('.lts-input');
-            const qtyInput = row.querySelector('.qty-input');
-            const unitInput = row.querySelector('.select-unit');
-
-            if (ltsInput && qtyInput && unitInput) {
-                const lts = ltsInput.value;
-                const qty = qtyInput;
-                const unit = unitInput;
-
-                if (['LP', 'LPM', 'LPI'].includes(lts)) {
-                    qty.required = true;
-                    unit.required = true;
-                    
-                    if (!qty.value || !unit.value) {
-                        isValid = false;
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: 'Please fill in the Qty and Unit fields for LTS values LP, LPM, or LPI',
-                            position: 'top',
-                            width: '535px',
-                            toast: true,
-                            showConfirmButton: false,
-                            timer: 7500,
-                            timerProgressBar: true,
-                            customClass: {
-                                container: 'swal2-top-end-container'
-                            }
-                        });
-                        return;
+    var printButton = document.querySelector('.btn-print');
+    if (printButton) {
+        printButton.addEventListener('click', function(event) {
+            let isValid = true;
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const ltsInput = row.querySelector('.lts-input');
+                const qtyInput = row.querySelector('.qty-input');
+                const unitInput = row.querySelector('.select-unit');
+    
+                if (ltsInput && qtyInput && unitInput) {
+                    const lts = ltsInput.value;
+                    const qty = qtyInput;
+                    const unit = unitInput;
+    
+                    if (['LP', 'LPM', 'LPI'].includes(lts)) {
+                        qty.required = true;
+                        unit.required = true;
+                        
+                        if (!qty.value || !unit.value) {
+                            isValid = false;
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'Please fill in the Qty and Unit fields for LTS values LP, LPM, or LPI',
+                                position: 'top',
+                                width: '535px',
+                                toast: true,
+                                showConfirmButton: false,
+                                timer: 7500,
+                                timerProgressBar: true,
+                                customClass: {
+                                    container: 'swal2-top-end-container'
+                                }
+                            });
+                            return;
+                        }
+                    } else {
+                        qty.required = false;
+                        unit.required = false;
                     }
-                } else {
-                    qty.required = false;
-                    unit.required = false;
                 }
+            });
+    
+            if (isValid) {
+                const printModal = new bootstrap.Modal(document.getElementById('setPrintModal'));
+                printModal.show();
             }
         });
-
-        if (isValid) {
-            const printModal = new bootstrap.Modal(document.getElementById('setPrintModal'));
-            printModal.show();
-        }
-    });
+    }
 
     // Add new line
     document.getElementById('addRowButton').addEventListener('click', function () {

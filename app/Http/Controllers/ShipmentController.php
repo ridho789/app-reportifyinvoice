@@ -120,6 +120,74 @@ class ShipmentController extends Controller
         'ships', 'units', 'descs', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
     }
 
+    public function storeSeaShipment(Request $request) {
+        $customer = Customer::where('id_customer', $request->id_customer)->first();
+        $shipperIds = $customer->shipper_ids;
+        $shipperIdsArray = explode(",", $shipperIds);
+
+        if (!in_array($request->id_shipper, $shipperIdsArray)) {
+            Customer::where('id_customer', $request->id_customer)->update([
+                'shipper_ids' => $shipperIds . ',' . $request->id_shipper,
+            ]);
+        }
+
+        $dataSeaShipment = [
+            'no_aju' => strtoupper($request->no_aju),
+            'date' => $request->date,
+            'id_customer' => $request->id_customer,
+            'id_shipper' => $request->id_shipper,
+            'id_ship' => $request->id_ship,
+            'origin' => strtoupper($request->origin),
+            'etd' => $request->etd,
+            'eta' => $request->eta,
+        ];
+
+        $checkSeaShipment = SeaShipment::where('no_aju', strtoupper($request->no_aju))->where('id_customer', $request->id_customer)->where('id_shipper', $request->id_shipper)
+        ->where('etd', $request->etd)->first();
+
+        if (empty($checkSeaShipment)) {
+            $createdSeaShipment = SeaShipment::create($dataSeaShipment);
+            $seaShipmentId = $createdSeaShipment->id_sea_shipment;
+
+            foreach ($request->bldate as $index => $bldate) {
+                $dataSeaShipmentLine = [
+                    'date' => $bldate,
+                    'code' => strtoupper($request->code[$index]),
+                    'marking' => strtoupper($request->marking[$index]),
+                    'qty_pkgs' => $request->qty_pkgs[$index],
+                    'qty_loose' => $request->qty_loose[$index],
+                    'unit_qty_pkgs' => $request->unit_qty_pkgs[$index],
+                    'unit_qty_loose' => $request->unit_qty_loose[$index],
+                    'weight' => $request->weight[$index],
+                    'dimension_p' => $request->p[$index],
+                    'dimension_l' => $request->l[$index],
+                    'dimension_t' => $request->t[$index],
+                    'tot_cbm_1' => $request->cbm1[$index],
+                    'tot_cbm_2' => $request->cbm2[$index],
+                    'lts' => strtoupper($request->lts[$index]),
+                    'qty' => $request->qty[$index],
+                    'id_unit' => $request->id_unit[$index],
+                    'desc' => strtoupper($request->desc[$index]),
+                    'state' => $request->state[$index],
+                    'id_sea_shipment' => $seaShipmentId,
+                ];
+
+                SeaShipmentLine::create($dataSeaShipmentLine);
+            }
+
+            $encryptedId = Crypt::encrypt($seaShipmentId);
+            return redirect("/sea_shipment-edit/{$encryptedId}");
+
+        } else {
+            return redirect()->back()->with([
+                'error' => 'Already exists in the system',
+                'error_type' => 'duplicate-alert',
+                'input' => $request->all(),
+                'isValid' => false,
+            ]);
+        }
+    }
+
     public function updateSeaShipment(Request $request) {
         $customer = Customer::where('id_customer', $request->id_customer)->first();
         $shipperIds = $customer->shipper_ids;
