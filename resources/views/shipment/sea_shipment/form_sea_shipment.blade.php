@@ -333,7 +333,7 @@
 
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                            <button type="button" class="btn btn-secondary btn-sm ms-2 btn-print">Print</button>
+                            <button type="button" class="btn btn-secondary btn-sm ms-2 btn-setup">Setup</button>
                         </div>
                     </form>
                     @else
@@ -585,7 +585,7 @@
                     <b>Before printing the document, make sure you've filled in all the required (<span class="text-primary">*</span>) data.</b>
                 </h5>
             </div>
-            <form action="{{ url('print-sea-shipment') }}" method="POST" enctype="multipart/form-data" target="_blank">
+            <form id="seaShipmentForm" action="{{ url('print-sea-shipment') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
@@ -661,7 +661,7 @@
                                     </div>
                                     <div class="input-group input-group-static mb-4">
                                         <select class="form-select text-left" id="inv_type" name="inv_type" 
-                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px; {{ $checkCbmDiff ? '' : 'margin-top: -4px;' }}" required>
+                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px; {{ $checkCbmDiff ? '' : 'margin-top: -4px;' }};" required>
                                             <option value="" {{ old('inv_type', $customer->inv_type) == '' ? 'selected' : '' }}>...</option>
                                             <option value="basic" {{ old('inv_type', $customer->inv_type) == 'basic' ? 'selected' : '' }}>Basic</option>
                                             <option value="separate" {{ old('inv_type', $customer->inv_type) == 'separate' ? 'selected' : '' }}>Separate</option>
@@ -677,11 +677,13 @@
                                                     if (count($seaShipmentBill) > 0) {
                                                         $checkSeaShipmentBill = $seaShipmentBill->where('date', $date)->first();
                                                     }
+
+                                                    $marginBottomAccordion = $checkCbmDiff ? '25px' : '23.25px';
                                                 @endphp
-                                                <div class="accordion-item" style="margin-bottom: 23.5px;">
+                                                <div class="accordion-item" style="margin-bottom: {{ $marginBottomAccordion }};">
                                                     <div class="accordion-header" id="headingOne-{{ $loop->index }}">
                                                         @php
-                                                            $marginTop = $checkCbmDiff ? '-9.5px' : '-8.75px';
+                                                            $marginTop = $checkCbmDiff ? '-9.5px' : '-8.5px';
                                                         @endphp
                                                         <label style="margin-left: 0; margin-bottom: 7.5px;">Other Fees</label>
                                                         <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" 
@@ -702,7 +704,7 @@
                                                             @php
                                                                 $marginTopCode = $checkCbmDiff ? '3.5px' : '3px';
                                                             @endphp
-                                                            <div class="input-group input-group-static mb-4" style="margin-top: {{ $marginTopCode }};">
+                                                            <div class="input-group input-group-static mb-4" style="margin-top: 3.5px;">
                                                                 <label>Code - Narita / CNG / Other</label>
                                                                 <input type="text" class="form-control" id="codeShipment-{{ $loop->index }}" name="codeShipment[]" 
                                                                 value="{{ old('codeShipment', $checkSeaShipmentBill ? $checkSeaShipmentBill->code : '') }}" 
@@ -754,6 +756,7 @@
                                                                     @endphp
                                                                     @if($checkSeaShipmentAnotherBill)
                                                                         @foreach($checkSeaShipmentAnotherBill as $data)
+                                                                            <input type="hidden" name="idAnotherBill[]" value="{{ $data->id_sea_shipment_other_bill }}">
                                                                             <div class="input-group input-group-static mb-4">
                                                                                 <div class="col-5">
                                                                                     <div class="input-group input-group-static mb-1">
@@ -785,6 +788,7 @@
 
                                                             <!-- Template for input another bill -->
                                                             <template id="inputGroupTemplate">
+                                                                <input type="hidden" name="idAnotherBill[]" value="">
                                                                 <div class="input-group input-group-static mb-4">
                                                                     <div class="col-5">
                                                                         <div class="input-group input-group-static mb-1">
@@ -883,6 +887,7 @@
                                 @endphp
                                 @if($checkSeaShipmentAnotherBill)
                                     @foreach($checkSeaShipmentAnotherBill as $data)
+                                        <input type="hidden" name="idAnotherBill[]" value="{{ $data->id_sea_shipment_other_bill }}">
                                         <div class="input-group input-group-static mb-4">
                                             <div class="col-5">
                                                 <div class="input-group input-group-static mb-1">
@@ -914,6 +919,7 @@
 
                         <!-- Template for input another bill -->
                         <template id="inputGroupTemplate">
+                            <input type="hidden" name="idAnotherBill[]" value="">
                             <div class="input-group input-group-static mb-4">
                                 <div class="col-5">
                                     <div class="input-group input-group-static mb-1">
@@ -946,8 +952,8 @@
                     @endif
                     
                     <div class="text-end mt-3">
-                        <button type="button" class="btn bg-gradient-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn bg-gradient-primary btn-sm ms-1">Process</button>
+                        <button type="submit" class="btn bg-gradient-secondary btn-sm" name="is_update" value="true">Update Setup</button>
+                        <button type="submit" class="btn bg-gradient-primary btn-sm ms-2" name="is_print" value="true">Print Invoice</button>
                     </div>
                 </div>
             </form>
@@ -1256,6 +1262,17 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Form 
+        const form = document.getElementById('seaShipmentForm');
+        form.addEventListener('submit', function(event) {
+            const isPrintButton = event.submitter.name === 'is_print';
+            if (isPrintButton) {
+                form.setAttribute('target', '_blank');
+            } else {
+                form.removeAttribute('target');
+            }
+        });
+        
         // Function to add days to a date
         function addDays(date, days) {
             var result = new Date(date);
@@ -1440,7 +1457,7 @@
     
             if (addButton) {
                 addButton.addEventListener('click', function() {
-                    const newInputGroup = document.importNode(inputGroupTemplate, true);
+                    const newInputGroup = document.importNode(inputGroupTemplate.content, true);
                     inputGroupContainer.appendChild(newInputGroup);
                     formatInputs();
                 });
@@ -1450,9 +1467,9 @@
     });
 
     // Check LTS = LP, LPI or LPM
-    var printButton = document.querySelector('.btn-print');
-    if (printButton) {
-        printButton.addEventListener('click', function(event) {
+    var setupButton = document.querySelector('.btn-setup');
+    if (setupButton) {
+        setupButton.addEventListener('click', function(event) {
             let isValid = true;
             const rows = document.querySelectorAll('tbody tr');
             

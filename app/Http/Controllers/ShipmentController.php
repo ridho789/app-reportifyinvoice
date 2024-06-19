@@ -671,14 +671,14 @@ class ShipmentController extends Controller
 
         // Another bill
         $dataAnotherBill = [
+            'id' => $request->idAnotherBill,
             'date' => $request->dateBL,
             'desc' => $request->id_desc,
             'charge' => $request->anotherBill
         ];
 
-        $resultAnotherBill = [];
-
         if ($dataAnotherBill) {
+            $ids = is_array($dataAnotherBill["id"]) ? $dataAnotherBill["id"] : [$dataAnotherBill["id"]];
             $dates = is_array($dataAnotherBill["date"]) ? $dataAnotherBill["date"] : [$dataAnotherBill["date"]];
             $descs = is_array($dataAnotherBill["desc"]) ? $dataAnotherBill["desc"] : [$dataAnotherBill["desc"]];
             $charges = is_array($dataAnotherBill["charge"]) ? $dataAnotherBill["charge"] : [$dataAnotherBill["charge"]];
@@ -686,6 +686,7 @@ class ShipmentController extends Controller
             $maxCount = max(count($descs), count($charges));
 
             for ($index = 0; $index < $maxCount; $index++) {
+                $id = isset($ids[$index]) ? $ids[$index] : null;
                 $date = isset($dates[$index]) ? $dates[$index] : $dates[0];
                 $desc = isset($descs[$index]) ? $descs[$index] : null;
                 $charge = isset($charges[$index]) ? $charges[$index] : null;
@@ -703,20 +704,16 @@ class ShipmentController extends Controller
                     continue;
                 }
 
-                $resultAnotherBill[] = [
-                    "date" => $date,
-                    "desc" => $desc,
-                    "charge" => $anotherBillValue
-                ];
-    
                 $totalanotherBillOverall += $anotherBillValue;
     
-                $checkSeaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)
-                    ->where('date', $date)->where('id_desc', $desc)->where('charge', $anotherBillValue)->first();
-                if ($checkSeaShipmentAnotherBill) {
-                    $checkSeaShipmentAnotherBill->id_desc = $desc;
-                    $checkSeaShipmentAnotherBill->charge = $anotherBillValue;
-                    $checkSeaShipmentAnotherBill->save();
+                if ($id) {
+                    $checkSeaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment_other_bill', $id)->first();
+    
+                    if ($checkSeaShipmentAnotherBill) {
+                        $checkSeaShipmentAnotherBill->id_desc = $desc;
+                        $checkSeaShipmentAnotherBill->charge = $anotherBillValue;
+                        $checkSeaShipmentAnotherBill->save();
+                    }
                     
                 } else {
                     SeaShipmentAnotherBill::create([
@@ -732,81 +729,89 @@ class ShipmentController extends Controller
         // update data in shipment
         $seaShipment->no_inv = $request->inv_no;
         $seaShipment->term = $request->term;
-        $seaShipment->is_printed = true;
-        $seaShipment->printcount += 1;
-        $seaShipment->printdate = Carbon::now()->addHours(7);
         $seaShipment->save();
 
-        $pdf = PDF::loadView('pdf.generate_invoice', [
-            'customer' => $customer,
-            'shipper' => $shipper,
-            'seaShipment' => $seaShipment,
-            'seaShipmentLines' => $seaShipmentLines,
-            'seaShipmentBill' => $seaShipmentBill,
-            'groupSeaShipmentLines' => $groupSeaShipmentLines,
-            'pricelist' => $pricelist,
-            'term' => $request->term,
-            'is_weight' => $isWeight,
-            'paymentDue' => $paymentDue,
-            'banker' => $request->banker,
-            'account_no' => $request->account_no,
-            'imageContent' => $imageContent,
-            'invNameGenerate' => $invNameGenerate,
-            'titleInv' => $titleInv,
-            'companyName' => $companyName,
-            'bill_diff' => $bill_diff,
-            'inv_type' => $inv_type,
-            'dataBill' => $dataBill,
-            'dataAnotherBill' => $dataAnotherBill,
-            'descsData' => $descsData
-        ])->setPaper('folio', 'portrait');
+        if ($request->is_print) {
+            $seaShipment->is_printed = true;
+            $seaShipment->printcount += 1;
+            $seaShipment->printdate = Carbon::now()->addHours(7);
+            $seaShipment->save();
 
-        // after print create data to bill recap
-        $checkBillRecap = BillRecap::where('id_sea_shipment', $seaShipment->id_sea_shipment)->first();
+            $pdf = PDF::loadView('pdf.generate_invoice', [
+                'customer' => $customer,
+                'shipper' => $shipper,
+                'seaShipment' => $seaShipment,
+                'seaShipmentLines' => $seaShipmentLines,
+                'seaShipmentBill' => $seaShipmentBill,
+                'groupSeaShipmentLines' => $groupSeaShipmentLines,
+                'pricelist' => $pricelist,
+                'term' => $request->term,
+                'is_weight' => $isWeight,
+                'paymentDue' => $paymentDue,
+                'banker' => $request->banker,
+                'account_no' => $request->account_no,
+                'imageContent' => $imageContent,
+                'invNameGenerate' => $invNameGenerate,
+                'titleInv' => $titleInv,
+                'companyName' => $companyName,
+                'bill_diff' => $bill_diff,
+                'inv_type' => $inv_type,
+                'dataBill' => $dataBill,
+                'dataAnotherBill' => $dataAnotherBill,
+                'descsData' => $descsData
+            ])->setPaper('folio', 'portrait');
 
-        // size
-        if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
-            if ($isWeight) {
-                $size = $totalWeightOverall . ' KG';
+            // after print create data to bill recap
+            $checkBillRecap = BillRecap::where('id_sea_shipment', $seaShipment->id_sea_shipment)->first();
+
+            // size
+            if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
+                if ($isWeight) {
+                    $size = $totalWeightOverall . ' KG';
+                } else {
+                    $size = ($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall) + $totalCbmDiffOverall . ' M3';
+                }
+
             } else {
-                $size = ($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall) + $totalCbmDiffOverall . ' M3';
+                if ($isWeight) {
+                    $size = $totalWeightOverall . ' KG';
+                } else {
+                    $size = $totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall . ' M3';
+                }
             }
 
-        } else {
+            $amountOther = $totalBlOverall + $totalPermitOverall + $totalTransportOverall + $totalInsuranceOverall + $totalanotherBillOverall;
+            $amountDiff = $totalCbmDiffOverall * $bill_diff;
+
             if ($isWeight) {
-                $size = $totalWeightOverall . ' KG';
-            } else {
-                $size = $totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall . ' M3';
+                $amountDiff = 0;
             }
+
+            $allTotalAmount = $totalAmountOverall + $amountOther + $amountDiff + $totalAmountUnit;
+
+            if (!$checkBillRecap) {
+                BillRecap::create([
+                    'id_sea_shipment' => $seaShipment->id_sea_shipment,
+                    'inv_no' => $invNameGenerate,
+                    'freight_type' => 'SEA FREIGHT',
+                    'size' => $size,
+                    'unit_price' => $pricelist,
+                    'amount' => $allTotalAmount,
+                ]);
+
+            } else {
+                $checkBillRecap->inv_no = $invNameGenerate;
+                $checkBillRecap->size = $size;
+                $checkBillRecap->unit_price = $pricelist;
+                $checkBillRecap->amount = $allTotalAmount;
+                $checkBillRecap->save();
+            }
+
+            return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
         }
 
-        $amountOther = $totalBlOverall + $totalPermitOverall + $totalTransportOverall + $totalInsuranceOverall + $totalanotherBillOverall;
-        $amountDiff = $totalCbmDiffOverall * $bill_diff;
-
-        if ($isWeight) {
-            $amountDiff = 0;
+        if ($request->is_update) {
+            return redirect()->back();
         }
-
-        $allTotalAmount = $totalAmountOverall + $amountOther + $amountDiff + $totalAmountUnit;
-
-        if (!$checkBillRecap) {
-            BillRecap::create([
-                'id_sea_shipment' => $seaShipment->id_sea_shipment,
-                'inv_no' => $invNameGenerate,
-                'freight_type' => 'SEA FREIGHT',
-                'size' => $size,
-                'unit_price' => $pricelist,
-                'amount' => $allTotalAmount,
-            ]);
-
-        } else {
-            $checkBillRecap->inv_no = $invNameGenerate;
-            $checkBillRecap->size = $size;
-            $checkBillRecap->unit_price = $pricelist;
-            $checkBillRecap->amount = $allTotalAmount;
-            $checkBillRecap->save();
-        }
-
-        return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
     }
 }
