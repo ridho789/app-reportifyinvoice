@@ -355,7 +355,12 @@
                 // Is bill weight
                 var billWeight = row.querySelector(".bill-weight-selected").textContent;
                 var isDBillWeightCheckboxEditForm = document.getElementById('editIsBillWeight');
+                var hiddenEditValueBillWeight = document.querySelector("input[name='value_is_bill_weight']");
                 isDBillWeightCheckboxEditForm.checked = parseInt(billWeight) === 1;
+
+                if (hiddenEditValueBillWeight) {
+                    hiddenEditValueBillWeight.value = billWeight;
+                }
 
                 if (myEditForm.style.display === 'none') {
                     myEditForm.style.display = 'block';
