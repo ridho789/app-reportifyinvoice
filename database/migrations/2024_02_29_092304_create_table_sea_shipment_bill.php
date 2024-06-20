@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tbl_sea_shipment_bill', function (Blueprint $table) {
             $table->id('id_sea_shipment_bill');
+            $table->unsignedBigInteger('id_history')->nullable();
             $table->date('date')->nullable();
             $table->string('code')->nullable();
             $table->string('transport')->nullable();

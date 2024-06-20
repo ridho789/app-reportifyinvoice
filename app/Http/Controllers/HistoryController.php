@@ -27,7 +27,9 @@ class HistoryController extends Controller
             $resultFilterOlderData = array_intersect_key($ObjOlderData, $ObjChangedData);
         
             $idChangedData = null;
-            if (strtolower($hist->scope) == 'seashipment' || strtolower($hist->scope) == 'seashipmentline') {
+            $validScopes = ['seashipment', 'seashipmentline', 'seashipmentbill', 'seashipmentanotherbill'];
+            
+            if (in_array(strtolower($hist->scope), $validScopes)) {
                 $checkSeaShipment = SeaShipment::where('id_sea_shipment', $hist->id_changed_data)->first();
                 if ($checkSeaShipment) {
                     $idChangedData = $checkSeaShipment->id_sea_shipment;

@@ -755,8 +755,9 @@
                                                                         }
                                                                     @endphp
                                                                     @if($checkSeaShipmentAnotherBill)
-                                                                        @foreach($checkSeaShipmentAnotherBill as $data)
+                                                                        @foreach($checkSeaShipmentAnotherBill as $index => $data)
                                                                             <input type="hidden" name="idAnotherBill[]" value="{{ $data->id_sea_shipment_other_bill }}">
+                                                                            <input type="hidden" name="dateAnotherBL[]" value="{{ $date }}">
                                                                             <div class="input-group input-group-static mb-4">
                                                                                 <div class="col-5">
                                                                                     <div class="input-group input-group-static mb-1">
@@ -767,7 +768,7 @@
                                                                                         style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                                                                             <option value="">...</option>
                                                                                             @foreach ($descs as $d)
-                                                                                            <option value="{{ $d->id_desc }}" {{ old('id_desc.' . $loop->index, $data->id_desc) == 
+                                                                                            <option value="{{ $d->id_desc }}" {{ old('id_desc.' . $index, $data->id_desc) == 
                                                                                                 $d->id_desc ? 'selected' : '' }}>{{ $d->name }}
                                                                                             </option>
                                                                                             @endforeach
@@ -778,7 +779,7 @@
                                                                                 <div class="col-6">
                                                                                     <label>Charge</label>
                                                                                     <input type="text" class="form-control anotherBill" name="anotherBill[]" 
-                                                                                    value="{{ old('anotherBill.' . $loop->index, $data->charge) }}" placeholder="...">
+                                                                                    value="{{ old('anotherBill.' . $index, $data->charge) }}" placeholder="...">
                                                                                 </div>
                                                                             </div>
                                                                         @endforeach
@@ -789,6 +790,7 @@
                                                             <!-- Template for input another bill -->
                                                             <template id="inputGroupTemplate">
                                                                 <input type="hidden" name="idAnotherBill[]" value="">
+                                                                <input type="hidden" name="dateAnotherBL[]" value="{{ $date }}">
                                                                 <div class="input-group input-group-static mb-4">
                                                                     <div class="col-5">
                                                                         <div class="input-group input-group-static mb-1">
@@ -888,6 +890,7 @@
                                 @if($checkSeaShipmentAnotherBill)
                                     @foreach($checkSeaShipmentAnotherBill as $data)
                                         <input type="hidden" name="idAnotherBill[]" value="{{ $data->id_sea_shipment_other_bill }}">
+                                        <input type="hidden" name="dateAnotherBL[]" value="{{ $seaShipment->date }}">
                                         <div class="input-group input-group-static mb-4">
                                             <div class="col-5">
                                                 <div class="input-group input-group-static mb-1">
@@ -920,6 +923,7 @@
                         <!-- Template for input another bill -->
                         <template id="inputGroupTemplate">
                             <input type="hidden" name="idAnotherBill[]" value="">
+                            <input type="hidden" name="dateAnotherBL[]" value="{{ $seaShipment->date }}">
                             <div class="input-group input-group-static mb-4">
                                 <div class="col-5">
                                     <div class="input-group input-group-static mb-1">

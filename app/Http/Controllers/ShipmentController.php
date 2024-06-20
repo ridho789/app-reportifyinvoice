@@ -285,11 +285,11 @@ class ShipmentController extends Controller
 
     public function printSeaShipment(Request $request) {
         $id_sea_shipment = $request->id;
-        $seaShipment = SeaShipment::where('id_sea_shipment', $id_sea_shipment)->first();
+        $seaShipment = SeaShipment::where('id_sea_shipment', $id_sea_shipment)->firstOrFail();
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
         $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
 
-        $customer = Customer::where('id_customer', $seaShipment->id_customer)->first();
+        $customer = Customer::where('id_customer', $seaShipment->id_customer)->firstOrFail();
         $shipper = Shipper::where('id_shipper', $seaShipment->id_shipper)->first();
         $company = Company::where('id_company', $request->id_company)->first();
         $descsData = Desc::orderBy('name')->get();
@@ -538,9 +538,8 @@ class ShipmentController extends Controller
 
         // update company if changed in customer
         if ($customer->id_company != $request->id_company) {
-            Customer::where('id_customer', $seaShipment->id_customer)->update([
-                'id_company' => $request->id_company
-            ]);
+            $customer->id_company = $request->id_company;
+            $customer->save();
         }
 
         // update bill diff in customer
@@ -553,20 +552,16 @@ class ShipmentController extends Controller
             }
 
             $bill_diff = $numericBillDiff;
-
-            Customer::where('id_customer', $seaShipment->id_customer)->update([
-                'bill_diff' => $numericBillDiff
-            ]);
+            $customer->bill_diff = $numericBillDiff;
+            $customer->save();
         }
 
         // update invoice type
         $inv_type = null;
         if ($request->inv_type) {
             $inv_type = $request->inv_type;
-
-            Customer::where('id_customer', $seaShipment->id_customer)->update([
-                'inv_type' => $inv_type
-            ]);
+            $customer->inv_type = $inv_type;
+            $customer->save();
         }
 
         // format invoice
@@ -645,7 +640,7 @@ class ShipmentController extends Controller
                     $totalPermitOverall += $permitValue;
                     $totalInsuranceOverall += $insuranceValue;
         
-                    $checkSeaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->where('date', $date)->first();
+                    $checkSeaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->where('date', $date)->firstOrFail();
                     if ($checkSeaShipmentBill) {
                         $checkSeaShipmentBill->code = $dataBill["codeShipment"][$index];
                         $checkSeaShipmentBill->transport = $transportValue;
@@ -672,7 +667,7 @@ class ShipmentController extends Controller
         // Another bill
         $dataAnotherBill = [
             'id' => $request->idAnotherBill,
-            'date' => $request->dateBL,
+            'date' => $request->dateAnotherBL,
             'desc' => $request->id_desc,
             'charge' => $request->anotherBill
         ];
@@ -682,32 +677,27 @@ class ShipmentController extends Controller
             $dates = is_array($dataAnotherBill["date"]) ? $dataAnotherBill["date"] : [$dataAnotherBill["date"]];
             $descs = is_array($dataAnotherBill["desc"]) ? $dataAnotherBill["desc"] : [$dataAnotherBill["desc"]];
             $charges = is_array($dataAnotherBill["charge"]) ? $dataAnotherBill["charge"] : [$dataAnotherBill["charge"]];
+            $dateCount = count($dates);
 
-            $maxCount = max(count($descs), count($charges));
-
-            for ($index = 0; $index < $maxCount; $index++) {
-                $id = isset($ids[$index]) ? $ids[$index] : null;
-                $date = isset($dates[$index]) ? $dates[$index] : $dates[0];
-                $desc = isset($descs[$index]) ? $descs[$index] : null;
-                $charge = isset($charges[$index]) ? $charges[$index] : null;
+            for ($indexDate = 0; $indexDate < $dateCount; $indexDate++) {
+                $id = isset($ids[$indexDate]) ? $ids[$indexDate] : null;
+                $date = isset($dates[$indexDate]) ? $dates[$indexDate] : null;
+                $desc = isset($descs[$indexDate]) ? $descs[$indexDate] : null;
+                $charge = isset($charges[$indexDate]) ? $charges[$indexDate] : null;
                 $anotherBillValue = $charge ? preg_replace("/[^0-9]/", "", $charge) : null;
-
-                // Skip processing if both desc and charge are null or 0
-                if (is_null($desc) && ($anotherBillValue == 0 || is_null($anotherBillValue))) {
-                    $checkSeaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)
-                        ->where('date', $date)
-                        ->first();
-        
-                    if ($checkSeaShipmentAnotherBill) {
-                        $checkSeaShipmentAnotherBill->delete();
-                    }
-                    continue;
-                }
 
                 $totalanotherBillOverall += $anotherBillValue;
     
                 if ($id) {
-                    $checkSeaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment_other_bill', $id)->first();
+                    $checkSeaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment_other_bill', $id)->firstOrFail();
+
+                    // Skip processing if both desc and charge are null or 0
+                    if (is_null($desc) && ($anotherBillValue == 0 || is_null($anotherBillValue))) {
+                        if ($checkSeaShipmentAnotherBill) {
+                            $checkSeaShipmentAnotherBill->delete();
+                        }
+                        continue;
+                    }
     
                     if ($checkSeaShipmentAnotherBill) {
                         $checkSeaShipmentAnotherBill->id_desc = $desc;
@@ -716,12 +706,16 @@ class ShipmentController extends Controller
                     }
                     
                 } else {
-                    SeaShipmentAnotherBill::create([
-                        'id_sea_shipment' => $seaShipment->id_sea_shipment,
-                        'date' => $date,
-                        'id_desc' => $desc,
-                        'charge' => $anotherBillValue,
-                    ]);
+
+                    if ($desc && ($anotherBillValue != 0 || $anotherBillValue)) {
+                        SeaShipmentAnotherBill::create([
+                            'id_sea_shipment' => $seaShipment->id_sea_shipment,
+                            'date' => $date,
+                            'id_desc' => $desc,
+                            'charge' => $anotherBillValue,
+                        ]);
+                    }
+
                 }
             }
         }

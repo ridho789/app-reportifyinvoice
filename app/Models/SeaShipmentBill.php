@@ -4,7 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Observers\HistorySeaShipmentBillObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+#[ObservedBy([HistorySeaShipmentBillObserver::class])]
 class SeaShipmentBill extends Model
 {
     use HasFactory;
@@ -13,6 +16,7 @@ class SeaShipmentBill extends Model
 
     protected $fillable = [
         'id_sea_shipment',
+        'id_history',
         'date',
         'code',
         'transport',
