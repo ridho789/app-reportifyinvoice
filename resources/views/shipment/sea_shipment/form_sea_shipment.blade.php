@@ -163,16 +163,16 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." disabled>
+                                            <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_pkgs" placeholder="..." disabled>
+                                            <input type="text" class="form-control text-center" name="tot_pkgs" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_weight" placeholder="..." disabled>
+                                            <input type="text" class="form-control text-center" name="tot_weight" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." disabled>
+                                            <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
                                             <input type="date" class="form-control" name="etd" value="{{ $seaShipment->etd }}" required>
@@ -402,16 +402,16 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." readonly>
+                                            <input type="text" class="form-control text-center" name="tot_ships" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_pkgs" placeholder="..." readonly>
+                                            <input type="text" class="form-control text-center" name="tot_pkgs" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_weight" placeholder="..." readonly>
+                                            <input type="text" class="form-control text-center" name="tot_weight" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." readonly>
+                                            <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
                                             <input type="date" class="form-control" name="etd">

@@ -136,7 +136,7 @@
                                         <label>Unit </label>
                                     </div>
                                     <div class="input-group input-group-static text-xs">
-                                        <select class="form-select select-new-unit" name="id_unit" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                        <select class="form-select select-new-unit" id="new_id_unit" name="id_unit" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                             <option value="">...</option>
                                             @foreach ($units as $u)
                                                 <option value="{{ $u->id_unit }}">{{ $u->name }}</option>
@@ -500,6 +500,35 @@
         return formattedNum;
     }
 
+    // Check LTS
+    function checkLTS() {
+        // Modal add cas
+        const ltsInput = document.getElementById('new-lts');
+        const unitSelect = document.getElementById('new_id_unit');
+
+        // Modal edit cas
+        const ltsEditInput = document.getElementById('lts');
+        const unitEditSelect = document.getElementById('id_unit');
+
+        const requiredValues = ['LP', 'LPI', 'LPM'];
+
+        ltsInput.addEventListener('change', function () {
+            if (requiredValues.includes(ltsInput.value)) {
+                unitSelect.setAttribute('required', 'required');
+            } else {
+                unitSelect.removeAttribute('required');
+            }
+        });
+
+        ltsEditInput.addEventListener('change', function () {
+            if (requiredValues.includes(ltsEditInput.value)) {
+                unitEditSelect.setAttribute('required', 'required');
+            } else {
+                unitEditSelect.removeAttribute('required');
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // select2
         function initializeSelect2() {
@@ -525,6 +554,12 @@
         var modal = document.getElementById('casNewModal');
         modal.addEventListener('shown.bs.modal', function() {
             initializeSelect2();
+            checkLTS();
+        });
+
+        var modalEdit = document.getElementById('casEditModal');
+        modalEdit.addEventListener('shown.bs.modal', function() {
+            checkLTS();
         });
         
         let chargeNewCas = document.querySelectorAll("#new-charge");
