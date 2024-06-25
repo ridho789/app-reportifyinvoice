@@ -193,6 +193,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Customer</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Setup</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
                             </thead>
@@ -235,6 +236,13 @@
                                     </td>
                                     <td class="company-selected align-middle text-center text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ $companyName[$c->id_company] ?? '-' }}</p>
+                                    </td>
+                                    <td class="calign-middle text-center text-sm">
+                                        @if ($c->is_bill_weight)
+                                            <p class="text-sm font-weight-normal mb-0">Heavy Billing</p>
+                                        @else
+                                            <p class="text-sm font-weight-normal mb-0">-</p>
+                                        @endif
                                     </td>
                                     <td class="text-end">
                                         <a href="#" class="mx-4 btn-edit-customer" id="btn-edit-customer">

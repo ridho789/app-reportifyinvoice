@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('etd')->nullable();
             $table->date('eta')->nullable();
             $table->integer('term')->nullable();
+            $table->boolean('is_weight')->default(false);
             $table->string('value_key')->nullable()->unique();
             $table->boolean('is_printed')->default(false);
             $table->integer('printcount')->nullable();

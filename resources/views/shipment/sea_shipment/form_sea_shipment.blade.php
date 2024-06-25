@@ -20,7 +20,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">No.</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">BL Date</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Total Packages</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Total Weight</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Total Heavy</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="3">Total CBM</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Description</th>
                                 </tr>
@@ -103,7 +103,7 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Origin</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Ships</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Packages</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Weight</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Heavy</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Volume</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etd</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Eta</th>
@@ -198,7 +198,7 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Code</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Marking</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="4">Quantity</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">W <br> kg</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">H <br> kg</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="3">Dimension</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="2">Total CBM</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">LTS</th>
@@ -351,7 +351,7 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Origin</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Ships</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Packages</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Weight</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Heavy</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Volume</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etd</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Eta</th>
@@ -437,7 +437,7 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Code</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Marking</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="4">Quantity</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">W <br> kg</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">H <br> kg</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="3">Dimension</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="1" colspan="2">Total CBM</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Lts</th>
@@ -638,12 +638,24 @@
                                     </div>
                                 </div>
 
-                                @if ($isWeight)
                                 <div class="input-group input-group-static">
-                                    <label class="form-check-label mb-1">Billing by <b><span class="text-info">weight (KG) </span></b> <br> 
-                                    Total Weight <b>{{ $totalWeightOverall / 1000 }}</b> <u>></u> Total CBM <b>{{ $totalCbmOverall }}</b></label>
+                                    <div class="form-check form-check-inline" style="padding-left: 0;">
+                                        <input type="hidden" name="is_weight" value="{{ $seaShipment->is_weight }}">
+                                        <input type="hidden" name="is_bill_weight" value="{{ $customer->is_bill_weight }}">
+                                        <input class="form-check-input" type="checkbox" id="isWeight">
+                                        <label class="form-check-label mb-1 mx-2" for="isWeight">Click to switch billing by <span class="text-primary">heavy</span></label>
+                                        @if ($isWeight)
+                                            <label class="form-check-label mb-1 text-xs">Recommended to enable heavy billing - 
+                                                Total Weight <b>{{ $totalWeightOverall / 1000 }} T</b> <u>></u> Total CBM <b>{{ $totalCbmOverall }} M3</b>
+                                            </label>
+                                        @else
+                                            @if ($customer->is_bill_weight)
+                                            <label class="form-check-label mb-1 text-xs">This particular customer has been set up for heavy-based billing</label>
+                                            @endif
+                                        @endif
+                                    </div>
                                 </div>
-                                @endif
+                                
                             </div>
                             <div class="col-6">
                                 @if ($groupSeaShipmentLines)
@@ -947,12 +959,23 @@
                             </div>
                         </template>
                         
-                        @if ($isWeight)
                         <div class="input-group input-group-static">
-                            <label class="form-check-label mb-1">Billing by <b><span class="text-info">weight (KG) </span></b> - 
-                            Total Weight <b>{{ $totalWeightOverall / 1000 }}</b> <u>></u> Total CBM <b>{{ $totalCbmOverall }}</b></label>
+                            <div class="form-check form-check-inline" style="padding-left: 0;">
+                                <input type="hidden" name="is_weight" value="{{ $seaShipment->is_weight }}">
+                                <input type="hidden" name="is_bill_weight" value="{{ $customer->is_bill_weight }}">
+                                <input class="form-check-input" type="checkbox" id="isWeight">
+                                <label class="form-check-label mb-1 mx-2" for="isWeight">Click to switch billing by <span class="text-primary">heavy</span></label>
+                                @if ($isWeight)
+                                    <label class="form-check-label mb-1 text-xs">Recommended to enable heavy billing - 
+                                        Total Weight <b>{{ $totalWeightOverall / 1000 }} T</b> <u>></u> Total CBM <b>{{ $totalCbmOverall }} M3</b>
+                                    </label>
+                                @else
+                                    @if ($customer->is_bill_weight)
+                                    <label class="form-check-label mb-1 text-xs">This particular customer has been set up for heavy-based billing</label>
+                                    @endif
+                                @endif
+                            </div>
                         </div>
-                        @endif
                     @endif
                     
                     <div class="text-end mt-3">
@@ -1265,7 +1288,40 @@
         return formattedNum;
     }
 
+    // Configuration changed bill by weight
+    var isSwitchBillingWeight = document.getElementById('isWeight');
+    isSwitchBillingWeight.addEventListener('click', function () {
+        var isWeightInvoice = isSwitchBillingWeight.checked ? 1 : 0;
+        var hiddenValueIsWeightInvoice = document.querySelector("input[name='is_weight']");
+        hiddenValueIsWeightInvoice.value = isWeightInvoice;
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
+        // Checkbox switch billing by weight
+        var totalWeight = document.querySelector("input[name='tot_weight']");
+        var isSwitchBillingWeight = document.getElementById('isWeight');
+        var hiddenValueIsWeightInvoice = document.querySelector("input[name='is_weight']");
+        var hiddenValueIsBillWeightInvoice = document.querySelector("input[name='is_bill_weight']");
+
+        // Set up in customer
+        if (hiddenValueIsBillWeightInvoice.value && hiddenValueIsBillWeightInvoice.value === '1') {
+            isSwitchBillingWeight.checked = true;
+        }
+
+        // Set up in shipment
+        if (hiddenValueIsWeightInvoice.value && hiddenValueIsWeightInvoice.value !== '0') {
+            isSwitchBillingWeight.checked = true;
+        }
+
+        if (totalWeight.value === '0') {
+            isSwitchBillingWeight.setAttribute('disabled', 'disabled');
+            isSwitchBillingWeight.checked = false;
+            hiddenValueIsWeightInvoice.value = 0;
+
+        } else {
+            isSwitchBillingWeight.removeAttribute('disabled', 'disabled');
+        }
+
         // Form 
         const form = document.getElementById('seaShipmentForm');
         form.addEventListener('submit', function(event) {

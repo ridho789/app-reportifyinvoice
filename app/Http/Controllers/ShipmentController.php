@@ -350,7 +350,7 @@ class ShipmentController extends Controller
         $totalAmountUnit = 0;
 
         // Initial variabel
-        $isWeight = false;
+        $isWeight = $request->is_weight;
         $is_tonase = false;
 
         function calculateTotals($group, $customer, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
@@ -523,15 +523,6 @@ class ShipmentController extends Controller
                 return calculateTotals($group, $customer, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, 
                 $totalAmountWeightOverall, $totalAmountCbmOverall, $totalAmountUnit, $pricelist);
             });
-        }
-
-        // Check billing with weight or cbm
-        $totalCbmOverall = $totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall;
-        if ((($totalWeightOverall / 1000) > $totalCbmOverall) || $customer->is_bill_weight) {
-            $isWeight = true;
-
-        }else {
-            $isWeight = false;
         }
 
         // Apply isWeight condition to totalAmountOverall calculation
@@ -757,6 +748,7 @@ class ShipmentController extends Controller
         // update data in shipment
         $seaShipment->no_inv = $request->inv_no;
         $seaShipment->term = $request->term;
+        $seaShipment->is_weight = $request->is_weight;
         $seaShipment->save();
 
         if ($request->is_print) {
@@ -795,14 +787,14 @@ class ShipmentController extends Controller
             // size
             if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
                 if ($isWeight) {
-                    $size = $totalWeightOverall . ' KG';
+                    $size = ($totalWeightOverall / 1000) . ' T';
                 } else {
                     $size = ($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall) + $totalCbmDiffOverall . ' M3';
                 }
 
             } else {
                 if ($isWeight) {
-                    $size = $totalWeightOverall . ' KG';
+                    $size = ($totalWeightOverall / 1000) . ' T';
                 } else {
                     $size = $totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall . ' M3';
                 }

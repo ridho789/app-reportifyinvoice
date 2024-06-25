@@ -362,10 +362,7 @@
                             $totalQty += $qty;
                             $totalWeight += $weight;
                             $totalAmount += $amount + $amountCbmDiff + (intval($bl) + intval($permit) + intval($transport) + intval($insurance));
-
-                            if (!$unitType || $unitType != 'T') {
-                                $totalCbm += $totals['total_cbm2'] + $totals['cbm_difference'];
-                            }
+                            $totalCbm += $totals['total_cbm2'] + $totals['cbm_difference'];
 
                             $groupedMarkings = collect(array_keys($totals['markings']))->groupBy(function ($marking) {
                                 // Menentukan pola regex untuk ekstraksi prefix dan nomor
@@ -626,10 +623,7 @@
 
                             $totalQty += $qty;
                             
-                            if (!$unitType || $unitType != 'T') {
-                                $totalCbm += $cbm;
-                            }
-
+                            $totalCbm += $cbm;
                             $totalWeight += $weight;
 
                             if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
