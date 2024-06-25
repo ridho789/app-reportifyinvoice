@@ -349,10 +349,11 @@ class ShipmentController extends Controller
         $totalAmountCbmOverall = 0;
         $totalAmountUnit = 0;
 
-        // is weight
+        // Initial variabel
         $isWeight = false;
+        $is_tonase = false;
 
-        function calculateTotals($group, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
+        function calculateTotals($group, $customer, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
         &$totalAmountWeightOverall, &$totalAmountCbmOverall, &$totalAmountUnit, $pricelist) {
             $totals = [
                 'total_qty_pkgs' => $group->filter(function ($item) {
@@ -383,6 +384,12 @@ class ShipmentController extends Controller
             $cas = null;
             $lts = $group->first()->lts;
             $idUnit = $group->first()->id_unit;
+
+            // set unit
+            $unit = null;
+            if ($idUnit) {
+                $unit = Unit::where('id_unit', $idUnit)->value('name');
+            }
 
             $cas = Cas::where('id_customer', $seaShipment->id_customer)
                     ->where('id_shipper', $seaShipment->id_shipper)
@@ -417,8 +424,12 @@ class ShipmentController extends Controller
                 $totalAmountUnit += $qtyUnit * $totals['cas'];
                 
             } else {
-                $totalAmountWeightOverall += $weight * ($pricelist + $totals['cas']);
-                $totalAmountCbmOverall += $cbm * ($pricelist + $totals['cas']);
+                if ($customer->is_bill_weight || ($unit == 'T')) {
+                    $totalAmountWeightOverall += $weight * ($pricelist + $totals['cas']);
+
+                } else {
+                    $totalAmountCbmOverall += $cbm * ($pricelist + $totals['cas']);
+                }
             }
             
             // $totals['markings'] = $group->pluck('marking')->unique()->toArray();
@@ -456,15 +467,24 @@ class ShipmentController extends Controller
             $totalAmountCbmOverall = 0;
             $totalAmountUnit = 0;
 
-            $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
+            // Initial variabel
+            $is_tonase = false;
+
+            $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) use (&$is_tonase) {
                 // unit
                 $unit = Unit::where('id_unit', $item->id_unit)->value('name');
+
+                // Changed to active weight if unit = tonase
+                if ($unit == 'T') {
+                    $is_tonase = true;
+                }
+
                 $unitPart = $unit ? $unit . '-' : '';
                 return $item->date . '-' . $unitPart . $item->lts;
                 
-            })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
+            })->map(function ($group) use ($customer, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
                 &$totalAmountWeightOverall, &$totalAmountCbmOverall, &$totalAmountUnit, $pricelist) {
-                return calculateTotals($group, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, 
+                return calculateTotals($group, $customer, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, 
                 $totalAmountWeightOverall, $totalAmountCbmOverall, $totalAmountUnit, $pricelist);
             });
         }
@@ -483,15 +503,24 @@ class ShipmentController extends Controller
             $totalAmountCbmOverall = 0;
             $totalAmountUnit = 0;
 
-            $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) {
+            // Initial variabel
+            $is_tonase = false;
+
+            $groupSeaShipmentLines = $seaShipmentLines->groupBy(function ($item) use (&$is_tonase) {
                 // unit
                 $unit = Unit::where('id_unit', $item->id_unit)->value('name');
+
+                // Changed to active weight if unit = tonase
+                if ($unit == 'T') {
+                    $is_tonase = true;
+                }
+
                 $unitPart = $unit ? $unit . '-' : '';
                 return $item->date . '-' . $unitPart . $item->marking . '-' . $item->lts;
 
-            })->map(function ($group) use ($seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
+            })->map(function ($group) use ($customer, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
                 &$totalAmountWeightOverall, &$totalAmountCbmOverall, &$totalAmountUnit, $pricelist) {
-                return calculateTotals($group, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, 
+                return calculateTotals($group, $customer, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, 
                 $totalAmountWeightOverall, $totalAmountCbmOverall, $totalAmountUnit, $pricelist);
             });
         }
@@ -510,7 +539,12 @@ class ShipmentController extends Controller
             $totalAmountOverall = $totalAmountWeightOverall;
             
         } else {
-            $totalAmountOverall = $totalAmountCbmOverall;
+            if ($is_tonase) {
+                $totalAmountOverall = $totalAmountCbmOverall + $totalAmountWeightOverall;
+
+            } else {
+                $totalAmountOverall = $totalAmountCbmOverall;
+            }
         }
 
         function romanNumerals($number) {

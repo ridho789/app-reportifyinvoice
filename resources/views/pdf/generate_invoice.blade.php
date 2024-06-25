@@ -267,6 +267,9 @@
                     // Update row
                     $entryRow += count($resultAnotherBill);
 
+                    // Show total weight if unit == T (Tonase)
+                    $is_tonase = false;
+
                 @endphp
 
                 @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
@@ -350,15 +353,19 @@
                                 $amount = $totals['total_cbm2'] * $unit_price;
         
                                 // Jika beralih penagihan dengan berat
-                                if ($is_weight) {
+                                if ($is_weight || $unitType == 'T') {
                                     $amount = $weight * $unit_price;
+                                    $is_tonase = true;
                                 }
                             }
 
                             $totalQty += $qty;
                             $totalWeight += $weight;
                             $totalAmount += $amount + $amountCbmDiff + (intval($bl) + intval($permit) + intval($transport) + intval($insurance));
-                            $totalCbm += $totals['total_cbm2'] + $totals['cbm_difference'];
+
+                            if (!$unitType || $unitType != 'T') {
+                                $totalCbm += $totals['total_cbm2'] + $totals['cbm_difference'];
+                            }
 
                             $groupedMarkings = collect(array_keys($totals['markings']))->groupBy(function ($marking) {
                                 // Menentukan pola regex untuk ekstraksi prefix dan nomor
@@ -406,7 +413,7 @@
                         <tr>
                             <td width="5%" class="border_left_right"></td>
                             <td width="30%" class="border_left_right text_center">
-                                @if ($is_weight)
+                                @if ($is_weight || $unitType == 'T')
                                     @if (!$cas)
                                         {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} : {{ $totals['total_cbm2'] }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                     @else
@@ -453,7 +460,7 @@
                             </td>
                             <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
 
-                            @if ($is_weight)
+                            @if ($is_weight || $unitType == 'T')
                                 <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight }} T</td>
                             @else
                                 <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
@@ -618,7 +625,11 @@
                             }
 
                             $totalQty += $qty;
-                            $totalCbm += $cbm;
+                            
+                            if (!$unitType || $unitType != 'T') {
+                                $totalCbm += $cbm;
+                            }
+
                             $totalWeight += $weight;
 
                             if (in_array($lts, ['LP', 'LPI', 'LPM'])) {
@@ -628,8 +639,9 @@
                                 $amount = $cbm * $unit_price;
         
                                 // Jika beralih penagihan dengan berat
-                                if ($is_weight) {
+                                if ($is_weight || $unitType == 'T') {
                                     $amount = $weight * $unit_price;
+                                    $is_tonase = true;
                                 }
                             }
 
@@ -681,7 +693,7 @@
                         <tr>
                             <td width="5%" class="border_left_right"></td>
                             <td width="30%" class="border_left_right text_center">
-                                @if ($is_weight)
+                                @if ($is_weight || $unitType == 'T')
                                     @if (!$cas)
                                         BATAM {{ implode(', ', $mergedMarkings) }} : {{ $cbm }} M3 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                     @else
@@ -706,7 +718,7 @@
                                 @endif
                             </td>
                             <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
-                            @if ($is_weight)
+                            @if ($is_weight || $unitType == 'T')
                                 <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight }} T</td>
                             @else
                                 <td width="10%" class="border_left_right text_center text_uppercase">{{ $cbm }} M3</td>
@@ -780,7 +792,11 @@
                     @if ($is_weight)
                         <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalWeight }} T</td>
                     @else
-                        <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3</td>
+                        @if ($is_tonase)
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3 <br> {{ $totalWeight }} T</td>
+                        @else
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3</td>
+                        @endif
                     @endif
                     <td width="15%" class="border_left_right text_center"></td>
                     <td width="20%" class="border_left_right text_center"></td>
