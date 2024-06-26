@@ -46,17 +46,20 @@
                                         <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_qty_pkgs'] }}</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_weight'] ?? '-' }}</span>
+                                        @php
+                                            $totalWeight = $gsl['total_weight'] / 1000;
+                                        @endphp
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $totalWeight != 0 ? $totalWeight . ' T' : '-' }}</span>
                                     </td>
                                     <!-- total cbm -->
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm1'] ?? '-' }}</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm1'] != 0 ? $gsl['total_cbm1'] . ' M3' : '-' }}</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm2'] ?? '-' }}</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm2'] != 0 ? $gsl['total_cbm2'] . ' M3' : '-' }}</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['cbm_difference'] ?? '-' }}</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['cbm_difference'] != 0 ? $gsl['cbm_difference'] . ' M3' : '-' }}</span>
                                     </td>
                                     <!-- ### -->
                                     <td class="align-middle text-center">
@@ -1099,7 +1102,7 @@
             }
         });
 
-        document.querySelector('input[name="tot_weight"]').value = totalWeight;
+        document.querySelector('input[name="tot_weight"]').value = totalWeight / 1000;
     }
 
     calculateTotalWeight();
