@@ -13,8 +13,13 @@ class UnitsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Unit::create([
-            'name' => 'PCS',
-        ]);
+        $units = [
+            ['name' => 'PCS'],
+            ['name' => 'T'],
+        ];
+
+        foreach ($units as $unit) {
+            Unit::create($unit);
+        }
     }
 }

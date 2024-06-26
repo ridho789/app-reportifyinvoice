@@ -267,7 +267,7 @@
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="weight[]" value="{{ $ssl->weight }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center input-weight" name="weight[]" value="{{ $ssl->weight }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
@@ -292,17 +292,17 @@
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center lts-input" name="lts[]" value="{{ $ssl->lts }}" 
+                                            <input type="text" class="form-control text-center input-lts" name="lts[]" value="{{ $ssl->lts }}" 
                                             oninput="this.value = this.value.toUpperCase(); checkLTS(this);" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center qty-input" name="qty[]" value="{{ $ssl->qty }}" min="1" placeholder="..." style="border: 0px;">
+                                            <input type="number" class="form-control text-center input-qty" name="qty[]" value="{{ $ssl->qty }}" min="1" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=5%>
                                             <select class="form-select text-center text-xs select-unit" name="id_unit[]" style="border: none;">
-                                                <option value="">-</option>
+                                                <option value="" data-name="">-</option>
                                                 @foreach ($units as $u)
-                                                <option value="{{ $u->id_unit }}" 
+                                                <option value="{{ $u->id_unit }}" data-name="{{ $u->name }}" 
                                                     {{ old('id_unit', $ssl->id_unit) == $u->id_unit ? 'selected' : '' }}>{{ $u->name }}
                                                 </option>
                                                 @endforeach
@@ -465,7 +465,7 @@
                                             </div>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <input type="date" class="form-control text-center" name="bldate[]" style="border: 0px;">
+                                            <input type="date" class="form-control text-center" name="bldate[]" style="border: 0px;" required>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
                                             <input type="text" class="form-control text-center" name="code[]" oninput="this.value = this.value.toUpperCase()" 
@@ -502,7 +502,7 @@
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="weight[]" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center input-weight" name="weight[]" placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
@@ -524,17 +524,17 @@
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="lts[]" oninput="this.value = this.value.toUpperCase()" 
+                                            <input type="text" class="form-control text-center input-lts" name="lts[]" oninput="this.value = this.value.toUpperCase()" 
                                             placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center">
-                                            <input type="number" class="form-control text-center" name="qty[]" placeholder="..." style="border: 0px;" min="1">
+                                            <input type="number" class="form-control text-center input-qty" name="qty[]" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle text-center">
                                             <select class="form-select text-center text-xs select-unit" name="id_unit[]" style="border: none;">
-                                                <option value="">-</option>
+                                                <option value="" data-name="">-</option>
                                                 @foreach ($units as $u)
-                                                <option value="{{ $u->id_unit }}" 
+                                                <option value="{{ $u->id_unit }}" data-name="{{ $u->name }}"
                                                     {{ old('id_unit') == $u->id_unit ? 'selected' : '' }}>{{ $u->name }}
                                                 </option>
                                                 @endforeach
@@ -1288,13 +1288,70 @@
         return formattedNum;
     }
 
+    // Function to check the LTS input and add/remove required attribute
+    function checkLTS(element) {
+        const ltsValue = element.value.toUpperCase();
+        const parentRow = element.closest('tr');
+        const qtyInput = parentRow.querySelector('.input-qty');
+        const selectUnit = parentRow.querySelector('.select-unit');
+
+        if (!['LP', 'LPI', 'LPM'].includes(ltsValue)) {
+            qtyInput.removeAttribute('required');
+
+            // Remove qty
+            if (qtyInput.value) {
+                qtyInput.value = null;
+            }
+
+            // Remove select unit
+            const selectedOption = selectUnit.options[selectUnit.selectedIndex];
+            const selectedName = selectedOption.getAttribute('data-name');
+
+            const pcsOption = selectUnit.querySelector('option[data-name=""]');
+            pcsOption.selected = true;
+
+        } else {
+            qtyInput.setAttribute('required', 'required');
+
+            // Set select unit to PCS
+            const selectedOption = selectUnit.options[selectUnit.selectedIndex];
+            const selectedName = selectedOption.getAttribute('data-name');
+
+            if (selectedName !== 'PCS') {
+                const pcsOption = selectUnit.querySelector('option[data-name="PCS"]');
+                if (pcsOption) {
+                    pcsOption.selected = true;
+                }
+            }
+        }
+    }
+
+    // Function to check unit
+    function checkUnit(element) {
+        const parentRow = element.closest('tr');
+        const selectUnit = parentRow.querySelector('.select-unit');
+        const inputWeight = parentRow.querySelector('.input-weight');
+
+        const selectedOption = selectUnit.options[selectUnit.selectedIndex];
+        const selectedName = selectedOption.getAttribute('data-name');
+
+        if (!['T'].includes(selectedName)) {
+            inputWeight.removeAttribute('required');
+
+        } else {
+            inputWeight.setAttribute('required', 'required');
+        }
+    }
+
     // Configuration changed bill by weight
     var isSwitchBillingWeight = document.getElementById('isWeight');
-    isSwitchBillingWeight.addEventListener('click', function () {
-        var isWeightInvoice = isSwitchBillingWeight.checked ? 1 : 0;
-        var hiddenValueIsWeightInvoice = document.querySelector("input[name='is_weight']");
-        hiddenValueIsWeightInvoice.value = isWeightInvoice;
-    });
+    if (isSwitchBillingWeight) {
+        isSwitchBillingWeight.addEventListener('click', function () {
+            var isWeightInvoice = isSwitchBillingWeight.checked ? 1 : 0;
+            var hiddenValueIsWeightInvoice = document.querySelector("input[name='is_weight']");
+            hiddenValueIsWeightInvoice.value = isWeightInvoice;
+        });
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
         // Checkbox switch billing by weight
@@ -1304,34 +1361,44 @@
         var hiddenValueIsBillWeightInvoice = document.querySelector("input[name='is_bill_weight']");
 
         // Set up in customer
-        if (hiddenValueIsBillWeightInvoice.value && hiddenValueIsBillWeightInvoice.value === '1') {
-            isSwitchBillingWeight.checked = true;
+        if (hiddenValueIsBillWeightInvoice) {
+            if (hiddenValueIsBillWeightInvoice.value && hiddenValueIsBillWeightInvoice.value === '1') {
+                isSwitchBillingWeight.checked = true;
+            }
         }
 
         // Set up in shipment
-        if (hiddenValueIsWeightInvoice.value && hiddenValueIsWeightInvoice.value !== '0') {
-            isSwitchBillingWeight.checked = true;
+        if (hiddenValueIsWeightInvoice) {
+            if (hiddenValueIsWeightInvoice.value && hiddenValueIsWeightInvoice.value !== '0') {
+                isSwitchBillingWeight.checked = true;
+            }
         }
 
         if (totalWeight.value === '0') {
-            isSwitchBillingWeight.setAttribute('disabled', 'disabled');
-            isSwitchBillingWeight.checked = false;
-            hiddenValueIsWeightInvoice.value = 0;
+            if (isSwitchBillingWeight) {
+                isSwitchBillingWeight.setAttribute('disabled', 'disabled');
+                isSwitchBillingWeight.checked = false;
+                hiddenValueIsWeightInvoice.value = 0;
+            }
 
         } else {
-            isSwitchBillingWeight.removeAttribute('disabled', 'disabled');
+            if (isSwitchBillingWeight) {
+                isSwitchBillingWeight.removeAttribute('disabled', 'disabled');
+            }
         }
 
         // Form 
         const form = document.getElementById('seaShipmentForm');
-        form.addEventListener('submit', function(event) {
-            const isPrintButton = event.submitter.name === 'is_print';
-            if (isPrintButton) {
-                form.setAttribute('target', '_blank');
-            } else {
-                form.removeAttribute('target');
-            }
-        });
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                const isPrintButton = event.submitter.name === 'is_print';
+                if (isPrintButton) {
+                    form.setAttribute('target', '_blank');
+                } else {
+                    form.removeAttribute('target');
+                }
+            });
+        }
         
         // Function to add days to a date
         function addDays(date, days) {
@@ -1458,22 +1525,18 @@
             });
         });
 
-        // Function to check the LTS input and add/remove required attribute
-        function checkLTS(element) {
-            const ltsValue = element.value.toUpperCase();
-            const parentRow = element.closest('tr');
-            const qtyInput = parentRow.querySelector('.qty-input');
-            const selectUnit = parentRow.querySelector('.select-unit');
-
-            if (!['LP', 'LPI', 'LPM'].includes(ltsValue)) {
-                qtyInput.removeAttribute('required');
-                selectUnit.removeAttribute('required');
-            }
-        }
-
         // Apply the checkLTS function on page load for existing values
-        document.querySelectorAll('.lts-input').forEach(function(input) {
-            checkLTS(input);
+        document.querySelectorAll('.input-lts').forEach(function(input) {
+            input.addEventListener('change', function() {
+                checkLTS(input);
+            });
+        });
+
+        // Apply the checkUnit function on page load for existing values
+        document.querySelectorAll('.select-unit').forEach(function(select) {
+            select.addEventListener('change', function() {
+                checkUnit(select);
+            });
         });
 
         // Add to another bill
@@ -1534,8 +1597,8 @@
             const rows = document.querySelectorAll('tbody tr');
             
             rows.forEach(row => {
-                const ltsInput = row.querySelector('.lts-input');
-                const qtyInput = row.querySelector('.qty-input');
+                const ltsInput = row.querySelector('.input-lts');
+                const qtyInput = row.querySelector('.input-qty');
                 const unitInput = row.querySelector('.select-unit');
     
                 if (ltsInput && qtyInput && unitInput) {
@@ -1630,7 +1693,7 @@
         </td>
         <!-- ### -->
         <td class="align-middle text-center" width="5%">
-            <input type="text" class="form-control text-center" name="weight[]" value="" placeholder="..." style="border: 0px;">
+            <input type="text" class="form-control text-center input-weight" name="weight[]" value="" placeholder="..." style="border: 0px;">
         </td>
         <!-- dimension -->
         <td class="align-middle text-center" width="5%">
@@ -1655,17 +1718,17 @@
         </td>
         <!-- ### -->
         <td class="align-middle text-center" width="5%">
-            <input type="text" class="form-control text-center lts-input" name="lts[]" value="" 
+            <input type="text" class="form-control text-center input-lts" name="lts[]" value="" 
             oninput="this.value = this.value.toUpperCase(); checkLTS(this);" placeholder="..." style="border: 0px;">
         </td>
         <td class="align-middle text-center" width="5%">
-            <input type="number" class="form-control text-center qty-input" name="qty[]" value="" min="1" placeholder="..." style="border: 0px;">
+            <input type="number" class="form-control text-center input-qty" name="qty[]" value="" min="1" placeholder="..." style="border: 0px;">
         </td>
         <td class="align-middle" width="5%">
             <select class="form-select text-center text-xs select-unit" name="id_unit[]" style="border: none;">
-                <option value="">-</option>
+                <option value="" data-name="">-</option>
                 @foreach ($units as $u)
-                <option value="{{ $u->id_unit }}">{{ $u->name }}</option>
+                <option value="{{ $u->id_unit }}" data-name="{{ $u->name }}">{{ $u->name }}</option>
                 @endforeach
             </select>
         </td>
