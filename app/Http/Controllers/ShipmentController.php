@@ -25,6 +25,8 @@ use PDF;
 use DateTime;
 use DateInterval;
 use Carbon\Carbon;
+use Mpdf\Mpdf;
+use Illuminate\Support\Facades\Storage;
 
 class ShipmentController extends Controller
 {
@@ -671,21 +673,22 @@ class ShipmentController extends Controller
                 'permit' => $request->permit,
                 'insurance' => $request->insurance
             ];
-        
+
             if ($dataBill) {
                 foreach ($dataBill["dateBL"] as $index => $date) {
                     $transportValue = (int) preg_replace("/[^0-9]/", "", explode(",", $dataBill["transport"][$index])[0]);
                     $blValue = (int) preg_replace("/[^0-9]/", "", explode(",", $dataBill["bl"][$index])[0]);
                     $permitValue = (int) preg_replace("/[^0-9]/", "", explode(",", $dataBill["permit"][$index])[0]);
                     $insuranceValue = (int) preg_replace("/[^0-9]/", "", explode(",", $dataBill["insurance"][$index])[0]);
-        
+
                     $totalTransportOverall += $transportValue;
                     $totalBlOverall += $blValue;
                     $totalPermitOverall += $permitValue;
                     $totalInsuranceOverall += $insuranceValue;
-        
-                    $checkSeaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->where('date', $date)->firstOrFail();
-                    if ($checkSeaShipmentBill) {
+
+                    try {
+                        $checkSeaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->where('date', $date)->firstOrFail();
+                    
                         $checkSeaShipmentBill->code = $dataBill["codeShipment"][$index];
                         $checkSeaShipmentBill->transport = $transportValue;
                         $checkSeaShipmentBill->bl = $blValue;
@@ -693,7 +696,7 @@ class ShipmentController extends Controller
                         $checkSeaShipmentBill->insurance = $insuranceValue;
                         $checkSeaShipmentBill->save();
 
-                    } else {
+                    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
                         SeaShipmentBill::create([
                             'id_sea_shipment' => $seaShipment->id_sea_shipment,
                             'date' => $date,
@@ -845,8 +848,42 @@ class ShipmentController extends Controller
                 $checkBillRecap->amount = $allTotalAmount;
                 $checkBillRecap->save();
             }
+            
+            $output = $pdf->output();
+            // Simpan PDF invoice ke file sementara
+            $tempInvoicePath = storage_path('app/temp_invoice.pdf');
+            file_put_contents($tempInvoicePath, $output);
 
-            return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
+            if ($seaShipment->file_shipment_status) {
+                $uploadedFile = storage_path('app/public/' . $seaShipment->file_shipment_status);
+
+                // Inisialisasi mPDF
+                $mpdf = new Mpdf();
+                
+                // Tambahkan halaman dari file PDF yang dihasilkan oleh DomPDF
+                $pageCount1 = $mpdf->SetSourceFile($tempInvoicePath);
+                for ($pageNo = 1; $pageNo <= $pageCount1; $pageNo++) {
+                    $tplId = $mpdf->ImportPage($pageNo);
+                    $mpdf->AddPage();
+                    $mpdf->UseTemplate($tplId);
+                }
+
+                // Tambahkan halaman dari file PDF yang diunggah
+                $pageCount2 = $mpdf->SetSourceFile($uploadedFile);
+                for ($pageNo = 1; $pageNo <= $pageCount2; $pageNo++) {
+                    $tplId = $mpdf->ImportPage($pageNo);
+                    $mpdf->AddPage();
+                    $mpdf->UseTemplate($tplId);
+                }
+
+                // Output merge PDF
+                return response()->streamDownload(function () use ($mpdf, $customer, $shipper, $invNumber, $company, $monthRoman, $year) {
+                    echo $mpdf->Output('', 'S');
+                }, $customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
+
+            } else {
+                return $pdf->download($customer->name . '-' . $shipper->name . '-' . $invNumber . '_' . $company->shorter . '_' . 'INV_' . $monthRoman . '_' . $year . '.pdf');
+            }
         }
 
         if ($request->is_update) {
