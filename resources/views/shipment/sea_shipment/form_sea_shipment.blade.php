@@ -92,7 +92,7 @@
                 </div>
                 <div class="card-body px-4 pt-0 pb-0">
                     @if ($seaShipment)
-                    <form id="form-sea-freight" method="POST" action="{{ url('sea_shipment-update') }}">
+                    <form id="form-sea-freight" method="POST" enctype="multipart/form-data" action="{{ url('sea_shipment-update') }}">
                         @csrf
                         <div class="table-responsive">
                             <table class="table table-bordered align-items-center mb-0">
@@ -332,6 +332,32 @@
                             <button id="addRowButton" class="btn btn-outline-primary btn-sm" type="button" style="border: none;">
                                 <span class="btn-inner--text"><u>+</u> Add new line</span>
                             </button>
+                        </div>
+                        
+                        <!-- Upload shipment status -->
+                        <div class="input-group input-group-dynamic mb-3">
+                            <div>
+                                <label for="files" class="drop-container" id="dropcontainer" style="margin-left: 0;">
+                                    <span class="drop-title">Drop file here</span>
+                                    or
+                                    <input type="file" id="files" name="file_shipment_status" accept="application/pdf">
+                                </label>
+                            </div>
+
+                            <div class="mt-3">
+                                <span style="font-size: 15.5px; color: #444; font-weight: bold;">Uploaded File</span>
+                                @if ($seaShipment->file_shipment_status)
+                                    <ul>
+                                        <li>
+                                            <a href="{{ asset('storage/' . $seaShipment->file_shipment_status) }}" target="_blank">
+                                                <span style="font-size: 14.5px;">{{ $seaShipment->file_shipment_status }}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                @else
+                                    <p style="font-size: 14.5px;">No file uploaded yet.</p>
+                                @endif
+                            </div>
                         </div>
 
                         <div>
@@ -1011,6 +1037,42 @@
         });
     </script>
 @endif
+
+<style>
+    .drop-container {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 150px;
+    width: 1550px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1.5px dashed #555;
+    color: #444;
+    cursor: pointer;
+    transition: background .2s ease-in-out, border .2s ease-in-out;
+    }
+
+    .drop-container:hover {
+    background: #eee;
+    border-color: #111;
+    }
+
+    .drop-container:hover .drop-title {
+    color: #222;
+    }
+
+    .drop-title {
+    color: #444;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    transition: color .2s ease-in-out;
+    }
+</style>
 
 <script>
     // select2
@@ -1867,6 +1929,36 @@
                 const numberCell = row.querySelector('td:first-child div');
                 if (numberCell) {
                     numberCell.innerText = `${index + 1}.`;
+                }
+            });
+        }
+    });
+
+    // Drag or Drop File
+    document.addEventListener('DOMContentLoaded', (event) => {
+        let dropContainer = document.getElementById('dropcontainer');
+        let fileInput = document.getElementById('files');
+
+        if (dropContainer) {
+            dropContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropContainer.classList.add('dragover');
+            });
+
+            dropContainer.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropContainer.classList.remove('dragover');
+            });
+
+            dropContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropContainer.classList.remove('dragover');
+
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
                 }
             });
         }

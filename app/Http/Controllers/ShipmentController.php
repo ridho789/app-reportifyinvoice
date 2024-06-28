@@ -210,10 +210,29 @@ class ShipmentController extends Controller
             $SeaShipment->origin = strtoupper($request->origin);
             $SeaShipment->etd = $request->etd;
             $SeaShipment->eta = $request->eta;
-
-            $SeaShipment->save();
         }
 
+        // File
+        $request->validate([
+            'file_shipment_status' => 'mimes:pdf|max:2048',
+        ]);
+
+        if ($request->file('file_shipment_status')) {
+            $file = $request->file('file_shipment_status');
+            $dateTime = new DateTime();
+            $dateTime->modify('+7 hours');
+            $currentDateTime = $dateTime->format('d_m_Y_H_i_s');
+            $fileName = $currentDateTime . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('ShipmentStatus', $fileName, 'public');
+        
+            if ($SeaShipment) {
+                $SeaShipment->file_shipment_status = $filePath;
+            }
+        }
+
+        // Save
+        $SeaShipment->save();
+        
         foreach ($request->id_sea_shipment_line as $index => $idSeaShipmentLine) {
             $seaShipmentLine = SeaShipmentLine::find($idSeaShipmentLine);
         

@@ -51,24 +51,28 @@
                                     <td class="align-middle text-center text-sm text-uppercase">
                                         <p class="text-sm font-weight-normal mb-0">{{ $h['updated_time'] }}</p>
                                     </td>
-                                    <td class="align-middle text-center text-sm">
+                                    <td class="align-middle text-sm">
                                         @php
                                             $olderData = $h['older_data'];
                                             $pattern = '/{(.*?)}/';
                                             preg_match_all($pattern, $olderData, $olders);
                                         @endphp
                                         @foreach ($olders[1] as $older)
-                                            <p class="text-sm font-weight-normal mb-2">{{ $older }}</p>
+                                            <p class="text-sm font-weight-normal mb-2" 
+                                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 550px;">{{ $older }}
+                                            </p>
                                         @endforeach
                                     </td>
-                                    <td class="align-middle text-center text-sm">
+                                    <td class="align-middle text-sm">
                                         @php
                                             $changedData = $h['changed_data'];
                                             $pattern = '/{(.*?)}/';
                                             preg_match_all($pattern, $changedData, $changeds);
                                         @endphp
                                         @foreach ($changeds[1] as $changed)
-                                            <p class="text-sm font-weight-normal mb-2">{{ $changed }}</p>
+                                            <p class="text-sm font-weight-normal mb-2" 
+                                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 550px;">{{ $changed }}
+                                            </p>
                                         @endforeach
                                     </td>
                                     <td class="align-middle text-center text-sm">
