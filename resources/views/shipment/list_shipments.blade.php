@@ -3,17 +3,17 @@
 @section('content')
 <div class="container-fluid py-4">
     <div class="row">
-        <div class="col-12 d-flex ms-auto">
-            <!-- <div class="btn-group dropdown">
+        <div class="col-12 d-flex">
+            <div class="btn-group dropdown">
                 <button type="button" class="btn bg-gradient-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    new shipment
+                    Create
                 </button>
                 <ul class="dropdown-menu px-2 py-3" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item border-radius-md" href="{{ url('/form_sea_shipment') }}">Shipment - Sea Freight</a></li>
                     <li><a class="dropdown-item border-radius-md" href="javascript:;">Shipment - Air Freight</a></li>
                 </ul>
-            </div> -->
-            <div class="btn-group dropdown">
+            </div>
+            <div class="btn-group dropdown ms-3">
                 <button class="btn bg-gradient-dark dropdown-toggle" type="button" id="dropdownImport" data-bs-toggle="dropdown" aria-expanded="false">
                     Import
                 </button>
