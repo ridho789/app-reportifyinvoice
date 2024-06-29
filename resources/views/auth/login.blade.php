@@ -50,7 +50,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <form action="{{ url('login-auth') }}" method="GET">
+                                <form action="{{ url('login-auth') }}" method="POST">
                                     @csrf
                                     <div class="input-group input-group-outline my-3">
                                         <label class="form-label">Email</label>

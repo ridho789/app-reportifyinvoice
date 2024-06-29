@@ -28,17 +28,23 @@ use App\Http\Controllers\LoginController;
 |
 */
 
+// Route::get('/', [LoginController::class, 'index'])->name('/');
 Route::get('/', function () {
     return view('auth.login');
 });
 
 Route::get('login', [LoginController::class, 'index'])->name('login');
-Route::get('login-auth', [LoginController::class, 'authenticate']);
+Route::post('login-auth', [LoginController::class, 'authenticate']);
 Route::get('logout', [LoginController::class, 'logout']);
 
 // Route::get('/dashboard', [DashboardController::class, 'index']);
 
 Route::group(['middleware' => ['auth', 'check.role.user:0']], function () {
+    // history
+    Route::get('/history', [HistoryController::class, 'index']);
+});
+
+Route::group(['middleware' => ['auth', 'check.role.user:0,1']], function () {
     // shipment
     Route::get('/list_shipments', [shipmentController::class, 'index']);
 
@@ -105,7 +111,4 @@ Route::group(['middleware' => ['auth', 'check.role.user:0']], function () {
     Route::post('cas-store', [CasController::class, 'store']);
     Route::post('cas-update', [CasController::class, 'update']);
     Route::post('import-cas', [CasController::class, 'importCas']);
-
-    // history
-    Route::get('/history', [HistoryController::class, 'index']);
 });

@@ -19,24 +19,31 @@ class CheckRoleUser
         $roles = func_get_args();
         array_shift($roles);
     
-        if (Auth::check() && in_array(Auth::user()->level, $roles)) {
-            return $next($request);
-        }
-
         if (Auth::check()) {
-            // Redirect based on the user's level
-            switch (Auth::user()->level) {
-                case 1:
-                    return redirect('list_shipments');
-                    break;
-                case 2:
-                    return redirect('list_shipments');
-                    break;
-                default:
-                    return redirect('list_shipments');
+            $userRole = Auth::user()->level;
+
+            if (in_array($userRole, $roles)) {
+                return $next($request);
             }
+
+            // Redirect based on the user's level if they are authenticated but don't have the required role
+            return $this->redirectToDashboard($userRole);
         }
-    
-        return redirect('list_shipments');
+    }
+
+    /**
+     * Redirect the user based on their role.
+     *
+     * @param  int  $role
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function redirectToDashboard(int $role)
+    {
+        switch ($role) {
+            case 1:
+                return redirect('list_shipments');
+            default:
+                return redirect('list_shipments');
+        }
     }
 }
