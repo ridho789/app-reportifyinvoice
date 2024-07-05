@@ -20,5 +20,6 @@ class SeaShipmentAnotherBill extends Model
         'id_desc',
         'date',
         'charge',
+        'note'
     ];
 }

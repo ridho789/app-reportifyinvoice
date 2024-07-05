@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_history')->nullable();
             $table->date('date')->nullable();
             $table->string('charge')->nullable();
+            $table->string('note')->nullable();
             $table->timestamps();
         });
     }

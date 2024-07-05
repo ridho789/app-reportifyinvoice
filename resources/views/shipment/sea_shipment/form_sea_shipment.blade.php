@@ -752,7 +752,7 @@
                                                                 oninput="this.value = this.value.toUpperCase()" placeholder="...">
                                                             </div>
 
-                                                            <div class="input-group input-group-static mb-4">
+                                                            <div class="input-group input-group-static mb-4" style="display: none;">
                                                                 <div class="col-5">
                                                                     <label>BL</label>
                                                                     <input type="text" class="form-control bl" id="bl-{{ $loop->index }}" name="bl[]" 
@@ -766,7 +766,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <div class="input-group input-group-static mb-4">
+                                                            <div class="input-group input-group-static mb-4" style="display: none;">
                                                                 <div class="col-5">
                                                                     <label>Insurance</label>
                                                                     <input type="text" class="form-control insurance" id="insurance-{{ $loop->index }}" name="insurance[]" 
@@ -800,7 +800,7 @@
                                                                             <input type="hidden" name="idAnotherBill[]" value="{{ $data->id_sea_shipment_other_bill }}">
                                                                             <input type="hidden" name="dateAnotherBL[]" value="{{ $date }}">
                                                                             <div class="input-group input-group-static mb-4">
-                                                                                <div class="col-5">
+                                                                                <div class="col-3">
                                                                                     <div class="input-group input-group-static mb-1">
                                                                                         <label class="text-sm">Desc</label>
                                                                                     </div>
@@ -817,10 +817,16 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="col-1"></div>
-                                                                                <div class="col-6">
+                                                                                <div class="col-3">
                                                                                     <label>Charge</label>
                                                                                     <input type="text" class="form-control anotherBill" name="anotherBill[]" 
                                                                                     value="{{ old('anotherBill.' . $index, $data->charge) }}" placeholder="...">
+                                                                                </div>
+                                                                                <div class="col-1"></div>
+                                                                                <div class="col-4">
+                                                                                    <label>Note</label>
+                                                                                    <input type="text" class="form-control anotherBillNote" name="anotherBillNote[]" 
+                                                                                    value="{{ old('anotherBillNote.' . $index, $data->note) }}" placeholder="...">                    
                                                                                 </div>
                                                                             </div>
                                                                         @endforeach
@@ -833,7 +839,7 @@
                                                                 <input type="hidden" name="idAnotherBill[]" value="">
                                                                 <input type="hidden" name="dateAnotherBL[]" value="{{ $date }}">
                                                                 <div class="input-group input-group-static mb-4">
-                                                                    <div class="col-5">
+                                                                    <div class="col-3">
                                                                         <div class="input-group input-group-static mb-1">
                                                                             <label class="text-sm">Desc</label>
                                                                         </div>
@@ -848,9 +854,14 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-1"></div>
-                                                                    <div class="col-6">
+                                                                    <div class="col-3">
                                                                         <label>Charge</label>
                                                                         <input type="text" class="form-control anotherBill" name="anotherBill[]" placeholder="...">                    
+                                                                    </div>
+                                                                    <div class="col-1"></div>
+                                                                    <div class="col-4">
+                                                                        <label>Note</label>
+                                                                        <input type="text" class="form-control anotherBillNote" name="anotherBillNote[]" placeholder="...">                    
                                                                     </div>
                                                                 </div>
                                                             </template>
@@ -933,7 +944,7 @@
                                         <input type="hidden" name="idAnotherBill[]" value="{{ $data->id_sea_shipment_other_bill }}">
                                         <input type="hidden" name="dateAnotherBL[]" value="{{ $seaShipment->date }}">
                                         <div class="input-group input-group-static mb-4">
-                                            <div class="col-5">
+                                            <div class="col-3">
                                                 <div class="input-group input-group-static mb-1">
                                                     <label class="text-sm">Desc</label>
                                                 </div>
@@ -950,10 +961,16 @@
                                                 </div>
                                             </div>
                                             <div class="col-1"></div>
-                                            <div class="col-6">
+                                            <div class="col-3">
                                                 <label>Charge</label>
                                                 <input type="text" class="form-control anotherBill" name="anotherBill[]" 
                                                 value="{{ old('anotherBill.' . $loop->index, $data->charge) }}" placeholder="...">
+                                            </div>
+                                            <div class="col-1"></div>
+                                            <div class="col-4">
+                                                <label>Note</label>
+                                                <input type="text" class="form-control anotherBillNote" name="anotherBillNote[]" 
+                                                value="{{ old('anotherBillNote.' . $loop->index, $data->note) }}" placeholder="...">                    
                                             </div>
                                         </div>
                                     @endforeach
@@ -966,7 +983,7 @@
                             <input type="hidden" name="idAnotherBill[]" value="">
                             <input type="hidden" name="dateAnotherBL[]" value="{{ $seaShipment->date }}">
                             <div class="input-group input-group-static mb-4">
-                                <div class="col-5">
+                                <div class="col-3">
                                     <div class="input-group input-group-static mb-1">
                                         <label class="text-sm">Desc</label>
                                     </div>
@@ -981,9 +998,14 @@
                                     </div>
                                 </div>
                                 <div class="col-1"></div>
-                                <div class="col-6">
+                                <div class="col-3">
                                     <label>Charge</label>
                                     <input type="text" class="form-control anotherBill" name="anotherBill[]" placeholder="...">                    
+                                </div>
+                                <div class="col-1"></div>
+                                <div class="col-4">
+                                    <label>Note</label>
+                                    <input type="text" class="form-control anotherBillNote" name="anotherBillNote[]" placeholder="...">                    
                                 </div>
                             </div>
                         </template>

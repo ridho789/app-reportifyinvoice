@@ -238,6 +238,7 @@
                         $dates = is_array($dataAnotherBill["date"]) ? $dataAnotherBill["date"] : [$dataAnotherBill["date"]];
                         $descs = is_array($dataAnotherBill["desc"]) ? $dataAnotherBill["desc"] : [$dataAnotherBill["desc"]];
                         $charges = is_array($dataAnotherBill["charge"]) ? $dataAnotherBill["charge"] : [$dataAnotherBill["charge"]];
+                        $notes = is_array($dataAnotherBill["note"]) ? $dataAnotherBill["note"] : [$dataAnotherBill["note"]];
 
                         $maxCount = max(count($descs), count($charges));
 
@@ -245,6 +246,7 @@
                             $date = isset($dates[$index]) ? $dates[$index] : $dates[0];
                             $desc = isset($descs[$index]) ? $descs[$index] : null;
                             $charge = isset($charges[$index]) ? $charges[$index] : null;
+                            $note = isset($notes[$index]) ? $notes[$index] : null;
                             $anotherBillValue = $charge ? preg_replace("/[^0-9]/", "", $charge) : null;
 
                             if (is_null($desc) && ($anotherBillValue == 0 || is_null($anotherBillValue))) {
@@ -254,7 +256,8 @@
                             $resultAnotherBill[] = [
                                 "date" => $date,
                                 "desc" => $desc,
-                                "charge" => $anotherBillValue
+                                "charge" => $anotherBillValue,
+                                "note" => $note
                             ];
 
                             $totalanotherBillOverall += $anotherBillValue;
@@ -559,7 +562,7 @@
                         @endphp
                         <tr>
                             <td width="5%" class="border_left_right"></td>
-                            <td width="30%" class="border_left_right text_center">{{ $checkDesc->name }}</td>
+                            <td width="30%" class="border_left_right text_center">{{ $checkDesc->name }} {{ $resultAnotherBill[$d]['note'] }}</td>
                             <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
                             <td width="10%" class="border_left_right text_center text_uppercase"></td>
                             <td width="15%" class="border_left_right text_center"></td>
@@ -753,7 +756,7 @@
                         @endphp
                         <tr>
                             <td width="5%" class="border_left_right"></td>
-                            <td width="30%" class="border_left_right text_center">{{ $checkDesc->name }}</td>
+                            <td width="30%" class="border_left_right text_center">{{ $checkDesc->name }} {{ $resultAnotherBill[$d]['note'] }}</td>
                             <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
                             <td width="10%" class="border_left_right text_center text_uppercase"></td>
                             <td width="15%" class="border_left_right text_center"></td>

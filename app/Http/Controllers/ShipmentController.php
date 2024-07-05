@@ -716,7 +716,8 @@ class ShipmentController extends Controller
             'id' => $request->idAnotherBill,
             'date' => $request->dateAnotherBL,
             'desc' => $request->id_desc,
-            'charge' => $request->anotherBill
+            'charge' => $request->anotherBill,
+            'note' => $request->anotherBillNote
         ];
 
         if ($dataAnotherBill) {
@@ -724,6 +725,7 @@ class ShipmentController extends Controller
             $dates = is_array($dataAnotherBill["date"]) ? $dataAnotherBill["date"] : [$dataAnotherBill["date"]];
             $descs = is_array($dataAnotherBill["desc"]) ? $dataAnotherBill["desc"] : [$dataAnotherBill["desc"]];
             $charges = is_array($dataAnotherBill["charge"]) ? $dataAnotherBill["charge"] : [$dataAnotherBill["charge"]];
+            $notes = is_array($dataAnotherBill["note"]) ? $dataAnotherBill["note"] : [$dataAnotherBill["note"]];
             $dateCount = count($dates);
 
             for ($indexDate = 0; $indexDate < $dateCount; $indexDate++) {
@@ -731,6 +733,7 @@ class ShipmentController extends Controller
                 $date = isset($dates[$indexDate]) ? $dates[$indexDate] : null;
                 $desc = isset($descs[$indexDate]) ? $descs[$indexDate] : null;
                 $charge = isset($charges[$indexDate]) ? $charges[$indexDate] : null;
+                $note = isset($notes[$indexDate]) ? $notes[$indexDate] : null;
                 $anotherBillValue = $charge ? preg_replace("/[^0-9]/", "", $charge) : null;
 
                 $totalanotherBillOverall += $anotherBillValue;
@@ -749,6 +752,7 @@ class ShipmentController extends Controller
                     if ($checkSeaShipmentAnotherBill) {
                         $checkSeaShipmentAnotherBill->id_desc = $desc;
                         $checkSeaShipmentAnotherBill->charge = $anotherBillValue;
+                        $checkSeaShipmentAnotherBill->note = $note;
                         $checkSeaShipmentAnotherBill->save();
                     }
                     
@@ -760,6 +764,7 @@ class ShipmentController extends Controller
                             'date' => $date,
                             'id_desc' => $desc,
                             'charge' => $anotherBillValue,
+                            'note' => $note
                         ]);
                     }
 
