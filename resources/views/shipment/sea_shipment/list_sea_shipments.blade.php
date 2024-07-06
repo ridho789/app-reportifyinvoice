@@ -86,6 +86,10 @@
                                         <a href="{{ url('sea_shipment-edit', ['id' => Crypt::encrypt($ss->id_sea_shipment)]) }}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit">
                                             <i class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
                                         </a>
+                                        <a href="{{ url('sea_shipment-delete/' . $ss->id_sea_shipment) }}" class="mx-0" onclick="return confirmDelete()" 
+                                            data-bs-toggle="tooltip" data-bs-original-title="Delete">
+                                            <i class="material-icons text-secondary position-relative text-lg">delete</i>
+                                        </a>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -98,4 +102,9 @@
 
     </div>
 </div>
+<script>
+    function confirmDelete() {
+        return confirm('Are you sure you want to delete this data?');
+    }
+</script>
 @endsection

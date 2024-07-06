@@ -20,6 +20,7 @@ use App\Models\Pricelist;
 use App\Models\SeaShipmentBill;
 use App\Models\SeaShipmentAnotherBill;
 use App\Models\BillRecap;
+use App\Models\History;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -274,6 +275,21 @@ class ShipmentController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function deleteSeaShipment($id) {
+        SeaShipmentLine::where('id_sea_shipment', $id)->delete();
+        SeaShipment::where('id_sea_shipment', $id)->delete();
+        SeaShipmentBill::where('id_sea_shipment', $id)->delete();
+        SeaShipmentAnotherBill::where('id_sea_shipment', $id)->delete();
+        History::where('id_changed_data', $id)->delete();
+
+        if (count(SeaShipment::all()) == 0) {
+            return redirect('list_shipments');
+            
+        } else {
+            return redirect()->back();
+        }
     }
 
     public function importSeaShipment(Request $request) {
