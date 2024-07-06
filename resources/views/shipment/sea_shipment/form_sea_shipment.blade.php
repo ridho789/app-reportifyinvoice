@@ -657,13 +657,31 @@
             
                                 <div class="input-group input-group-static mb-4">
                                     <div class="col-5">
-                                        <label>Banker</label>
-                                        <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
+                                        <div class="input-group input-group-static mb-1">
+                                            <label class="text-sm">Banker</label>
+                                        </div>
+                                        <div class="input-group input-group-static mb-4">
+                                            <select class="form-select select-banker" name="id_banker" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                                <option value="">...</option>
+                                                @foreach ($bankers as $b)
+                                                <option value="{{ $b->id_banker }}" {{ old('id_banker', $customer->id_banker) == $b->id_banker ? 'selected' : '' }}>{{ $b->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="col-1"></div>
                                     <div class="col-6">
-                                        <label>Account No.</label>
-                                        <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
+                                        <div class="input-group input-group-static mb-1">
+                                            <label class="text-sm">Account</label>
+                                        </div>
+                                        <div class="input-group input-group-static mb-4">
+                                            <select class="form-select select-account" name="id_account" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                                <option value="">...</option>
+                                                @foreach ($accounts as $a)
+                                                <option value="{{ $a->id_account }}" {{ old('id_account', $customer->id_account) == $a->id_account ? 'selected' : '' }}>{{ $a->account_no }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -805,7 +823,7 @@
                                                                                         <label class="text-sm">Desc</label>
                                                                                     </div>
                                                                                     <div class="input-group input-group-static mb-0">
-                                                                                        <select class="form-select select-company" name="id_desc[]" 
+                                                                                        <select class="form-select" name="id_desc[]" 
                                                                                         style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                                                                             <option value="">...</option>
                                                                                             @foreach ($descs as $d)
@@ -844,7 +862,7 @@
                                                                             <label class="text-sm">Desc</label>
                                                                         </div>
                                                                         <div class="input-group input-group-static mb-0">
-                                                                            <select class="form-select select-company" name="id_desc[]" 
+                                                                            <select class="form-select" name="id_desc[]" 
                                                                             style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                                                                 <option value="">...</option>
                                                                                 @foreach ($descs as $d)
@@ -914,13 +932,27 @@
     
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
-                                <label>Banker</label>
-                                <input type="text" class="form-control" name="banker" value="{{ old('banker') }}" placeholder="...">
+                                <div class="input-group input-group-static mb-1">
+                                    <label class="text-sm">Banker</label>
+                                </div>
+                                <select class="form-select select-banker" name="id_banker" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                    <option value="">...</option>
+                                    @foreach ($bankers as $b)
+                                    <option value="{{ $b->id_banker }}" {{ old('id_banker', $customer->id_banker) == $b->id_banker ? 'selected' : '' }}>{{ $b->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <label>Account No.</label>
-                                <input type="text" class="form-control" name="account_no" value="{{ old('account_no') }}" placeholder="...">
+                                <div class="input-group input-group-static mb-1">
+                                    <label class="text-sm">Account</label>
+                                </div>
+                                <select class="form-select select-account" name="id_account" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                    <option value="">...</option>
+                                    @foreach ($accounts as $a)
+                                    <option value="{{ $a->id_account }}" {{ old('id_account', $customer->id_account) == $a->id_account ? 'selected' : '' }}>{{ $a->account_no }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
@@ -949,7 +981,7 @@
                                                     <label class="text-sm">Desc</label>
                                                 </div>
                                                 <div class="input-group input-group-static mb-0">
-                                                    <select class="form-select select-company" name="id_desc[]" 
+                                                    <select class="form-select" name="id_desc[]" 
                                                     style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                                         <option value="">...</option>
                                                         @foreach ($descs as $d)
@@ -988,7 +1020,7 @@
                                         <label class="text-sm">Desc</label>
                                     </div>
                                     <div class="input-group input-group-static mb-0">
-                                        <select class="form-select select-company" name="id_desc[]" 
+                                        <select class="form-select" name="id_desc[]" 
                                         style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                             <option value="">...</option>
                                             @foreach ($descs as $d)

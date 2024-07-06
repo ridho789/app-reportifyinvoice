@@ -181,12 +181,12 @@
                 <tr>
                     <td class="space_content" colspan="2"></td>
                     <td style="padding-left: 70px;" class="bold" colspan="2">Banker</td>
-                    <td class="bold" colspan="2">: <span class="space_content2">{{ $banker }}</span></td>
+                    <td class="bold" colspan="2">: <span class="space_content2">{{ $banker->name ?? null }}</span></td>
                 </tr>
                 <tr>
                     <td class="space_content" colspan="2"></td>
                     <td style="padding-left: 70px;" class="bold" colspan="2">Account No.</td>
-                    <td class="bold" colspan="2">: <span class="space_content2">{{ $account_no }}</span></td>
+                    <td class="bold" colspan="2">: <span class="space_content2">{{ $account_no->account_no ?? null }}</span></td>
                 </tr>
                 <tr>
                     <td colspan="6"></td>

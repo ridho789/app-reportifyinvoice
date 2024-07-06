@@ -9,6 +9,8 @@ use App\Models\Shipper;
 use App\Models\Ship;
 use App\Models\Unit;
 use App\Models\Desc;
+use App\Models\Account;
+use App\Models\Banker;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 use App\Imports\SeaShipmentImport;
@@ -118,7 +120,9 @@ class ShipmentController extends Controller
         $companies = Company::orderBy('name')->get();
         $units = Unit::orderBy('name')->get();
         $descs = Desc::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 
+        $accounts = Account::orderBy('account_no')->get();
+        $bankers = Banker::orderBy('name')->get();
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'accounts', 'bankers', 
         'ships', 'units', 'descs', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
     }
 
@@ -314,6 +318,8 @@ class ShipmentController extends Controller
         $shipper = Shipper::where('id_shipper', $seaShipment->id_shipper)->first();
         $company = Company::where('id_company', $request->id_company)->first();
         $descsData = Desc::orderBy('name')->get();
+        $account = $request->id_account ? Account::where('id_account', $request->id_account)->first() : null;
+        $banker = $request->id_banker ? Banker::where('id_banker', $request->id_banker)->first() : null;
 
         // set pricelist
         $pricelist = 0;
@@ -588,6 +594,18 @@ class ShipmentController extends Controller
             $customer->save();
         }
 
+        // update banker if changed in customer
+        if ($customer->id_banker != $request->id_banker) {
+            $customer->id_banker = $request->id_banker;
+            $customer->save();
+        }
+
+        // update account if changed in customer
+        if ($customer->id_account != $request->id_account) {
+            $customer->id_account = $request->id_account;
+            $customer->save();
+        }
+
         // update bill diff in customer
         $bill_diff = null;
         if ($request->bill_diff) {
@@ -795,8 +813,8 @@ class ShipmentController extends Controller
                 'term' => $request->term,
                 'is_weight' => $isWeight,
                 'paymentDue' => $paymentDue,
-                'banker' => $request->banker,
-                'account_no' => $request->account_no,
+                'banker' => $banker,
+                'account_no' => $account,
                 'imageContent' => $imageContent,
                 'invNameGenerate' => $invNameGenerate,
                 'titleInv' => $titleInv,
