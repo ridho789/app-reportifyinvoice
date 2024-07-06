@@ -108,7 +108,8 @@ class SeaShipmentSheetImport implements ToCollection
                     $IdShip = $checkShip->id_ship;
                 }
 
-                $valueKey = $row[0] . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1])->format('Y-m-d') . $IdShipper . $IdCustomer;
+                $valueKey = $row[0] . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1])->format('Y-m-d') . $IdShipper . $IdCustomer . strtoupper($row[5]) . 
+                \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[7])->format('Y-m-d');
 
                 $dataSeaShipment = [
                     'no_aju' => strtoupper($row[0]),
