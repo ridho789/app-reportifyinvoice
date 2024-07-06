@@ -21,8 +21,8 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">User</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Scope</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Updated</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Older Data</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Changed Data</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Older Data</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Changed Data</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Revcount</th>
                                 </tr>
                             </thead>
