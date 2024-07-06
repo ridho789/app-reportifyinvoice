@@ -43,27 +43,61 @@
                             <div class="row">
                                 <div class="col-lg-4 mb-4">
                                     <div class="input-group input-group-static">
-                                        <label>Enter a customer</label>
+                                        <label>Enter a customer <span class="text-primary">*</span></label>
                                         <input type="text" name="customer" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 mb-4">
+                                <div class="col-lg-2 mb-4">
                                     <div class="input-group input-group-static">
-                                        <label>Enter a discount</label>
+                                        <label>Enter discount (<span class="text-info">2nd Invoice</span>)</label>
                                         <input type="text" name="discount" id="discount" class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-lg-4 mb-4">
+                                <div class="col-lg-2 mb-4">
                                     <div class="input-group input-group-static text-xs">
                                         @if (count($companies) > 0)
-                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select a company</label>
-                                            <select class="form-control company" name="id_company" multiple style="width: 100%;" required>
+                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select company</label>
+                                            <select class="form-control company" name="id_company" multiple style="width: 100%;">
                                                 @foreach ($companies as $c)
                                                     <option value="{{ $c->id_company }}">{{ $c->name }}</option>
                                                 @endforeach
                                             </select>
                                         @else
-                                            <label style="margin-bottom: 4.5px;">Select a company</label>
+                                            <label style="margin-bottom: 4.5px;">Select company</label>
+                                            <select class="form-control text-xs" disabled>
+                                                <option value="">No data available</option>
+                                            </select>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 mb-4">
+                                    <div class="input-group input-group-static text-xs">
+                                        @if (count($bankers) > 0)
+                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select banker</label>
+                                            <select class="form-control banker" name="id_banker" multiple style="width: 100%;">
+                                                @foreach ($bankers as $b)
+                                                    <option value="{{ $b->id_banker }}">{{ $b->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <label style="margin-bottom: 4.5px;">Select banker</label>
+                                            <select class="form-control text-xs" disabled>
+                                                <option value="">No data available</option>
+                                            </select>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 mb-4">
+                                    <div class="input-group input-group-static text-xs">
+                                        @if (count($accounts) > 0)
+                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select account</label>
+                                            <select class="form-control account" name="id_account" multiple style="width: 100%;">
+                                                @foreach ($accounts as $a)
+                                                    <option value="{{ $a->id_account }}">{{ $a->account_no }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <label style="margin-bottom: 4.5px;">Select account</label>
                                             <select class="form-control text-xs" disabled>
                                                 <option value="">No data available</option>
                                             </select>
@@ -73,14 +107,14 @@
                                 <div class="col-lg-12 mb-4">
                                     <div class="input-group input-group-static text-xs">
                                         @if (count($shippers) > 0)
-                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select a shipper (<span class="text-info">Optional</span>)</label>
+                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select shipper</label>
                                             <select class="form-control select2" name="id_shipper[]" multiple style="width: 100%;">
                                                 @foreach ($shippers as $s)
                                                     <option value="{{ $s->id_shipper }}" {{ (is_array(old('id_shipper')) && in_array($s->id_shipper, old('id_shipper'))) ? 'selected' : '' }}>{{ $s->name }}</option>
                                                 @endforeach
                                             </select>
                                         @else
-                                            <label style="margin-bottom: 4.5px;">Select a shipper (<span class="text-info">Optional</span>)</label>
+                                            <label style="margin-bottom: 4.5px;">Select shipper</label>
                                             <select class="form-control text-xs" disabled>
                                                 <option value="">No data available</option>
                                             </select>
@@ -118,28 +152,62 @@
                             <div class="row">
                                 <div class="col-lg-4 mb-4">
                                     <div class="input-group input-group-static">
-                                        <label>Enter a customer</label>
+                                        <label>Enter a customer <span class="text-primary">*</span></label>
                                         <input type="text" name="customer" id="edit-customer" class="form-control" oninput="this.value = this.value.toUpperCase()" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 mb-4">
+                                <div class="col-lg-2 mb-4">
                                     <div class="input-group input-group-static">
-                                        <label>Enter a discount</label>
+                                        <label>Enter discount (<span class="text-info">2nd Invoice</span>)</label>
                                         <input type="text" name="discount" id="edit-discount" class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-lg-4 mb-4">
+                                <div class="col-lg-2 mb-4">
                                     <div class="input-group input-group-static text-xs">
                                         @if (count($companies) > 0)
-                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select a company</label>
-                                            <select class="form-control company" name="id_company" id="edit-company" multiple style="width: 100%;" required>
+                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select company</label>
+                                            <select class="form-control company" name="id_company" id="edit-company" multiple style="width: 100%;">
                                                 @foreach ($companies as $c)
                                                     <option value="{{ $c->id_company }}">{{ $c->name }}</option>
                                                 @endforeach
                                             </select>
                                         @else
-                                            <label style="margin-bottom: 4.5px;">Select a company</label>
+                                            <label style="margin-bottom: 4.5px;">Select company</label>
                                             <select class="form-control" disabled>
+                                                <option value="">No data available</option>
+                                            </select>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 mb-4">
+                                    <div class="input-group input-group-static text-xs">
+                                        @if (count($bankers) > 0)
+                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select banker</label>
+                                            <select class="form-control banker" name="id_banker" id="edit-banker" multiple style="width: 100%;">
+                                                @foreach ($bankers as $b)
+                                                    <option value="{{ $b->id_banker }}">{{ $b->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <label style="margin-bottom: 4.5px;">Select banker</label>
+                                            <select class="form-control text-xs" disabled>
+                                                <option value="">No data available</option>
+                                            </select>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 mb-4">
+                                    <div class="input-group input-group-static text-xs">
+                                        @if (count($accounts) > 0)
+                                            <label style="margin-left: -1px; margin-bottom: 11px;">Select account</label>
+                                            <select class="form-control account" name="id_account" id="edit-account" multiple style="width: 100%;">
+                                                @foreach ($accounts as $a)
+                                                    <option value="{{ $a->id_account }}">{{ $a->account_no }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <label style="margin-bottom: 4.5px;">Select account</label>
+                                            <select class="form-control text-xs" disabled>
                                                 <option value="">No data available</option>
                                             </select>
                                         @endif
@@ -148,14 +216,14 @@
                                 <div class="col-lg-12 mb-4">
                                     <div class="input-group input-group-static text-xs">
                                         @if (count($shippers) > 0)
-                                            <label style="margin-left: -1px; margin-bottom: 12px;">Select a shipper (<span class="text-info">Optional</span>)</label>
+                                            <label style="margin-left: -1px; margin-bottom: 12px;">Select shipper</label>
                                             <select class="form-control select2" name="id_shipper[]" multiple style="width: 100%;" id="edit-shipper">
                                                 @foreach ($shippers as $s)
                                                     <option value="{{ $s->id_shipper }}">{{ $s->name }}</option>
                                                 @endforeach
                                             </select>
                                         @else
-                                            <label style="margin-bottom: 4.5px;">Select a shipper (<span class="text-info">Optional</span>)</label>
+                                            <label style="margin-bottom: 4.5px;">Select shipper</label>
                                             <select class="form-control" disabled>
                                                 <option value="">No data available</option>
                                             </select>
@@ -193,13 +261,16 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Customer</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Banker</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Account</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Setup</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($customers as $c)
-                                <tr data-id="{{ $c->id_customer }}" data-id-company="{{ $c->id_company }}" data-shipper="{{ implode(',', explode(',', $c->shipper_ids)) }}">
+                                <tr data-id="{{ $c->id_customer }}" data-id-company="{{ $c->id_company }}" data-shipper="{{ implode(',', explode(',', $c->shipper_ids)) }}"
+                                data-id-banker="{{ $c->id_banker }}" data-id-account="{{ $c->id_account }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
@@ -236,6 +307,12 @@
                                     </td>
                                     <td class="company-selected align-middle text-center text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ $companyName[$c->id_company] ?? '-' }}</p>
+                                    </td>
+                                    <td class="banker-selected align-middle text-center text-sm">
+                                        <p class="text-sm font-weight-normal mb-0">{{ $bankerName[$c->id_banker] ?? '-' }}</p>
+                                    </td>
+                                    <td class="account-selected align-middle text-center text-sm">
+                                        <p class="text-sm font-weight-normal mb-0">{{ $accountNo[$c->id_account] ?? '-' }}</p>
                                     </td>
                                     <td class="calign-middle text-center text-sm">
                                         @if ($c->is_bill_weight)
@@ -276,6 +353,16 @@
         });
 
         $('.company').select2({
+            placeholder: "Please choose..",
+            maximumSelectionLength: 1
+        });
+
+        $('.banker').select2({
+            placeholder: "Please choose..",
+            maximumSelectionLength: 1
+        });
+
+        $('.account').select2({
             placeholder: "Please choose..",
             maximumSelectionLength: 1
         });
@@ -337,6 +424,8 @@
                 var customer = row.querySelector(".name-customer-selected").textContent;
                 var discount = row.querySelector(".discount-selected").textContent;
                 var company = row.getAttribute("data-id-company");
+                var banker = row.getAttribute("data-id-banker");
+                var account = row.getAttribute("data-id-account");
                 var shipperIds = row.getAttribute("data-shipper").split(',');
                 $('#edit-shipper').val(shipperIds).trigger('change');
 
@@ -354,8 +443,21 @@
                 document.getElementById("edit-id").value = id;
                 document.getElementById("edit-customer").value = customer.trim();
                 document.getElementById("edit-discount").value = discount.trim();
+
                 $("#edit-company").val(company);
                 $("#edit-company").select2({
+                    placeholder: "Please choose..",
+                    maximumSelectionLength: 1
+                });
+
+                $("#edit-banker").val(banker);
+                $("#edit-banker").select2({
+                    placeholder: "Please choose..",
+                    maximumSelectionLength: 1
+                });
+
+                $("#edit-account").val(account);
+                $("#edit-account").select2({
                     placeholder: "Please choose..",
                     maximumSelectionLength: 1
                 });

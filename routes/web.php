@@ -9,6 +9,8 @@ use App\Http\Controllers\ShipperController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\DescController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BankerController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\BillRecapController;
 use App\Http\Controllers\PricelistController;
@@ -94,6 +96,16 @@ Route::group(['middleware' => ['auth', 'check.role.user:0,1']], function () {
     Route::get('/desc', [DescController::class, 'index']);
     Route::post('desc-store', [DescController::class, 'store']);
     Route::post('desc-update', [DescController::class, 'update']);
+
+    // Account
+    Route::get('/account', [AccountController::class, 'index']);
+    Route::post('account-store', [AccountController::class, 'store']);
+    Route::post('account-update', [AccountController::class, 'update']);
+
+    // Banker
+    Route::get('/banker', [BankerController::class, 'index']);
+    Route::post('banker-store', [BankerController::class, 'store']);
+    Route::post('banker-update', [BankerController::class, 'update']);
 
     // insurance
     Route::get('/insurance', [InsuranceController::class, 'index']);

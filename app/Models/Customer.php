@@ -22,6 +22,8 @@ class Customer extends Model
         'inv_type',
         'is_bill_weight',
         'id_company',
+        'id_account',
+        'id_banker',
         'id_history',
     ];
 }

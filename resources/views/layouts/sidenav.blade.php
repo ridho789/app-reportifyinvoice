@@ -33,7 +33,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-white {{ request()->is('list_bill_recap', 'form_bill_recap', 'bill_recap-edit/*') ? 'active bg-gradient-primary' : '' }}" 
                                     href="{{ url('/list_bill_recap') }}">
-                                        <span class="sidenav-mini-icon"> B </span>
+                                        <span class="sidenav-mini-icon"> Br </span>
                                         <span class="nav-link-text ms-1">Bill Recap (SOA)</span>
                                     </a>
                                 </li>
@@ -44,6 +44,18 @@
                     <li class="nav-item">
                         <hr class="horizontal light">
                         <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Main</h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->is('account') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/account') }}">
+                            <span class="sidenav-mini-icon"> A </span>
+                            <span class="nav-link-text ms-1">Accounts</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->is('banker') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/banker') }}">
+                            <span class="sidenav-mini-icon"> B </span>
+                            <span class="nav-link-text ms-1">Bankers</span>
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white {{ request()->is('company') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/company') }}">
@@ -143,6 +155,18 @@
                     <li class="nav-item">
                         <hr class="horizontal light">
                         <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Main</h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->is('account') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/account') }}">
+                            <span class="sidenav-mini-icon"> A </span>
+                            <span class="nav-link-text ms-1">Accounts</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->is('banker') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/banker') }}">
+                            <span class="sidenav-mini-icon"> B </span>
+                            <span class="nav-link-text ms-1">Bankers</span>
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white {{ request()->is('company') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/company') }}">
