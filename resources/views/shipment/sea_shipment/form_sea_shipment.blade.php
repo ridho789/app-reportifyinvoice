@@ -253,6 +253,8 @@
                                                 <option value="ctn" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'ctn' ? 'selected' : '' }}>CTN</option>
                                                 <option value="pkg" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'pkg' ? 'selected' : '' }}>PKG</option>
                                                 <option value="plt" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'plt' ? 'selected' : '' }}>PLT</option>
+                                                <option value="bdl" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'bdl' ? 'selected' : '' }}>BDL</option>
+                                                <option value="case" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'case' ? 'selected' : '' }}>CASE</option>
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
@@ -266,6 +268,8 @@
                                                 <option value="ctn" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == 'ctn' ? 'selected' : '' }}>CTN</option>
                                                 <option value="pkg" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == 'pkg' ? 'selected' : '' }}>PKG</option>
                                                 <option value="plt" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == 'plt' ? 'selected' : '' }}>PLT</option>
+                                                <option value="bdl" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'bdl' ? 'selected' : '' }}>BDL</option>
+                                                <option value="case" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'case' ? 'selected' : '' }}>CASE</option>
                                             </select>
                                         </td>
                                         <!-- ### -->
@@ -515,6 +519,8 @@
                                                 <option value="ctn">CTN</option>
                                                 <option value="pkg">PKG</option>
                                                 <option value="plt">PLT</option>
+                                                <option value="bdl">BDL</option>
+                                                <option value="case">CASE</option>
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
@@ -527,6 +533,8 @@
                                                 <option value="ctn">CTN</option>
                                                 <option value="pkg">PKG</option>
                                                 <option value="plt">PLT</option>
+                                                <option value="bdl">BDL</option>
+                                                <option value="case">CASE</option>
                                             </select>
                                         </td>
                                         <!-- ### -->
@@ -1795,6 +1803,8 @@
                 <option value="ctn">CTN</option>
                 <option value="pkg">PKG</option>
                 <option value="plt">PLT</option>
+                <option value="bdl">BDL</option>
+                <option value="case">CASE</option>
             </select>
         </td>
         <td class="align-middle text-center" width="5%">
@@ -1808,6 +1818,8 @@
                 <option value="ctn">CTN</option>
                 <option value="pkg">PKG</option>
                 <option value="plt">PLT</option>
+                <option value="bdl">BDL</option>
+                <option value="case">CASE</option>
             </select>
         </td>
         <!-- ### -->
