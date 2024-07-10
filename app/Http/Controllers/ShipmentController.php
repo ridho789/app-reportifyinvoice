@@ -296,30 +296,29 @@ class ShipmentController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx|max:2048',
         ]);
-
+    
         try {
             $file = $request->file('file');
             $spreadsheet = IOFactory::load($file);
             $sheetNames = $spreadsheet->getSheetNames();
-
+    
             $import = new SeaShipmentImport($sheetNames);
             Excel::import($import, $file);
             $logErrors = $import->getLogErrors();
-
+    
             if ($logErrors) {
                 return redirect('list_shipments')->with('logErrors', $logErrors);
-
             } else {
                 return redirect('list_sea_shipment');
             }
-
+    
         } catch (\Exception $e) {
             $sqlErrors = $e->getMessage();
-
+    
             if (!empty($sqlErrors)){
                 $logErrors = $sqlErrors;
             }
-
+    
             return redirect('list_shipments')->with('logErrors', $logErrors);
         }
     }

@@ -62,7 +62,9 @@
                     <h5 class="card-title text-sm text-danger">Error Log</h5>
                     @if(is_array(session('logErrors')))
                     @foreach(session('logErrors') as $logError)
-                    {{ $logError }} <br>
+                    <ul>
+                        <li>{{ $logError }}</li>
+                    </ul>
                     @endforeach
                     @else
                     {{ session('logErrors') }}
