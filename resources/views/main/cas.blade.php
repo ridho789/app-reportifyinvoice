@@ -510,7 +510,7 @@
         const ltsEditInput = document.getElementById('lts');
         const unitEditSelect = document.getElementById('id_unit');
 
-        const requiredValues = ['LP', 'LPI', 'LPM'];
+        const requiredValues = ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM'];
 
         ltsInput.addEventListener('change', function () {
             if (requiredValues.includes(ltsInput.value)) {

@@ -239,7 +239,7 @@
                                         </td>
                                         <td class="align-middle text-center" width=15.5%>
                                             <input type="text" class="form-control text-center" name="marking[]" value="{{ $ssl->marking ?? '-' }}" 
-                                            oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;" required>
+                                            oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
@@ -502,11 +502,11 @@
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
                                             <input type="text" class="form-control text-center" name="code[]" oninput="this.value = this.value.toUpperCase()" 
-                                            placeholder="..." style="border: 0px;" required>
+                                            placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=15.5%>
                                             <input type="text" class="form-control text-center" name="marking[]" oninput="this.value = this.value.toUpperCase()" 
-                                            placeholder="..." style="border: 0px;" required>
+                                            placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- qty -->
                                         <td class="align-middle text-center" width=5%>
@@ -717,9 +717,9 @@
                                     <h5 class="text-sm">Fee Setup</h5>
                                     @if ($checkCbmDiff) 
                                     <div class="input-group input-group-static mb-4">
-                                        <label>Difference Bill <span class="text-danger">*</span></label>
+                                        <label>Diff SIN-BTH (<span class="text-info"> Will be updated </span>)</label>
                                         <input type="text" class="form-control" name="bill_diff" id="bill_diff" value="{{ old('bill_diff', $customer->bill_diff) }}" 
-                                        placeholder="..." required>
+                                        placeholder="..." readonly>
                                     </div>
                                     @endif
                                     
@@ -1422,7 +1422,7 @@
         const qtyInput = parentRow.querySelector('.input-qty');
         const selectUnit = parentRow.querySelector('.select-unit');
 
-        if (!['LP', 'LPI', 'LPM'].includes(ltsValue)) {
+        if (!['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM'].includes(ltsValue)) {
             qtyInput.removeAttribute('required');
 
             // Remove qty
@@ -1716,7 +1716,7 @@
 
     });
 
-    // Check LTS = LP, LPI or LPM
+    // Check LTS = LP, LPI, LPM, LPM/LPI, LPI/LPM
     var setupButton = document.querySelector('.btn-setup');
     if (setupButton) {
         setupButton.addEventListener('click', function(event) {
@@ -1733,7 +1733,7 @@
                     const qty = qtyInput;
                     const unit = unitInput;
     
-                    if (['LP', 'LPM', 'LPI'].includes(lts)) {
+                    if (['LP', 'LPM', 'LPI', 'LPM/LPI', 'LPI/LPM'].includes(lts)) {
                         qty.required = true;
                         unit.required = true;
                         
@@ -1742,9 +1742,9 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error!',
-                                text: 'Please fill in the Qty and Unit fields for LTS values LP, LPM, or LPI',
+                                text: 'Please fill in the Qty and Unit fields for LTS values LP, LPM, LPI, LPM/LPI or LPI/LPM',
                                 position: 'top',
-                                width: '535px',
+                                width: '655px',
                                 toast: true,
                                 showConfirmButton: false,
                                 timer: 7500,
@@ -1789,7 +1789,7 @@
         </td>
         <td class="align-middle text-center" width="15.5%">
             <input type="text" class="form-control text-center" name="marking[]" value="" 
-            oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;" required>
+            oninput="this.value = this.value.toUpperCase()" placeholder="..." style="border: 0px;">
         </td>
         <!-- qty -->
         <td class="align-middle text-center" width="5%">
