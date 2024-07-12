@@ -12,6 +12,7 @@ use App\Models\Desc;
 use App\Models\Account;
 use App\Models\Banker;
 use App\Models\Origin;
+use App\Models\State;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 use App\Imports\SeaShipmentImport;
@@ -50,7 +51,9 @@ class ShipmentController extends Controller
         $ships = Ship::orderBy('name')->get();
         $units = Unit::orderBy('name')->get();
         $origins = Origin::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships', 'units', 'origins', 'groupSeaShipmentLines'));
+        $states = State::orderBy('name')->get();
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'states', 
+        'ships', 'units', 'origins', 'groupSeaShipmentLines'));
     }
 
     public function listSeaShipment() {
@@ -128,8 +131,9 @@ class ShipmentController extends Controller
         $originName = Origin::pluck('name', 'id_origin');
         $accounts = Account::orderBy('account_no')->get();
         $bankers = Banker::orderBy('name')->get();
+        $states = State::orderBy('name')->get();
         return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'accounts', 'bankers', 'origins', 'originName', 
-        'ships', 'units', 'descs', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
+        'states', 'ships', 'units', 'descs', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
     }
 
     public function storeSeaShipment(Request $request) {
@@ -180,7 +184,7 @@ class ShipmentController extends Controller
                     'qty' => $request->qty[$index],
                     'id_unit' => $request->id_unit[$index],
                     'desc' => strtoupper($request->desc[$index]),
-                    'state' => $request->state[$index],
+                    'id_state' => $request->id_state[$index],
                     'id_sea_shipment' => $seaShipmentId,
                 ];
 
@@ -266,7 +270,7 @@ class ShipmentController extends Controller
                 'qty' => $request->qty[$index],
                 'id_unit' => $request->id_unit[$index],
                 'desc' => strtoupper($request->desc[$index]),
-                'state' => $request->state[$index],
+                'id_state' => $request->id_state[$index],
                 'id_sea_shipment' => $request->id_sea_shipment,
             ];
         

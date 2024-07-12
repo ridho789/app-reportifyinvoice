@@ -155,7 +155,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <select class="form-select text-xs select-origin" name="id_origin">
+                                            <select class="form-select text-xs select-origin" name="id_origin" required>
                                                 <option value="">...</option>
                                                 @foreach ($origins as $o)
                                                 <option value="{{ $o->id_origin }}" 
@@ -318,10 +318,13 @@
                                             <input type="text" class="form-control text-center" name="desc[]" value="{{ $ssl->desc }}" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=7.5%>
-                                            <select class="form-select text-center text-xs" name="state[]" style="border: 0px;">
-                                                <option value="" {{ old('state', $ssl->state) == '' ? 'selected' : '' }}>-</option>
-                                                <option value="hold" {{ old('state', $ssl->state) == 'hold' ? 'selected' : '' }}>HOLD</option>
-                                                <option value="continue" {{ old('state', $ssl->state) == 'continue' ? 'selected' : '' }}>CONTINUE</option>
+                                            <select class="form-select text-center text-xs select-state" name="id_state[]" style="border: 0px;">
+                                                <option value="" data-name="">-</option>
+                                                @foreach ($states as $s)
+                                                <option value="{{ $s->id_state }}" data-name="{{ $s->name }}" 
+                                                    {{ old('id_state', $ssl->id_state) == $s->id_state ? 'selected' : '' }}>{{ $s->name }}
+                                                </option>
+                                                @endforeach
                                             </select>
                                         </td>
                                     </tr>
@@ -424,7 +427,7 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <select class="form-select text-xs select-origin" name="id_origin">
+                                            <select class="form-select text-xs select-origin" name="id_origin" required>
                                                 <option value="">...</option>
                                                 @foreach ($origins as $o)
                                                 <option value="{{ $o->id_origin }}">{{ $o->name }}</option>
@@ -444,7 +447,7 @@
                                             <input type="text" class="form-control text-center" name="tot_vol" placeholder="..." style="background-color: #fff;" disabled>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
-                                            <input type="date" class="form-control" name="etd">
+                                            <input type="date" class="form-control" name="etd" required>
                                         </td>
                                         <td class="align-middle text-center" width=5.5%>
                                             <input type="date" class="form-control" name="eta">
@@ -578,10 +581,13 @@
                                             <input type="text" class="form-control text-center" name="desc[]" placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle" width=7.5%>
-                                            <select class="form-select text-center text-xs" name="state[]" style="border: 0px;">
-                                                <option value="">...</option>
-                                                <option value="hold">HOLD</option>
-                                                <option value="continue">CONTINUE</option>
+                                            <select class="form-select text-center text-xs select-state" name="id_state[]" style="border: 0px;">
+                                                <option value="" data-name="">-</option>
+                                                @foreach ($states as $s)
+                                                <option value="{{ $s->id_state }}" data-name="{{ $s->name }}" 
+                                                    {{ old('id_state') == $s->id_state ? 'selected' : '' }}>{{ $s->name }}
+                                                </option>
+                                                @endforeach
                                             </select>
                                         </td>
                                     </tr>
@@ -1865,10 +1871,13 @@
             <input type="text" class="form-control text-center" name="desc[]" value="" placeholder="..." style="border: 0px;">
         </td>
         <td class="align-middle" width="7.5%">
-            <select class="form-select text-center text-xs" name="state[]" style="border: 0px;">
-                <option value="">-</option>
-                <option value="hold">HOLD</option>
-                <option value="continue">CONTINUE</option>
+            <select class="form-select text-center text-xs select-state" name="id_state[]" style="border: 0px;">
+                <option value="" data-name="">-</option>
+                @foreach ($states as $s)
+                <option value="{{ $s->id_state }}" data-name="{{ $s->name }}" 
+                    {{ old('id_state') == $s->id_state ? 'selected' : '' }}>{{ $s->name }}
+                </option>
+                @endforeach
             </select>
         </td>
         `;

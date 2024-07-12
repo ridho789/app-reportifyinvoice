@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UnitsTableSeeder::class);
         $this->call(DescTableSeeder::class);
         $this->call(OriginsTableSeeder::class);
+        $this->call(StateTableSeeder::class);
     }
 }

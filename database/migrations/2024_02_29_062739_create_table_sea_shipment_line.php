@@ -30,7 +30,6 @@ return new class extends Migration
             $table->string('lts')->nullable();
             $table->string('qty')->nullable();
             $table->string('desc')->nullable();
-            $table->string('state')->nullable();
             $table->timestamps();
         });
     }

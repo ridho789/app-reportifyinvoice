@@ -11,6 +11,7 @@ use App\Models\Customer;
 use App\Models\Shipper;
 use App\Models\Ship;
 use App\Models\Origin;
+use App\Models\State;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 
@@ -161,6 +162,18 @@ class SeaShipmentSheetImport implements ToCollection
                         $tot_cbm2 = number_format((($row[9] * $row[10] * $row[11]) / 1000000) * $row[6], 3);
                     }
 
+                    // State
+                    $IdState = null;
+                    if ($row[16]) {
+                        $checkState = State::where('name', 'like', '%' . $row[16] . '%')->first();
+                        if (!$checkState) {
+                            $checkState = State::create(['name' => strtoupper($row[16])]);
+                        }
+
+                        // IdState
+                        $IdState = $checkState->id_state;
+                    }
+
                     $dataShipmentLine = [
                         'id_sea_shipment' => $seaShipment->id_sea_shipment,
                         'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]),
@@ -178,7 +191,7 @@ class SeaShipmentSheetImport implements ToCollection
                         'tot_cbm_2' => $tot_cbm2,
                         'lts' => strtoupper($row[14]),
                         'desc' => strtoupper($row[15]),
-                        // 'state' => $row[15],
+                        'id_state' => $IdState,
                     ];
 
                     // Create shipment sea freight line

@@ -12,6 +12,7 @@ use App\Http\Controllers\DescController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BankerController;
 use App\Http\Controllers\OriginController;
+use App\Http\Controllers\StateController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\BillRecapController;
 use App\Http\Controllers\PricelistController;
@@ -112,6 +113,11 @@ Route::group(['middleware' => ['auth', 'check.role.user:0,1']], function () {
     Route::get('/origin', [OriginController::class, 'index']);
     Route::post('origin-store', [OriginController::class, 'store']);
     Route::post('origin-update', [OriginController::class, 'update']);
+
+    // State
+    Route::get('/state', [StateController::class, 'index']);
+    Route::post('state-store', [StateController::class, 'store']);
+    Route::post('state-update', [StateController::class, 'update']);
 
     // insurance
     Route::get('/insurance', [InsuranceController::class, 'index']);

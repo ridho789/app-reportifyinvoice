@@ -40,6 +40,9 @@ return new class extends Migration
 
             $table->dropForeign(['id_ship']);
             $table->dropColumn('id_ship');
+
+            $table->dropForeign(['id_origin']);
+            $table->dropColumn('id_origin');
         });
     }
 };

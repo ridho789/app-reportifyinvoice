@@ -17,6 +17,9 @@ return new class extends Migration
 
             $table->unsignedBigInteger('id_unit')->nullable()->after('id_sea_shipment');
             $table->foreign('id_unit')->references('id_unit')->on('tbl_units');
+
+            $table->unsignedBigInteger('id_state')->nullable()->after('id_unit');
+            $table->foreign('id_state')->references('id_state')->on('tbl_states');
         });
     }
 
@@ -31,6 +34,9 @@ return new class extends Migration
 
             $table->dropForeign(['id_unit']);
             $table->dropColumn('id_unit');
+
+            $table->dropForeign(['id_state']);
+            $table->dropColumn('id_state');
         });
     }
 };
