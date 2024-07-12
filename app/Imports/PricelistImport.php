@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Models\Customer;
 use App\Models\Shipper;
 use App\Models\Pricelist;
+use App\Models\Origin;
 
 class PricelistImport implements ToCollection
 {
@@ -62,6 +63,19 @@ class PricelistImport implements ToCollection
                 }
             }
 
+            // Origin
+            $IdOrigin = null;
+            if ($row[2]) {
+                $checkOrigin = Origin::where('name', 'like', '%' . $row[2] . '%')->first();
+                if (empty($checkOrigin)) {
+                    $checkOrigin = Origin::create(['name' => strtoupper($row[2])]);
+                }
+                
+                // IdOrigin
+                $IdOrigin = $checkOrigin->id_origin;
+
+            }
+
             $startPeriod = null;
             $endPeriod = null;
 
@@ -82,13 +96,13 @@ class PricelistImport implements ToCollection
             $dataPricelist = [
                 'id_customer' => $IdCustomer,
                 'id_shipper' => $IdShipper,
-                'origin' => strtoupper($row[2]),
+                'id_origin' => $IdOrigin,
                 'price' => $row[3],
                 'start_period' => $startPeriod,
                 'end_period' => $endPeriod
             ];
 
-            $exitingPricelist = Pricelist::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('origin', strtolower($row[2]))->where('price', $row[3])
+            $exitingPricelist = Pricelist::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('id_origin', $IdOrigin)->where('price', $row[3])
             ->where('start_period', $startPeriod)->where('end_period', $endPeriod)->first();
             
             if ($exitingPricelist) {

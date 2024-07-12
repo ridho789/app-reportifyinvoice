@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Models\Cas;
 use App\Models\Shipper;
 use App\Models\Customer;
+use App\Models\Origin;
 use App\Models\Unit;
 
 class CasImport implements ToCollection
@@ -61,6 +62,18 @@ class CasImport implements ToCollection
                 }
             }
 
+            // Origin
+            $IdOrigin = null;
+            if ($row[4]) {
+                $checkOrigin = Origin::where('name', 'like', '%' . $row[4] . '%')->first();
+                if (empty($checkOrigin)) {
+                    $checkOrigin = Origin::create(['name' => strtoupper($row[4])]);
+                }
+
+                // IdShipper
+                $IdOrigin = $checkOrigin->id_origin;
+            }
+
             // Unit
             $IdUnit = null;
             if ($row[5]) {
@@ -95,7 +108,7 @@ class CasImport implements ToCollection
                 'id_shipper' => $IdShipper,
                 'lts' => strtoupper($row[2]),
                 'charge' => $row[3],
-                'origin' => $row[4],
+                'id_origin' => $IdOrigin,
                 'id_unit' => $IdUnit,
                 'desc' => $row[6],
                 'start_period' => $startPeriod,
@@ -103,7 +116,7 @@ class CasImport implements ToCollection
             ];
     
             $exitingCas = Cas::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('lts', $row[2])->where('charge', $row[3])->where('id_unit', $IdUnit)
-            ->where('desc', $row[5])->where('start_period', $startPeriod)->where('end_period', $endPeriod)->first();
+            ->where('id_origin', $IdOrigin)->where('desc', $row[5])->where('start_period', $startPeriod)->where('end_period', $endPeriod)->first();
             
             if ($exitingCas) {
                 $errorMessage = 'Error importing data: The data in the row ' . $currentRow . ' already exists in the system ';

@@ -18,7 +18,7 @@ class Pricelist extends Model
         'id_pricelist',
         'id_shipper',
         'id_customer',
-        'origin',
+        'id_origin',
         'price',
         'start_period',
         'end_period',

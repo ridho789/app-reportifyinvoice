@@ -76,6 +76,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->is('origin') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/origin') }}">
+                            <span class="sidenav-mini-icon"> O </span>
+                            <span class="nav-link-text ms-1">Origins</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link text-white {{ request()->is('ship') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/ship') }}">
                             <span class="sidenav-mini-icon"> S </span>
                             <span class="nav-link-text ms-1">Ships</span>
@@ -184,6 +190,12 @@
                         <a class="nav-link text-white {{ request()->is('desc') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/desc') }}">
                             <span class="sidenav-mini-icon"> D </span>
                             <span class="nav-link-text ms-1">Descs</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->is('origin') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/origin') }}">
+                            <span class="sidenav-mini-icon"> O </span>
+                            <span class="nav-link-text ms-1">Origins</span>
                         </a>
                     </li>
                     <li class="nav-item">

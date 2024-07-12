@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('no_aju')->nullable();
             $table->string('no_inv')->nullable();
             $table->date('date')->nullable();
-            $table->string('origin');
             $table->date('etd')->nullable();
             $table->date('eta')->nullable();
             $table->integer('term')->nullable();

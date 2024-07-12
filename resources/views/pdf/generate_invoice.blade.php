@@ -200,7 +200,7 @@
                 </tr>
                 <tr>
                     <td class="border_left_right"></td>
-                    <td class="border_left_right text_center">Biaya Pengiriman {{ $seaShipment->origin }}</td>
+                    <td class="border_left_right text_center">Biaya Pengiriman {{ $origin->name ?? null }}</td>
                     <td class="border_left_right"></td>
                     <td class="border_left_right"></td>
                     <td class="border_left_right"></td>
@@ -275,7 +275,7 @@
 
                 @endphp
 
-                @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
+                @if (in_array($origin->name, ['SIN-BTH', 'SIN-JKT']))
                     @foreach($groupSeaShipmentLines as $groupDate => $totals)
                         @php
                             // Memisahkan bagian-bagian dari key

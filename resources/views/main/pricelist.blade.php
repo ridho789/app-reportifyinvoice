@@ -103,22 +103,36 @@
                             </div>
                         @endif
                         
-                        <div class="input-group input-group-static mb-1">
-                            <label>Origin <span class="text-danger">*</span></label>
-                        </div>
                         <div class="input-group input-group-static mb-4">
-                            <select class="form-select text-left" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
-                                <option value="">...</option>
-                                <option value="BTH-JKT">BTH-JKT</option>
-                                <option value="BTH-SIN">BTH-SIN</option>
-                                <option value="SIN-BTH">SIN-BTH</option>
-                                <option value="SIN-JKT">SIN-JKT</option>
-                            </select>
+                            @if (count($origins) > 0)
+                                <div class="input-group input-group-static">
+                                    <label>Origin</label>
+                                </div>
+                                <div class="input-group input-group-static text-xs">
+                                    <select class="form-select select-new-origin" name="id_origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                        <option value="">...</option>
+                                        @foreach ($origins as $o)
+                                            <option value="{{ $o->id_origin }}">{{ $o->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @else
+                                <div class="input-group input-group-static">
+                                    <label>Origin</label>
+                                </div>
+                                <div class="input-group input-group-static text-xs">
+                                    <select class="form-control" disabled>
+                                        <option value="">No data available</option>
+                                    </select>
+                                </div>
+                            @endif
                         </div>
+
                         <div class="input-group input-group-static mb-4">
                             <label>Price <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="price" id="new-price" value="{{ old('price') }}" placeholder="..." required>
                         </div>
+
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>Start Period </label>
@@ -130,6 +144,7 @@
                                 <input type="date" class="form-control end-period" name="end_period" value="{{ old('end_period') }}">
                             </div>
                         </div>
+
                         <div class="text-end">
                             <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn bg-gradient-primary btn-md ms-1">Submit</button>
@@ -199,22 +214,36 @@
                             </div>
                         @endif
                         
-                        <div class="input-group input-group-static mb-1">
-                            <label>Origin <span class="text-danger">*</span></label>
-                        </div>
                         <div class="input-group input-group-static mb-4">
-                            <select class="form-select text-left" id="origin" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
-                                <option value="">...</option>
-                                <option value="BTH-JKT">BTH-JKT</option>
-                                <option value="BTH-SIN">BTH-SIN</option>
-                                <option value="SIN-BTH">SIN-BTH</option>
-                                <option value="SIN-JKT">SIN-JKT</option>
-                            </select>
+                            @if (count($origins) > 0)
+                                <div class="input-group input-group-static">
+                                    <label>Origin</label>
+                                </div>
+                                <div class="input-group input-group-static text-xs">
+                                    <select class="form-select select-new-origin" id="origin" name="id_origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                        <option value="">...</option>
+                                        @foreach ($origins as $o)
+                                            <option value="{{ $o->id_origin }}">{{ $o->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @else
+                                <div class="input-group input-group-static">
+                                    <label>Origin</label>
+                                </div>
+                                <div class="input-group input-group-static text-xs">
+                                    <select class="form-control" disabled>
+                                        <option value="">No data available</option>
+                                    </select>
+                                </div>
+                            @endif
                         </div>
+
                         <div class="input-group input-group-static mb-4">
                             <label>Price <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="price" name="price" value="{{ old('price') }}" placeholder="..." required>
                         </div>
+
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>Start Period </label>
@@ -226,6 +255,7 @@
                                 <input type="date" class="form-control end-period" id="end_period" name="end_period" value="{{ old('end_period') }}">
                             </div>
                         </div>
+
                         <div class="text-end">
                             <button type="button" class="btn bg-gradient-secondary btn-md" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn bg-gradient-primary btn-md ms-1">Update</button>
@@ -282,7 +312,8 @@
                             </thead>
                             <tbody>
                                 @foreach($pricelists as $p)
-                                <tr data-id="{{ $p->id_pricelist }}" data-id-customer="{{ $p->id_customer }}" data-id-shipper="{{ $p->id_shipper }}">
+                                <tr data-id="{{ $p->id_pricelist }}" data-id-customer="{{ $p->id_customer }}" data-id-shipper="{{ $p->id_shipper }}"
+                                data-id-origin="{{ $p->id_origin }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
@@ -297,7 +328,7 @@
                                         <p class="shipper-selected text-sm font-weight-normal mb-0">{{ $shipper[$p->id_shipper] ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="origin-selected text-sm font-weight-normal mb-0">{{ $p->origin ?? '-' }}</p>
+                                        <p class="origin-selected text-sm font-weight-normal mb-0">{{ $origin[$p->id_origin] ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="price-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }}</p>
@@ -404,7 +435,7 @@
                 var id = row.getAttribute("data-id");
                 var customer = row.getAttribute("data-id-customer");
                 var shipper = row.getAttribute("data-id-shipper");
-                var origin = row.querySelector(".origin-selected").textContent;
+                var origin = row.getAttribute("data-id-origin");
                 var price = row.querySelector(".price-selected").textContent.trim();
 
                 const priceConvert = parseFloat(price);

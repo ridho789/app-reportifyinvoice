@@ -116,17 +116,29 @@
                             </div>
                         </div>
 
-                        <div class="input-group input-group-static mb-1">
-                            <label>Origin <span class="text-danger">*</span></label>
-                        </div>
                         <div class="input-group input-group-static mb-4">
-                            <select class="form-select text-left" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
-                                <option value="">...</option>
-                                <option value="BTH-JKT">BTH-JKT</option>
-                                <option value="BTH-SIN">BTH-SIN</option>
-                                <option value="SIN-BTH">SIN-BTH</option>
-                                <option value="SIN-JKT">SIN-JKT</option>
-                            </select>
+                            @if (count($origins) > 0)
+                                <div class="input-group input-group-static">
+                                    <label>Origin</label>
+                                </div>
+                                <div class="input-group input-group-static text-xs">
+                                    <select class="form-select select-new-origin" id="new_id_origin" name="id_origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                        <option value="">...</option>
+                                        @foreach ($origins as $o)
+                                            <option value="{{ $o->id_origin }}">{{ $o->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @else
+                                <div class="input-group input-group-static">
+                                    <label>Origin</label>
+                                </div>
+                                <div class="input-group input-group-static text-xs">
+                                    <select class="form-control" disabled>
+                                        <option value="">No data available</option>
+                                    </select>
+                                </div>
+                            @endif
                         </div>
 
                         <div class="input-group input-group-static mb-4">
@@ -156,7 +168,7 @@
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <label>Desc </label>
+                                <label style="margin-bottom: 1.25px;">Desc </label>
                                 <input type="text" class="form-control" id="new-desc" name="new_desc" value="{{ old('new-desc') }}" placeholder="...">
                             </div>
                         </div>
@@ -254,17 +266,29 @@
                             </div>
                         </div>
 
-                        <div class="input-group input-group-static mb-1">
-                            <label>Origin <span class="text-danger">*</span></label>
-                        </div>
                         <div class="input-group input-group-static mb-4">
-                            <select class="form-select text-left" id="origin" name="origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
-                                <option value="">...</option>
-                                <option value="BTH-JKT">BTH-JKT</option>
-                                <option value="BTH-SIN">BTH-SIN</option>
-                                <option value="SIN-BTH">SIN-BTH</option>
-                                <option value="SIN-JKT">SIN-JKT</option>
-                            </select>
+                            @if (count($origins) > 0)
+                                <div class="input-group input-group-static">
+                                    <label>Origin</label>
+                                </div>
+                                <div class="input-group input-group-static text-xs">
+                                    <select class="form-select select-new-origin" id="id_origin" name="id_origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                        <option value="">...</option>
+                                        @foreach ($origins as $o)
+                                            <option value="{{ $o->id_origin }}">{{ $o->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @else
+                                <div class="input-group input-group-static">
+                                    <label>Origin</label>
+                                </div>
+                                <div class="input-group input-group-static text-xs">
+                                    <select class="form-control" disabled>
+                                        <option value="">No data available</option>
+                                    </select>
+                                </div>
+                            @endif
                         </div>
 
                         <div class="input-group input-group-static mb-4">
@@ -294,7 +318,7 @@
                             </div>
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <label>Desc </label>
+                                <label style="margin-bottom: 1.25px;">Desc </label>
                                 <input type="text" class="form-control" id="desc" name="desc" value="{{ old('desc') }}" placeholder="...">
                             </div>
                         </div>
@@ -370,7 +394,8 @@
                             </thead>
                             <tbody>
                                 @foreach($cas as $c)
-                                <tr data-id="{{ $c->id_cas }}" data-id-customer="{{ $c->id_customer }}" data-id-shipper="{{ $c->id_shipper }}" data-id-unit="{{ $c->id_unit }}">
+                                <tr data-id="{{ $c->id_cas }}" data-id-customer="{{ $c->id_customer }}" data-id-shipper="{{ $c->id_shipper }}" data-id-unit="{{ $c->id_unit }}" 
+                                data-id-origin="{{ $c->id_origin }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
@@ -391,7 +416,7 @@
                                         <p class="charge-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($c->charge ?? 0, 0, ',', '.') }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="origin-selected text-sm font-weight-normal mb-0">{{ $c->origin ?? '-' }}</p>
+                                        <p class="origin-selected text-sm font-weight-normal mb-0">{{ $origin[$c->id_origin] ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="unit-selected text-sm font-weight-normal mb-0">{{ $unit[$c->id_unit] ?? '-' }}</p>
@@ -579,9 +604,9 @@
                 var customer = row.getAttribute("data-id-customer");
                 var unit = row.getAttribute("data-id-unit");
                 var shipper = row.getAttribute("data-id-shipper");
+                var origin = row.getAttribute("data-id-origin");
                 var lts = row.querySelector(".lts-selected").textContent;
                 var charge = row.querySelector(".charge-selected").textContent.trim();
-                var origin = row.querySelector(".origin-selected").textContent;
                 var desc = row.querySelector(".desc-selected").textContent;
 
                 const chargeConvert = parseFloat(charge);
@@ -590,7 +615,7 @@
                 document.getElementById("id").value = id;
                 document.getElementById("lts").value = lts;
                 document.getElementById("charge").value = charge;
-                document.getElementById("origin").value = origin;
+                document.getElementById("id_origin").value = origin;
                 document.getElementById("id_unit").value = unit;
 
                 $("#customer").val(customer);

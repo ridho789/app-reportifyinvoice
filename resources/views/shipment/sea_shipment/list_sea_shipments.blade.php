@@ -67,7 +67,7 @@
                                         </div>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">{{ $ss->origin ?? '-' }}</p>
+                                        <p class="text-sm font-weight-normal mb-0">{{ $origin[$ss->id_origin] ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ $ss->etd ? \Carbon\Carbon::createFromFormat('Y-m-d', $ss->etd)->format('d-M-y') : '-' }}</p>

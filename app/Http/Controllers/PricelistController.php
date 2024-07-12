@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Pricelist;
 use App\Models\Customer;
 use App\Models\Shipper;
+use App\Models\Origin;
 use App\Imports\PricelistImport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -20,10 +21,12 @@ class PricelistController extends Controller
 
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');
+        $origin = Origin::pluck('name', 'id_origin');
         $customers = Customer::orderBy('name')->get();
         $shippers = Shipper::orderBy('name')->get();
+        $origins = Origin::orderBy('name')->get();
         $logErrors = '';
-        return view('main.pricelist', compact('pricelists', 'customer', 'shipper', 'customers',  'shippers','logErrors'));
+        return view('main.pricelist', compact('pricelists', 'customer', 'shipper', 'origin', 'customers',  'origins', 'shippers', 'logErrors'));
     }
 
     public function store(Request $request) {
@@ -35,17 +38,18 @@ class PricelistController extends Controller
         $dataNewPricelist = [
             'id_customer' => $request->id_customer,
             'id_shipper' => $request->id_shipper,
-            'origin' => $request->origin,
+            'id_origin' => $request->id_origin,
             'price' => $numericNewPrice,
             'start_period' => $request->start_period,
             'end_period' => $request->end_period
         ];
 
-        $exitingPricelist = Pricelist::where('id_customer', $request->id_customer)->where('id_shipper', $request->id_shipper)->where('origin', $request->origin)->where('price', $numericNewPrice)
+        $exitingPricelist = Pricelist::where('id_customer', $request->id_customer)->where('id_shipper', $request->id_shipper)->where('id_origin', $request->id_origin)->where('price', $numericNewPrice)
             ->where('start_period', $request->start_period)->where('end_period', $request->end_period)->first();
 
         $dataCustomer = Customer::where('id_customer', $request->id_customer)->first();
         $dataShipper = Shipper::where('id_shipper', $request->id_shipper)->first();
+        $dataOrigin = Origin::where('id_origin', $request->id_origin)->first();
 
         $customerName = 'null';
         if ($dataCustomer) {
@@ -55,6 +59,11 @@ class PricelistController extends Controller
         $shipperName = 'null';
         if ($dataShipper) {
             $shipperName = $dataShipper->name;
+        }
+
+        $originName = 'null';
+        if ($dataOrigin) {
+            $originName = $dataOrigin->name;
         }
         
         $startPeriod = 'null';
@@ -68,7 +77,7 @@ class PricelistController extends Controller
         }
 
         if ($exitingPricelist) {
-            $logErrors = 'Customer: ' . $customerName . ' - ' . 'Shipper: ' . $shipperName . ' - ' . 'Origin: ' . $request->origin . ' - ' . 'Price: ' . 
+            $logErrors = 'Customer: ' . $customerName . ' - ' . 'Shipper: ' . $shipperName . ' - ' . 'Origin: ' . $originName . ' - ' . 'Price: ' . 
             $request->price . ' - ' . 'Start Period: ' . $startPeriod . ' - ' . 'End Period: ' . $endPeriod . ', already in the system';
             
             return redirect('pricelist')->with('logErrors', $logErrors);
@@ -90,7 +99,7 @@ class PricelistController extends Controller
         if ($pricelist) {
             $pricelist->id_customer = $request->id_customer;
             $pricelist->id_shipper = $request->id_shipper;
-            $pricelist->origin = $request->origin;
+            $pricelist->id_origin = $request->id_origin;
             $pricelist->price = $numericPrice;
             $pricelist->start_period = $request->start_period;
             $pricelist->end_period = $request->end_period;

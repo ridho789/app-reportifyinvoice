@@ -155,14 +155,13 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <!-- <input type="text" class="form-control text-center" name="origin" value="{{ $seaShipment->origin ?? '-' }}" 
-                                            oninput="this.value = this.value.toUpperCase()" placeholder="..."> -->
-                                            <select class="form-select text-center text-xs" name="origin" style="border: 0px;" required>
-                                                <option value="" {{ old('origin', $seaShipment->origin) == '' ? 'selected' : '' }}>...</option>
-                                                <option value="BTH-JKT" {{ old('origin', $seaShipment->origin) == 'BTH-JKT' ? 'selected' : '' }}>BTH-JKT</option>
-                                                <option value="BTH-SIN" {{ old('origin', $seaShipment->origin) == 'BTH-SIN' ? 'selected' : '' }}>BTH-SIN</option>
-                                                <option value="SIN-BTH" {{ old('origin', $seaShipment->origin) == 'SIN-BTH' ? 'selected' : '' }}>SIN-BTH</option>
-                                                <option value="SIN-JKT" {{ old('origin', $seaShipment->origin) == 'SIN-JKT' ? 'selected' : '' }}>SIN-JKT</option>
+                                            <select class="form-select text-xs select-origin" name="id_origin">
+                                                <option value="">...</option>
+                                                @foreach ($origins as $o)
+                                                <option value="{{ $o->id_origin }}" 
+                                                    {{ old('id_origin', $seaShipment->id_origin) == $o->id_origin ? 'selected' : '' }}>{{ $o->name }}
+                                                </option>
+                                                @endforeach
                                             </select>
                                         </td>
                                         <td class="align-middle text-center">
@@ -425,13 +424,11 @@
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=7.5%>
-                                            <!-- <input type="text" class="form-control text-center" name="origin" oninput="this.value = this.value.toUpperCase()" placeholder="..."> -->
-                                            <select class="form-select text-center text-xs" name="origin" style="border: 0px;" required>
+                                            <select class="form-select text-xs select-origin" name="id_origin">
                                                 <option value="">...</option>
-                                                <option value="BTH-JKT">BTH-JKT</option>
-                                                <option value="BTH-SIN">BTH-SIN</option>
-                                                <option value="SIN-BTH">SIN-BTH</option>
-                                                <option value="SIN-JKT">SIN-JKT</option>
+                                                @foreach ($origins as $o)
+                                                <option value="{{ $o->id_origin }}">{{ $o->name }}</option>
+                                                @endforeach
                                             </select>
                                         </td>
                                         <td class="align-middle text-center">
@@ -543,13 +540,13 @@
                                         </td>
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="p[]" placeholder="..." style="border: 0px;" min="1">
+                                            <input type="number" class="form-control text-center" name="p[]" placeholder="..." style="border: 0px;" min="1" required>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="l[]" placeholder="..." style="border: 0px;" min="1">
+                                            <input type="number" class="form-control text-center" name="l[]" placeholder="..." style="border: 0px;" min="1" required>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="t[]" placeholder="..." style="border: 0px;" min="1">
+                                            <input type="number" class="form-control text-center" name="t[]" placeholder="..." style="border: 0px;" min="1" required>
                                         </td>
                                         <!-- ### -->
                                         <!-- total cbm -->
@@ -611,7 +608,7 @@
 @if ($seaShipment)
 <!-- Modal - SetPrint -->
 <div class="modal fade" id="setPrintModal" tabindex="-1" role="dialog" aria-labelledby="setPrintModalLabel" aria-hidden="true">
-    @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
+    @if (in_array($originName[$seaShipment->id_origin], ['SIN-BTH', 'SIN-JKT']))
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     @else
     <div class="modal-dialog modal-dialog-centered modal-md" role="document">
@@ -625,7 +622,7 @@
             <form id="seaShipmentForm" action="{{ url('print-sea-shipment') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
-                    @if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT']))
+                    @if (in_array($originName[$seaShipment->id_origin], ['SIN-BTH', 'SIN-JKT']))
                         <div class="row">
                             <div class="col-6">
                                 <h5 class="text-sm">Form</h5>
@@ -1141,6 +1138,7 @@
     $(document).ready(function() {
         $('.select-cust').select2();
         $('.select-shipper').select2();
+        $('.select-origin').select2();
         $('.select-ship').select2({
             tags: true
         });

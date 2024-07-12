@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\Customer;
 use App\Models\Shipper;
 use App\Models\Ship;
+use App\Models\Origin;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 
@@ -116,13 +117,25 @@ class SeaShipmentSheetImport implements ToCollection
                         $IdShip = $checkShip->id_ship;
                     }
 
-                    $valueKey = $row[0] . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1])->format('Y-m-d') . $IdShipper . $IdCustomer . strtoupper($row[6]) . 
+                    // Origin
+                    $IdOrigin = null;
+                    if ($row[6]) {
+                        $checkOrigin = Origin::where('name', 'like', '%' . $row[6] . '%')->first();
+                        if (!$checkOrigin) {
+                            $checkOrigin = Origin::create(['name' => strtoupper($row[6])]);
+                        }
+
+                        // IdOrigin
+                        $IdOrigin = $checkOrigin->id_origin;
+                    }
+
+                    $valueKey = $row[0] . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1])->format('Y-m-d') . $IdShipper . $IdCustomer . $IdOrigin . 
                     \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[7])->format('Y-m-d');
 
                     $dataSeaShipment = [
                         'no_aju' => strtoupper($row[0]),
                         'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1]),
-                        'origin' => strtoupper($row[6]),
+                        'id_origin' => $IdOrigin,
                         'etd' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[7]),
                         'eta' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[8]),
                         'id_shipper' => $IdShipper,

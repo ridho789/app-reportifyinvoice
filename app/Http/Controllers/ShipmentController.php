@@ -11,6 +11,7 @@ use App\Models\Unit;
 use App\Models\Desc;
 use App\Models\Account;
 use App\Models\Banker;
+use App\Models\Origin;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 use App\Imports\SeaShipmentImport;
@@ -48,7 +49,8 @@ class ShipmentController extends Controller
         $shippers = Shipper::orderBy('name')->get();
         $ships = Ship::orderBy('name')->get();
         $units = Unit::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships', 'units', 'groupSeaShipmentLines'));
+        $origins = Origin::orderBy('name')->get();
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'ships', 'units', 'origins', 'groupSeaShipmentLines'));
     }
 
     public function listSeaShipment() {
@@ -56,7 +58,8 @@ class ShipmentController extends Controller
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');
         $ship = Ship::pluck('name', 'id_ship');
-        return view('shipment.sea_shipment.list_sea_shipments', compact('allSeaShipment','customer', 'shipper', 'ship'));
+        $origin = Origin::pluck('name', 'id_origin');
+        return view('shipment.sea_shipment.list_sea_shipments', compact('allSeaShipment','customer', 'shipper', 'ship', 'origin'));
     }
 
     public function editSeaShipment($id) {
@@ -121,9 +124,11 @@ class ShipmentController extends Controller
         $companies = Company::orderBy('name')->get();
         $units = Unit::orderBy('name')->get();
         $descs = Desc::orderBy('name')->get();
+        $origins = Origin::orderBy('name')->get();
+        $originName = Origin::pluck('name', 'id_origin');
         $accounts = Account::orderBy('account_no')->get();
         $bankers = Banker::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'accounts', 'bankers', 
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'accounts', 'bankers', 'origins', 'originName', 
         'ships', 'units', 'descs', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
     }
 
@@ -144,13 +149,13 @@ class ShipmentController extends Controller
             'id_customer' => $request->id_customer,
             'id_shipper' => $request->id_shipper,
             'id_ship' => $request->id_ship,
-            'origin' => strtoupper($request->origin),
+            'id_origin' => $request->id_origin,
             'etd' => $request->etd,
             'eta' => $request->eta,
         ];
 
         $checkSeaShipment = SeaShipment::where('no_aju', strtoupper($request->no_aju))->where('id_customer', $request->id_customer)->where('id_shipper', $request->id_shipper)
-        ->where('etd', $request->etd)->first();
+        ->where('id_origin', $request->id_origin)->where('etd', $request->etd)->first();
 
         if (empty($checkSeaShipment)) {
             $createdSeaShipment = SeaShipment::create($dataSeaShipment);
@@ -214,7 +219,7 @@ class ShipmentController extends Controller
             $SeaShipment->id_customer = $request->id_customer;
             $SeaShipment->id_shipper = $request->id_shipper;
             $SeaShipment->id_ship = $request->id_ship;
-            $SeaShipment->origin = strtoupper($request->origin);
+            $SeaShipment->id_origin = $request->id_origin;
             $SeaShipment->etd = $request->etd;
             $SeaShipment->eta = $request->eta;
         }
@@ -335,26 +340,27 @@ class ShipmentController extends Controller
         $descsData = Desc::orderBy('name')->get();
         $account = $request->id_account ? Account::where('id_account', $request->id_account)->first() : null;
         $banker = $request->id_banker ? Banker::where('id_banker', $request->id_banker)->first() : null;
+        $origin = Origin::where('id_origin', $seaShipment->id_origin)->first();
 
         // set pricelist
         $pricelist = 0;
 
-        $defaultPricelist = Pricelist::where('id_customer', null)->where('id_shipper', null)->where('origin', $seaShipment->origin)
+        $defaultPricelist = Pricelist::where('id_customer', null)->where('id_shipper', null)->where('id_origin', $seaShipment->id_origin)
         ->where('start_period', null)->where('end_period', null)->first();
 
-        $shipperPricelist = Pricelist::where('id_customer', null)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        $shipperPricelist = Pricelist::where('id_customer', null)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
         ->where('start_period', null)->where('end_period', null)->first();
 
-        $customerPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', null)->where('origin', $seaShipment->origin)
+        $customerPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', null)->where('id_origin', $seaShipment->id_origin)
         ->where('start_period', null)->where('end_period', null)->first();
 
-        $customerShipperPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        $customerShipperPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
         ->where('start_period', null)->where('end_period', null)->first();
 
-        $periodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        $periodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
         ->where('start_period', '>=', $seaShipment->date)->where('end_period', null)->first();
 
-        $allPeriodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('origin', $seaShipment->origin)
+        $allPeriodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
         ->where('start_period', '<=', $seaShipment->date)->where('end_period', '>=', $seaShipment->date)->first();
 
         if ($defaultPricelist) {
@@ -436,7 +442,7 @@ class ShipmentController extends Controller
             $cas = Cas::where('id_customer', $seaShipment->id_customer)
                     ->where('id_shipper', $seaShipment->id_shipper)
                     ->where('lts', $lts)
-                    ->where('origin', $seaShipment->origin)
+                    ->where('id_origin', $seaShipment->id_origin)
                     ->where('id_unit', $idUnit)
                     ->where(function ($query) use ($seaShipment) {
                         $query->whereNull('start_period')
@@ -446,9 +452,9 @@ class ShipmentController extends Controller
                             ->orWhere('start_period', '>=', $seaShipment->date)
                             ->whereNull('end_period');
                     })->value('charge') ?? 
-                Cas::where('id_customer', $seaShipment->id_customer)->whereNull('id_shipper')->where('lts', $lts)->where('origin', $seaShipment->origin)->where('id_unit', $idUnit)->value('charge') ??
-                Cas::whereNull('id_customer')->where('id_shipper', $seaShipment->id_shipper)->where('lts', $lts)->where('origin', $seaShipment->origin)->where('id_unit', $idUnit)->value('charge') ??
-                Cas::whereNull('id_customer')->whereNull('id_shipper')->where('lts', $lts)->where('origin', $seaShipment->origin)->where('id_unit', $idUnit)->value('charge');
+                Cas::where('id_customer', $seaShipment->id_customer)->whereNull('id_shipper')->where('lts', $lts)->where('id_origin', $seaShipment->id_origin)->where('id_unit', $idUnit)->value('charge') ??
+                Cas::whereNull('id_customer')->where('id_shipper', $seaShipment->id_shipper)->where('lts', $lts)->where('id_origin', $seaShipment->id_origin)->where('id_unit', $idUnit)->value('charge') ??
+                Cas::whereNull('id_customer')->whereNull('id_shipper')->where('lts', $lts)->where('id_origin', $seaShipment->id_origin)->where('id_unit', $idUnit)->value('charge');
 
             $totals['cas'] = $cas;
             $totalCasOverall += $totals['cas'];
@@ -494,7 +500,7 @@ class ShipmentController extends Controller
         }
 
         // Initial grouping
-        if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
+        if (in_array($origin->name, ['SIN-BTH', 'SIN-JKT'])) {
 
             // reset total value
             $totalCbm1Overall = 0;
@@ -530,7 +536,7 @@ class ShipmentController extends Controller
         }
 
         // Conditional re-grouping
-        if (($request->inv_type && $request->inv_type == 'separate') || in_array($seaShipment->origin, ['BTH-SIN', 'BTH-JKT'])) {
+        if (($request->inv_type && $request->inv_type == 'separate') || in_array($origin->name, ['BTH-SIN', 'BTH-JKT'])) {
 
             // reset total value
             $totalCbm1Overall = 0;
@@ -714,7 +720,7 @@ class ShipmentController extends Controller
         $totalInsuranceOverall = 0;
         $totalanotherBillOverall = 0;
 
-        if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
+        if (in_array($origin->name, ['SIN-BTH', 'SIN-JKT'])) {
             $dataBill = [
                 'dateBL' => $request->dateBL,
                 'codeShipment' => $request->codeShipment,
@@ -848,6 +854,7 @@ class ShipmentController extends Controller
                 'paymentDue' => $paymentDue,
                 'banker' => $banker,
                 'account_no' => $account,
+                'origin' => $origin,
                 'imageContent' => $imageContent,
                 'invNameGenerate' => $invNameGenerate,
                 'titleInv' => $titleInv,
@@ -863,7 +870,7 @@ class ShipmentController extends Controller
             $checkBillRecap = BillRecap::where('id_sea_shipment', $seaShipment->id_sea_shipment)->first();
 
             // size
-            if (in_array($seaShipment->origin, ['SIN-BTH', 'SIN-JKT'])) {
+            if (in_array($origin->name, ['SIN-BTH', 'SIN-JKT'])) {
                 if ($isWeight) {
                     if (($totalWeightOverall / 1000) > ($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall)) {
                         $size = ($totalWeightOverall / 1000) . ' T';

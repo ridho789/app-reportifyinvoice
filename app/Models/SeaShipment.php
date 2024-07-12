@@ -18,7 +18,7 @@ class SeaShipment extends Model
         'no_aju',
         'no_inv',
         'date',
-        'origin',
+        'id_origin',
         'etd',
         'eta',
         'id_shipper',
