@@ -105,6 +105,12 @@
                             <span class="nav-link-text ms-1">Units</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->is('uom') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/uom') }}">
+                            <span class="sidenav-mini-icon"> Uo </span>
+                            <span class="nav-link-text ms-1">UOM</span>
+                        </a>
+                    </li>
 
                     <li class="nav-item">
                         <hr class="horizontal light">
@@ -226,6 +232,12 @@
                         <a class="nav-link text-white {{ request()->is('unit') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/unit') }}">
                             <span class="sidenav-mini-icon"> U </span>
                             <span class="nav-link-text ms-1">Units</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->is('uom') ? 'active bg-gradient-primary' : '' }}" href="{{ url('/uom') }}">
+                            <span class="sidenav-mini-icon"> Uo </span>
+                            <span class="nav-link-text ms-1">UOM</span>
                         </a>
                     </li>
 

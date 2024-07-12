@@ -25,5 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DescTableSeeder::class);
         $this->call(OriginsTableSeeder::class);
         $this->call(StateTableSeeder::class);
+        $this->call(UomTableSeeder::class);
     }
 }

@@ -13,6 +13,7 @@ use App\Models\Account;
 use App\Models\Banker;
 use App\Models\Origin;
 use App\Models\State;
+use App\Models\Uom;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 use App\Imports\SeaShipmentImport;
@@ -52,7 +53,8 @@ class ShipmentController extends Controller
         $units = Unit::orderBy('name')->get();
         $origins = Origin::orderBy('name')->get();
         $states = State::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'states', 
+        $uoms = Uom::orderBy('name')->get();
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'shippers', 'states', 'uoms', 
         'ships', 'units', 'origins', 'groupSeaShipmentLines'));
     }
 
@@ -132,7 +134,8 @@ class ShipmentController extends Controller
         $accounts = Account::orderBy('account_no')->get();
         $bankers = Banker::orderBy('name')->get();
         $states = State::orderBy('name')->get();
-        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'accounts', 'bankers', 'origins', 'originName', 
+        $uoms = Uom::orderBy('name')->get();
+        return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'accounts', 'bankers', 'origins', 'originName', 'uoms', 
         'states', 'ships', 'units', 'descs', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
     }
 
@@ -172,8 +175,8 @@ class ShipmentController extends Controller
                     'marking' => strtoupper($request->marking[$index]),
                     'qty_pkgs' => $request->qty_pkgs[$index],
                     'qty_loose' => $request->qty_loose[$index],
-                    'unit_qty_pkgs' => $request->unit_qty_pkgs[$index],
-                    'unit_qty_loose' => $request->unit_qty_loose[$index],
+                    'id_uom_pkgs' => $request->id_uom_pkgs[$index],
+                    'id_uom_loose' => $request->id_uom_loose[$index],
                     'weight' => $request->weight[$index],
                     'dimension_p' => $request->p[$index],
                     'dimension_l' => $request->l[$index],
@@ -258,8 +261,8 @@ class ShipmentController extends Controller
                 'marking' => strtoupper($request->marking[$index]),
                 'qty_pkgs' => $request->qty_pkgs[$index],
                 'qty_loose' => $request->qty_loose[$index],
-                'unit_qty_pkgs' => $request->unit_qty_pkgs[$index],
-                'unit_qty_loose' => $request->unit_qty_loose[$index],
+                'id_uom_pkgs' => $request->id_uom_pkgs[$index],
+                'id_uom_loose' => $request->id_uom_loose[$index],
                 'weight' => $request->weight[$index],
                 'dimension_p' => $request->p[$index],
                 'dimension_l' => $request->l[$index],

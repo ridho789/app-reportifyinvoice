@@ -12,6 +12,7 @@ use App\Models\Shipper;
 use App\Models\Ship;
 use App\Models\Origin;
 use App\Models\State;
+use App\Models\Uom;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 
@@ -162,6 +163,30 @@ class SeaShipmentSheetImport implements ToCollection
                         $tot_cbm2 = number_format((($row[9] * $row[10] * $row[11]) / 1000000) * $row[6], 3);
                     }
 
+                    // UOM Pkgs
+                    $IdUomPkgs = null;
+                    if ($row[5]) {
+                        $checkUomPkgs = Uom::where('name', 'like', '%' . $row[5] . '%')->first();
+                        if (!$checkUomPkgs) {
+                            $checkUomPkgs = Uom::create(['name' => strtoupper($row[5])]);
+                        }
+
+                        // IdState
+                        $IdUomPkgs = $checkUomPkgs->id_uom;
+                    }
+
+                    // UOM Loose
+                    $IdUomLoose = null;
+                    if ($row[7]) {
+                        $checkUomLoose = Uom::where('name', 'like', '%' . $row[7] . '%')->first();
+                        if (!$checkUomLoose) {
+                            $checkUomLoose = Uom::create(['name' => strtoupper($row[7])]);
+                        }
+
+                        // IdState
+                        $IdUomLoose = $checkUomLoose->id_uom;
+                    }
+
                     // State
                     $IdState = null;
                     if ($row[16]) {
@@ -180,9 +205,9 @@ class SeaShipmentSheetImport implements ToCollection
                         'code' => strtoupper($row[1]),
                         'marking' => strtoupper($row[2]),
                         'qty_pkgs' => $row[4],
-                        'unit_qty_pkgs' => $row[5],
+                        'id_uom_pkgs' => $IdUomPkgs,
                         'qty_loose' => $row[6],
-                        'unit_qty_loose' => $row[7],
+                        'id_uom_loose' => $IdUomLoose,
                         'weight' => $row[8],
                         'dimension_p' => $row[9],
                         'dimension_l' => $row[10],

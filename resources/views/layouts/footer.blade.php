@@ -1,5 +1,5 @@
 @unless(request()->is('list_shipments', 'form_sea_shipment', 'list_sea_shipment', 'sea_shipment-edit/*', 'company','customer', 'shipper', 'ship', 'unit', 'desc', 'banker', 'origin', 
-'account', 'state', 'list_bill_recap', 'insurance', 'pricelist', 'cas', 'history', 'form_bill_recap', 'bill_recap-edit/*'))
+'account', 'state', 'uom', 'list_bill_recap', 'insurance', 'pricelist', 'cas', 'history', 'form_bill_recap', 'bill_recap-edit/*'))
 <footer class="footer py-4  ">
     <div class="container-fluid">
         <div class="row align-items-center justify-content-lg-between">

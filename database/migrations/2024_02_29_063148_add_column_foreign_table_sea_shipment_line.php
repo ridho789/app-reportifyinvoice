@@ -20,6 +20,12 @@ return new class extends Migration
 
             $table->unsignedBigInteger('id_state')->nullable()->after('id_unit');
             $table->foreign('id_state')->references('id_state')->on('tbl_states');
+
+            $table->unsignedBigInteger('id_uom_pkgs')->nullable()->after('qty_pkgs');
+            $table->foreign('id_uom_pkgs')->references('id_uom')->on('tbl_uom');
+
+            $table->unsignedBigInteger('id_uom_loose')->nullable()->after('qty_loose');
+            $table->foreign('id_uom_loose')->references('id_uom')->on('tbl_uom');
         });
     }
 
@@ -37,6 +43,12 @@ return new class extends Migration
 
             $table->dropForeign(['id_state']);
             $table->dropColumn('id_state');
+
+            $table->dropForeign(['id_uom_pkgs']);
+            $table->dropColumn('id_uom_pkgs');
+
+            $table->dropForeign(['id_uom_loose']);
+            $table->dropColumn('id_uom_loose');
         });
     }
 };

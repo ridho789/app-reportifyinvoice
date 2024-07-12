@@ -246,14 +246,13 @@
                                             placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle" width=5%>
-                                            <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
-                                                <option value="" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == '' ? 'selected' : '' }}>-</option>
-                                                <option value="cse" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'cse' ? 'selected' : '' }}>CSE</option>
-                                                <option value="ctn" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'ctn' ? 'selected' : '' }}>CTN</option>
-                                                <option value="pkg" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'pkg' ? 'selected' : '' }}>PKG</option>
-                                                <option value="plt" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'plt' ? 'selected' : '' }}>PLT</option>
-                                                <option value="bdl" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'bdl' ? 'selected' : '' }}>BDL</option>
-                                                <option value="case" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'case' ? 'selected' : '' }}>CASE</option>
+                                            <select class="form-select text-center text-xs select-uom-pkgs" name="id_uom_pkgs[]" style="border: 0px;">
+                                                <option value="" data-name="">-</option>
+                                                @foreach ($uoms as $o)
+                                                <option value="{{ $o->id_uom }}" data-name="{{ $o->name }}" 
+                                                    {{ old('id_uom_pkgs', $ssl->id_uom_pkgs) == $o->id_uom ? 'selected' : '' }}>{{ $o->name }}
+                                                </option>
+                                                @endforeach
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
@@ -261,14 +260,13 @@
                                             placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle" width=5%>
-                                            <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
-                                                <option value="" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == '' ? 'selected' : '' }}>-</option>
-                                                <option value="cse" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'cse' ? 'selected' : '' }}>CSE</option>
-                                                <option value="ctn" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == 'ctn' ? 'selected' : '' }}>CTN</option>
-                                                <option value="pkg" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == 'pkg' ? 'selected' : '' }}>PKG</option>
-                                                <option value="plt" {{ old('unit_qty_loose', $ssl->unit_qty_loose) == 'plt' ? 'selected' : '' }}>PLT</option>
-                                                <option value="bdl" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'bdl' ? 'selected' : '' }}>BDL</option>
-                                                <option value="case" {{ old('unit_qty_pkgs', $ssl->unit_qty_pkgs) == 'case' ? 'selected' : '' }}>CASE</option>
+                                            <select class="form-select text-center text-xs select-uom-loose" name="id_uom_loose[]" style="border: 0px;">
+                                                <option value="" data-name="">-</option>
+                                                @foreach ($uoms as $o)
+                                                <option value="{{ $o->id_uom }}" data-name="{{ $o->name }}" 
+                                                    {{ old('id_uom_loose', $ssl->id_uom_loose) == $o->id_uom ? 'selected' : '' }}>{{ $o->name }}
+                                                </option>
+                                                @endforeach
                                             </select>
                                         </td>
                                         <!-- ### -->
@@ -513,28 +511,26 @@
                                             <input type="number" class="form-control text-center" name="qty_pkgs[]" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
-                                                <option value="">...</option>
-                                                <option value="cse">CSE</option>
-                                                <option value="ctn">CTN</option>
-                                                <option value="pkg">PKG</option>
-                                                <option value="plt">PLT</option>
-                                                <option value="bdl">BDL</option>
-                                                <option value="case">CASE</option>
+                                            <select class="form-select text-center text-xs" name="id_uom_pkgs[]" style="border: 0px;">
+                                                <option value="" data-name="">-</option>
+                                                @foreach ($uoms as $o)
+                                                <option value="{{ $o->id_uom }}" data-name="{{ $o->name }}" 
+                                                    {{ old('id_uom_pkgs') == $o->id_uom ? 'selected' : '' }}>{{ $o->name }}
+                                                </option>
+                                                @endforeach
                                             </select>
                                         </td>
                                         <td class="align-middle text-center" width=5%>
                                             <input type="number" class="form-control text-center" name="qty_loose[]" placeholder="..." style="border: 0px;" min="1">
                                         </td>
                                         <td class="align-middle" width=5%>
-                                            <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
-                                                <option value="">...</option>
-                                                <option value="cse">CSE</option>
-                                                <option value="ctn">CTN</option>
-                                                <option value="pkg">PKG</option>
-                                                <option value="plt">PLT</option>
-                                                <option value="bdl">BDL</option>
-                                                <option value="case">CASE</option>
+                                            <select class="form-select text-center text-xs" name="id_uom_loose[]" style="border: 0px;">
+                                                <option value="" data-name="">-</option>
+                                                @foreach ($uoms as $o)
+                                                <option value="{{ $o->id_uom }}" data-name="{{ $o->name }}" 
+                                                    {{ old('id_uom_loose') == $o->id_uom ? 'selected' : '' }}>{{ $o->name }}
+                                                </option>
+                                                @endforeach
                                             </select>
                                         </td>
                                         <!-- ### -->
@@ -1801,14 +1797,13 @@
             placeholder="..." style="border: 0px;" min="1">
         </td>
         <td class="align-middle" width="5%">
-            <select class="form-select text-center text-xs" name="unit_qty_pkgs[]" style="border: 0px;">
-                <option value="">-</option>
-                <option value="cse">CSE</option>
-                <option value="ctn">CTN</option>
-                <option value="pkg">PKG</option>
-                <option value="plt">PLT</option>
-                <option value="bdl">BDL</option>
-                <option value="case">CASE</option>
+            <select class="form-select text-center text-xs" name="id_uom_pkgs[]" style="border: 0px;">
+                <option value="" data-name="">-</option>
+                @foreach ($uoms as $o)
+                <option value="{{ $o->id_uom }}" data-name="{{ $o->name }}" 
+                    {{ old('id_uom_pkgs') == $o->id_uom ? 'selected' : '' }}>{{ $o->name }}
+                </option>
+                @endforeach
             </select>
         </td>
         <td class="align-middle text-center" width="5%">
@@ -1816,14 +1811,13 @@
             placeholder="..." style="border: 0px;" min="1">
         </td>
         <td class="align-middle" width="5%">
-            <select class="form-select text-center text-xs" name="unit_qty_loose[]" style="border: 0px;">
-                <option value="">-</option>
-                <option value="cse">CSE</option>
-                <option value="ctn">CTN</option>
-                <option value="pkg">PKG</option>
-                <option value="plt">PLT</option>
-                <option value="bdl">BDL</option>
-                <option value="case">CASE</option>
+            <select class="form-select text-center text-xs" name="id_uom_loose[]" style="border: 0px;">
+                <option value="" data-name="">-</option>
+                @foreach ($uoms as $o)
+                <option value="{{ $o->id_uom }}" data-name="{{ $o->name }}" 
+                    {{ old('id_uom_loose') == $o->id_uom ? 'selected' : '' }}>{{ $o->name }}
+                </option>
+                @endforeach
             </select>
         </td>
         <!-- ### -->

@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('marking')->nullable();
             $table->string('qty_pkgs')->nullable();
             $table->string('qty_loose')->nullable();
-            $table->string('unit_qty_pkgs')->nullable();
-            $table->string('unit_qty_loose')->nullable();
             $table->string('weight')->nullable();
             $table->string('dimension_p');
             $table->string('dimension_l');
