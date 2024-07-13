@@ -168,7 +168,7 @@
                     <td style="padding-left: 70px;" class="bold" colspan="2">Term</td>
                     <td class="bold" colspan="2">: <span class="space_content2">{{ $term }} Days</span></td>
                 </tr>
-                @if ($customer->name !== $shipper->name)
+                @if (trim($customer->name) !== trim($shipper->name))
                 <tr>
                     <td class="space_content_main" colspan="2">{{ $shipper->name }}</td>
                     <td style="padding-left: 70px;" class="bold" colspan="2">Payment Due</td>
@@ -626,7 +626,7 @@
                     @endif
 
                     <!-- empty row -->
-                    @for ($i = 1; $i <= (17 - $entryRow); $i++)
+                    @for ($i = 1; $i <= (16 - $entryRow); $i++)
                         <tr>
                             <td width="5%" class="border_left_right" style="height: 20px;"></td>
                             <td width="30%" class="border_left_right text_center"></td>
@@ -824,7 +824,7 @@
                     @endif
 
                     <!-- empty row -->
-                    @for ($i = 1; $i <= (17 - $entryRow); $i++)
+                    @for ($i = 1; $i <= (16 - $entryRow); $i++)
                         <tr>
                             <td width="5%" class="border_left_right" style="height: 20px;"></td>
                             <td width="30%" class="border_left_right text_center"></td>
