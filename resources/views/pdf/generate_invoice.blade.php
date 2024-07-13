@@ -168,11 +168,19 @@
                     <td style="padding-left: 70px;" class="bold" colspan="2">Term</td>
                     <td class="bold" colspan="2">: <span class="space_content2">{{ $term }} Days</span></td>
                 </tr>
+                @if ($customer->name !== $shipper->name)
                 <tr>
                     <td class="space_content_main" colspan="2">{{ $shipper->name }}</td>
                     <td style="padding-left: 70px;" class="bold" colspan="2">Payment Due</td>
                     <td class="bold" colspan="2">: <span class="space_content2">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $paymentDue)->format('d-M-y') }}</span></td>
                 </tr>
+                @else
+                <tr>
+                    <td class="space_content_main" colspan="2"></td>
+                    <td style="padding-left: 70px;" class="bold" colspan="2">Payment Due</td>
+                    <td class="bold" colspan="2">: <span class="space_content2">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $paymentDue)->format('d-M-y') }}</span></td>
+                </tr>
+                @endif
                 <tr>
                     <td class="space_content" colspan="2"></td>
                     <td style="padding-left: 70px;" class="bold" colspan="2">Freight Type</td>
@@ -337,7 +345,7 @@
                             }
                             
                             $entryRow += ($bl ? 1 : 0) + ($permit ? 1 : 0) + ($transport ? 1 : 0) + ($insurance ? 1 : 0);
-                            $checkLoopDate = $date;
+                            // $checkLoopDate = $date;
                             
                             if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM'])) {
                                 $amount = $unit_price;
@@ -404,41 +412,81 @@
                         <tr>
                             <td width="5%" class="border_left_right"></td>
                             <td width="30%" class="border_left_right text_center">
-                                @if ($is_weight || $unitType == 'T')
-                                    @if (!$cas)
-                                        @if ($lts == 'SP')
-                                            {{ $code ? $code : '' }} : {{ $totals['total_cbm2'] }} M3 
-                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                @if ($checkLoopDate != $date)
+                                    @if ($is_weight || $unitType == 'T')
+                                        @if (!$cas)
+                                            @if ($lts == 'SP')
+                                                {{ $code ? $code : '' }} : {{ $totals['total_cbm2'] }} M3 
+                                                {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @else
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} : {{ $totals['total_cbm2'] }} M3 
+                                                {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @endif
                                         @else
-                                            {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} : {{ $totals['total_cbm2'] }} M3 
-                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM']))
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ $totals['total_qty_unit'] }} 
+                                                {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @else
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 
+                                                {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @endif
                                         @endif
                                     @else
-                                        @if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM']))
-                                            {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ $totals['total_qty_unit'] }} 
-                                            {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                        @if (!$cas)
+                                            @if ($lts == 'SP')
+                                                {{ $code ? $code : '' }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @else
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @endif
                                         @else
-                                            {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 
-                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM']))
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ $totals['total_qty_unit'] }} 
+                                                {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @else
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @endif
                                         @endif
                                     @endif
                                 @else
-                                    @if (!$cas)
-                                        @if ($lts == 'SP')
-                                            {{ $code ? $code : '' }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                    @if ($is_weight || $unitType == 'T')
+                                        @if (!$cas)
+                                            @if ($lts == 'SP')
+                                                {{ $code ? $code : '' }} : {{ $totals['total_cbm2'] }} M3 
+                                            @else
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} : {{ $totals['total_cbm2'] }} M3 
+                                            @endif
                                         @else
-                                            {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM']))
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ $totals['total_qty_unit'] }} 
+                                                {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} )
+                                            @else
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 
+                                            @endif
                                         @endif
                                     @else
-                                        @if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM']))
-                                            {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ $totals['total_qty_unit'] }} 
-                                            {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                        @if (!$cas)
+                                            @if ($lts == 'SP')
+                                                {{ $code ? $code : '' }}
+                                            @else
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }}
+                                            @endif
                                         @else
-                                            {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
+                                            @if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM']))
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} ( {{ $totals['total_qty_unit'] }} 
+                                                {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} )
+                                            @else
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }}
+                                            @endif
                                         @endif
                                     @endif
                                 @endif
                             </td>
+
+                            <!-- Check Date -->
+                            @php
+                                $checkLoopDate = $date;
+                            @endphp
+
                             <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
 
                             @if ($is_weight || $unitType == 'T')

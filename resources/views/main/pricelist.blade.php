@@ -106,10 +106,10 @@
                         <div class="input-group input-group-static mb-4">
                             @if (count($origins) > 0)
                                 <div class="input-group input-group-static">
-                                    <label>Origin</label>
+                                    <label>Origin <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="input-group input-group-static text-xs">
-                                    <select class="form-select select-new-origin" name="id_origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                    <select class="form-select select-new-origin" name="id_origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
                                         <option value="">...</option>
                                         @foreach ($origins as $o)
                                             <option value="{{ $o->id_origin }}">{{ $o->name }}</option>
@@ -217,10 +217,10 @@
                         <div class="input-group input-group-static mb-4">
                             @if (count($origins) > 0)
                                 <div class="input-group input-group-static">
-                                    <label>Origin</label>
+                                    <label>Origin <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="input-group input-group-static text-xs">
-                                    <select class="form-select select-new-origin" id="origin" name="id_origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                    <select class="form-select select-new-origin" id="origin" name="id_origin" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
                                         <option value="">...</option>
                                         @foreach ($origins as $o)
                                             <option value="{{ $o->id_origin }}">{{ $o->name }}</option>
