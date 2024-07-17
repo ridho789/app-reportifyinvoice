@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('qty_pkgs')->nullable();
             $table->string('qty_loose')->nullable();
             $table->string('weight')->nullable();
-            $table->string('dimension_p');
-            $table->string('dimension_l');
-            $table->string('dimension_t');
+            $table->string('dimension_p')->nullable();
+            $table->string('dimension_l')->nullable();
+            $table->string('dimension_t')->nullable();
             $table->string('tot_cbm_1')->nullable();
             $table->string('tot_cbm_2')->nullable();
             $table->string('lts')->nullable();

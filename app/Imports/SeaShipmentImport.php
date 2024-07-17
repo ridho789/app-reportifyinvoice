@@ -155,11 +155,11 @@ class SeaShipmentSheetImport implements ToCollection
                     $tot_cbm1 = null;
                     $tot_cbm2 = null;
 
-                    if ($row[4]) {
+                    if ($row[4] && $row[9] && $row[10] && $row[11]) {
                         $tot_cbm1 = number_format((($row[9] * $row[10] * $row[11]) / 1000000) * $row[4], 3);
                     }
 
-                    if ($row[6]) {
+                    if ($row[6] && $row[9] && $row[10] && $row[11]) {
                         $tot_cbm2 = number_format((($row[9] * $row[10] * $row[11]) / 1000000) * $row[6], 3);
                     }
 
@@ -199,11 +199,17 @@ class SeaShipmentSheetImport implements ToCollection
                         $IdState = $checkState->id_state;
                     }
 
+                    // Marking
+                    $marking = $row[2];
+                    if (!empty($row[3])) {
+                        $marking .= ' ' . $row[3];
+                    }
+
                     $dataShipmentLine = [
                         'id_sea_shipment' => $seaShipment->id_sea_shipment,
                         'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]),
                         'code' => strtoupper($row[1]),
-                        'marking' => strtoupper($row[2]),
+                        'marking' => strtoupper($marking),
                         'qty_pkgs' => $row[4],
                         'id_uom_pkgs' => $IdUomPkgs,
                         'qty_loose' => $row[6],
@@ -212,7 +218,7 @@ class SeaShipmentSheetImport implements ToCollection
                         'dimension_p' => $row[9],
                         'dimension_l' => $row[10],
                         'dimension_t' => $row[11],
-                        'tot_cbm_1' => $tot_cbm1,
+                        'tot_cbm_1' => $tot_cbm1 ?? $row[12],
                         'tot_cbm_2' => $tot_cbm2,
                         'lts' => strtoupper($row[14]),
                         'desc' => strtoupper($row[15]),

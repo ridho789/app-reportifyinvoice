@@ -392,7 +392,6 @@
                                 }
 
                                 $merged = [];
-                                $currentRange = [];
                                 $lastSuffix = null; // Initialize with null
                                 foreach ($suffixes as $suffix) {
                                     if ($lastSuffix !== null && $suffix - $lastSuffix !== 1) {
@@ -404,8 +403,14 @@
                                     $lastSuffix = $suffix;
                                 }
                                 $merged[] = count($currentRange) > 1 ? $prefix . $separator . $currentRange[0] . '-' . $lastSuffix : $prefix . $separator . $lastSuffix;
-                                return implode(', ', $merged);
+
+                                // Menyusun hasil akhir dengan format yang diminta
+                                $mergedString = implode(', ', $merged);
+                                $uniqueSuffixes = implode(', ', $suffixes);
+
+                                return $prefix . $separator . $uniqueSuffixes;
                             })->values()->toArray();
+
                         @endphp
                         
                         @if ($lts) 
