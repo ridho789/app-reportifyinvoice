@@ -67,14 +67,14 @@
     </style>
 </head>
 
-<body class="g-sidenav-show  bg-gray-200">
+<body class="g-sidenav-show bg-gray-200">
     <!-- sidenav -->
     @include('layouts.sidenav')
 
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <!-- navbar -->
         @include('layouts.navbar')
-
+        
         <!-- content -->
         @yield('content')
 
@@ -106,4 +106,6 @@
     <script src="{{ asset('') }}asset/assets/js/material-dashboard.min.js?v=3.0.0"></script>
     <!-- Include Select from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- font -->
+    <script src="https://kit.fontawesome.com/80bacdb160.js" crossorigin="anonymous"></script>
 </body>

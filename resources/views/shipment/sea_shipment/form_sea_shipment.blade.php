@@ -1133,6 +1133,12 @@
     text-align: center;
     transition: color .2s ease-in-out;
     }
+
+    .error-highlight {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+
 </style>
 
 <script>
@@ -1722,23 +1728,28 @@
         setupButton.addEventListener('click', function(event) {
             let isValid = true;
             const rows = document.querySelectorAll('tbody tr');
-            
+
             rows.forEach(row => {
                 const ltsInput = row.querySelector('.input-lts');
                 const qtyInput = row.querySelector('.input-qty');
                 const unitInput = row.querySelector('.select-unit');
-    
+
+                // Menambahkan dan menghapus tanda merah
+                const errorClass = 'error-highlight';
+
                 if (ltsInput && qtyInput && unitInput) {
                     const lts = ltsInput.value;
-                    const qty = qtyInput;
-                    const unit = unitInput;
-    
+                    const qty = qtyInput.value;
+                    const unit = unitInput.value;
+
                     if (['LP', 'LPM', 'LPI', 'LPM/LPI', 'LPI/LPM'].includes(lts)) {
-                        qty.required = true;
-                        unit.required = true;
-                        
-                        if (!qty.value || !unit.value) {
+                        qtyInput.required = true;
+                        unitInput.required = true;
+
+                        // Menandai baris dengan masalah
+                        if (!qty || !unit) {
                             isValid = false;
+                            row.classList.add(errorClass);
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error!',
@@ -1753,15 +1764,18 @@
                                     container: 'swal2-top-end-container'
                                 }
                             });
-                            return;
+                        } else {
+                            // Menghapus tanda merah jika sudah diisi
+                            row.classList.remove(errorClass);
                         }
                     } else {
-                        qty.required = false;
-                        unit.required = false;
+                        qtyInput.required = false;
+                        unitInput.required = false;
+                        row.classList.remove(errorClass); // Pastikan tanda merah dihapus untuk LTS yang tidak memerlukan Qty dan Unit
                     }
                 }
             });
-    
+
             if (isValid) {
                 const printModal = new bootstrap.Modal(document.getElementById('setPrintModal'));
                 printModal.show();
