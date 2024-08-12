@@ -20,6 +20,7 @@ class SeaShipmentImport implements WithMultipleSheets
 {
     private $logErrors = [];
     private $sheetNames = [];
+    private $startSheetIndex = 3;
 
     public function __construct(array $sheetNames)
     {
@@ -34,8 +35,15 @@ class SeaShipmentImport implements WithMultipleSheets
     public function sheets(): array
     {
         $sheets = [];
-        foreach ($this->sheetNames as $sheetName) {
-            $sheets[$sheetName] = new SeaShipmentSheetImport($sheetName, $this->logErrors);
+        // foreach ($this->sheetNames as $sheetName) {
+        //     $sheets[$sheetName] = new SeaShipmentSheetImport($sheetName, $this->logErrors);
+        // }
+
+        foreach ($this->sheetNames as $index => $sheetName) {
+            // Hanya proses sheet mulai dari sheet ke-3
+            if ($index >= $this->startSheetIndex) {
+                $sheets[$sheetName] = new SeaShipmentSheetImport($sheetName, $this->logErrors);
+            }
         }
 
         return $sheets;
@@ -72,8 +80,6 @@ class SeaShipmentSheetImport implements ToCollection
                     $rowNumber++;
                     continue;
                 }
-
-                // Skip row[3] 
 
                 // Shipment
                 if ($rowNumber === 3) {
