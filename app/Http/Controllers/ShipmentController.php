@@ -107,7 +107,7 @@ class ShipmentController extends Controller
         
             $totals['cbm_difference'] = $totals['total_cbm1'] - $totals['total_cbm2'];
 
-            if ($totals['cbm_difference'] != 0) {
+            if ($totals['cbm_difference'] > 0) {
                 $checkCbmDiff = true;
             }
         
@@ -589,7 +589,9 @@ class ShipmentController extends Controller
 
             // Calculate cbm difference and accumulate to $totalCbmDiffOverall
             $cbmDiff = $total_cbm1 - $total_cbm2;
-            $totalCbmDiffOverall += $cbmDiff;
+            if ($cbmDiff > 0) {
+                $totalCbmDiffOverall += $cbmDiff;
+            }
 
             return [
                 'total_cbm1' => $total_cbm1,

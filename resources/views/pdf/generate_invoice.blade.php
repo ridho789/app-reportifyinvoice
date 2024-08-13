@@ -597,12 +597,14 @@
                         @endphp
                     @endforeach
                     @php
-                        $amountCbmDiff = $bill_diff * $cbmDiff;
-                        $totalAmount += $amountCbmDiff;
-                        $totalCbm += $cbmDiff;
+                        if ($cbmDiff > 0) {
+                            $amountCbmDiff = $bill_diff * $cbmDiff;
+                            $totalAmount += $amountCbmDiff;
+                            $totalCbm += $cbmDiff;
+                        }
                     @endphp
 
-                    @if (!$is_weight && $cbmDiff != 0)
+                    @if (!$is_weight && $cbmDiff > 0)
                         <tr>
                             <td width="5%" class="border_left_right"></td>
                             <td width="30%" class="border_left_right text_center">Selisih SIN BTH ({{ $cbm1 }} - {{ $cbm2 }} M3)</td>
@@ -659,7 +661,7 @@
 
                             $customerPrice = $pricelist;
                             $qty = $totals['total_qty_pkgs'];
-                            $cbm = $totals['total_cbm1'];
+                            $cbm = $totals['total_cbm2'];
                             $weight = $totals['total_weight'];
                             $cas = $totals['cas'];
 

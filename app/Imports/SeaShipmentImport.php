@@ -224,7 +224,7 @@ class SeaShipmentSheetImport implements ToCollection
                         'dimension_p' => $row[9],
                         'dimension_l' => $row[10],
                         'dimension_t' => $row[11],
-                        'tot_cbm_1' => $tot_cbm1 ?? $row[12],
+                        'tot_cbm_1' => $tot_cbm1,
                         'tot_cbm_2' => $tot_cbm2,
                         'lts' => strtoupper($row[14]),
                         'desc' => strtoupper($row[15]),

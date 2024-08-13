@@ -712,27 +712,29 @@
                             <div class="col-6">
                                 @if ($groupSeaShipmentLines)
                                     <h5 class="text-sm">Fee Setup</h5>
-                                    @if (count($pricelist) > 0)
-                                        <div class="input-group input-group-static mb-0">
-                                            <label class="text-sm">Diff SIN-BTH <span class="text-danger">*</span></label>
-                                        </div>
-                                        <div class="input-group input-group-static mb-4">
-                                            <select class="form-select select-diff" name="bill_diff" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
-                                                <option value="">...</option>
-                                                @foreach ($pricelist as $p)
-                                                    <option 
-                                                        value="{{ $p->id_pricelist }}" {{ old('bill_diff', $seaShipment->bill_diff) == $p->id_pricelist ? 'selected' : '' }}>
-                                                        {{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }} ( {{ $p->type }} )
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    @else
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Diff SIN-BTH</label>
-                                            <input type="text" class="form-control" value="No data.. Prepare price in the pricelist.." 
-                                            style="background-color: #fff;" readonly>
-                                        </div>
+                                    @if ($checkCbmDiff)
+                                        @if (count($pricelist) > 0)
+                                            <div class="input-group input-group-static mb-0">
+                                                <label class="text-sm">Diff SIN-BTH <span class="text-danger">*</span></label>
+                                            </div>
+                                            <div class="input-group input-group-static mb-4">
+                                                <select class="form-select select-diff" name="bill_diff" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                                    <option value="">...</option>
+                                                    @foreach ($pricelist as $p)
+                                                        <option 
+                                                            value="{{ $p->id_pricelist }}" {{ old('bill_diff', $seaShipment->bill_diff) == $p->id_pricelist ? 'selected' : '' }}>
+                                                            {{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }} ( {{ $p->type }} )
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @else
+                                            <div class="input-group input-group-static mb-4">
+                                                <label>Diff SIN-BTH</label>
+                                                <input type="text" class="form-control" value="No data.. Prepare price in the pricelist.." 
+                                                style="background-color: #fff;" readonly>
+                                            </div>
+                                        @endif
                                     @endif
                                     
                                     <div class="input-group input-group-static mb-1">
