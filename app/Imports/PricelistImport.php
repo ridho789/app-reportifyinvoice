@@ -79,12 +79,12 @@ class PricelistImport implements ToCollection
             $startPeriod = null;
             $endPeriod = null;
 
-            if ($row[4]) {
-                $startPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[4]);
+            if ($row[5]) {
+                $startPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]);
             }
 
-            if ($row[5]) {
-                $endPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]);
+            if ($row[6]) {
+                $endPeriod = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[6]);
             }
 
             if ($startPeriod && $endPeriod && ($startPeriod > $endPeriod)) {
@@ -98,12 +98,13 @@ class PricelistImport implements ToCollection
                 'id_shipper' => $IdShipper,
                 'id_origin' => $IdOrigin,
                 'price' => $row[3],
+                'type' => $row[4],
                 'start_period' => $startPeriod,
                 'end_period' => $endPeriod
             ];
 
             $exitingPricelist = Pricelist::where('id_customer', $IdCustomer)->where('id_shipper', $IdShipper)->where('id_origin', $IdOrigin)->where('price', $row[3])
-            ->where('start_period', $startPeriod)->where('end_period', $endPeriod)->first();
+            ->where('type', $row[4])->where('start_period', $startPeriod)->where('end_period', $endPeriod)->first();
             
             if ($exitingPricelist) {
                 $errorMessage = 'Error importing data: The data in the row ' . $currentRow . ' already exists in the system ';

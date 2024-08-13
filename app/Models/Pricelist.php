@@ -20,6 +20,7 @@ class Pricelist extends Model
         'id_customer',
         'id_origin',
         'price',
+        'type',
         'start_period',
         'end_period',
         'id_history'

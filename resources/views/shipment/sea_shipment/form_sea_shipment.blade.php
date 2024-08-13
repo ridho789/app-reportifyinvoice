@@ -714,12 +714,27 @@
                             <div class="col-6">
                                 @if ($groupSeaShipmentLines)
                                     <h5 class="text-sm">Fee Setup</h5>
-                                    @if ($checkCbmDiff) 
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Diff SIN-BTH (<span class="text-info"> Will be updated </span>)</label>
-                                        <input type="text" class="form-control" name="bill_diff" id="bill_diff" value="{{ old('bill_diff', $customer->bill_diff) }}" 
-                                        placeholder="..." readonly>
-                                    </div>
+                                    @if (count($pricelist) > 0)
+                                        <div class="input-group input-group-static mb-0">
+                                            <label class="text-sm">Diff SIN-BTH <span class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="input-group input-group-static mb-4">
+                                            <select class="form-select select-diff" name="bill_diff" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                                <option value="">...</option>
+                                                @foreach ($pricelist as $p)
+                                                    <option 
+                                                        value="{{ $p->id_pricelist }}" {{ old('bill_diff', $seaShipment->bill_diff) == $p->id_pricelist ? 'selected' : '' }}>
+                                                        {{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }} ( {{ $p->type }} )
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @else
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Diff SIN-BTH</label>
+                                            <input type="text" class="form-control" value="No data.. Prepare price in the pricelist.." 
+                                            style="background-color: #fff;" readonly>
+                                        </div>
                                     @endif
                                     
                                     <div class="input-group input-group-static mb-1">
@@ -729,7 +744,7 @@
                                         <select class="form-select text-left" id="inv_type" name="inv_type" 
                                         style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px; {{ $checkCbmDiff ? '' : 'margin-top: -4px;' }};" required>
                                             <option value="" {{ old('inv_type', $customer->inv_type) == '' ? 'selected' : '' }}>...</option>
-                                            <option value="basic" {{ old('inv_type', $customer->inv_type) == 'basic' ? 'selected' : '' }}>Basic</option>
+                                            <option value="basic" {{ old('inv_type', $customer->inv_type) == 'basic' ? 'selected' : '' }} selected>Basic</option>
                                             <option value="separate" {{ old('inv_type', $customer->inv_type) == 'separate' ? 'selected' : '' }}>Separate</option>
                                         </select>
                                     </div>

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_pricelist');
             $table->unsignedBigInteger('id_history')->nullable();
             $table->string('price');
+            $table->string('type');
             $table->date('start_period')->nullable();
             $table->date('end_period')->nullable();
             $table->timestamps();

@@ -597,7 +597,7 @@
                         @endphp
                     @endforeach
                     @php
-                        $amountCbmDiff = $pricelist * $cbmDiff;
+                        $amountCbmDiff = $bill_diff * $cbmDiff;
                         $totalAmount += $amountCbmDiff;
                         $totalCbm += $cbmDiff;
                     @endphp
@@ -608,7 +608,7 @@
                             <td width="30%" class="border_left_right text_center">Selisih SIN BTH ({{ $cbm1 }} - {{ $cbm2 }} M3)</td>
                             <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
                             <td width="10%" class="border_left_right text_center text_uppercase">{{ $cbmDiff }} M3</td>
-                            <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($pricelist ?? 0, 0, ',', '.') }}</td>
+                            <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($bill_diff ?? 0, 0, ',', '.') }}</td>
                             <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amountCbmDiff ?? 0, 0, ',', '.') }}</td>
                         </tr>
                     @endif

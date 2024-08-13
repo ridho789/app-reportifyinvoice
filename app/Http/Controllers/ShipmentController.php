@@ -75,6 +75,7 @@ class ShipmentController extends Controller
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->get();
         $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
         $seaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
+        $pricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_origin', $seaShipment->id_origin)->get();
         $checkCbmDiff = false;
 
         $isWeight = false;
@@ -136,7 +137,8 @@ class ShipmentController extends Controller
         $states = State::orderBy('name')->get();
         $uoms = Uom::orderBy('name')->get();
         return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'accounts', 'bankers', 'origins', 'originName', 'uoms', 
-        'states', 'ships', 'units', 'descs', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 'totalCbmOverall'));
+        'states', 'ships', 'units', 'descs', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 
+        'pricelist', 'totalCbmOverall'));
     }
 
     public function storeSeaShipment(Request $request) {
@@ -651,18 +653,16 @@ class ShipmentController extends Controller
             $customer->save();
         }
 
-        // update bill diff in customer
-        $bill_diff = null;
+        // update bill diff in sea shipment
+        $bill_diff = 0;
+
         if ($request->bill_diff) {
-
-            $numericBillDiff = preg_replace("/[^0-9]/", "", explode(",", $request->bill_diff)[0]);
-            if ($request->bill_diff[0] === '-') {
-                $numericBillDiff *= -1;
-            }
-
+            $checkBillDiff = Pricelist::find($request->bill_diff);
+            $numericBillDiff = $checkBillDiff->price;
             $bill_diff = $numericBillDiff;
-            $customer->bill_diff = $numericBillDiff;
-            $customer->save();
+
+            $seaShipment->bill_diff = $request->bill_diff;
+            $seaShipment->save();
         }
 
         // update invoice type
@@ -905,8 +905,8 @@ class ShipmentController extends Controller
             }
 
             $amountOther = $totalBlOverall + $totalPermitOverall + $totalTransportOverall + $totalInsuranceOverall + $totalanotherBillOverall;
-            // Calculate with pricelist
-            $amountDiff = $totalCbmDiffOverall * $pricelist;
+            // Calculate with bill_diff
+            $amountDiff = $totalCbmDiffOverall * $bill_diff;
 
             if ($isWeight) {
                 $amountDiff = 0;

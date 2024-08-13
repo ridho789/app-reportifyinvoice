@@ -40,12 +40,13 @@ class PricelistController extends Controller
             'id_shipper' => $request->id_shipper,
             'id_origin' => $request->id_origin,
             'price' => $numericNewPrice,
+            'type' => $request->type,
             'start_period' => $request->start_period,
             'end_period' => $request->end_period
         ];
 
-        $exitingPricelist = Pricelist::where('id_customer', $request->id_customer)->where('id_shipper', $request->id_shipper)->where('id_origin', $request->id_origin)->where('price', $numericNewPrice)
-            ->where('start_period', $request->start_period)->where('end_period', $request->end_period)->first();
+        $exitingPricelist = Pricelist::where('id_customer', $request->id_customer)->where('id_shipper', $request->id_shipper)->where('id_origin', $request->id_origin)
+            ->where('price', $numericNewPrice)->where('type', $request->type)->where('start_period', $request->start_period)->where('end_period', $request->end_period)->first();
 
         $dataCustomer = Customer::where('id_customer', $request->id_customer)->first();
         $dataShipper = Shipper::where('id_shipper', $request->id_shipper)->first();
@@ -78,7 +79,7 @@ class PricelistController extends Controller
 
         if ($exitingPricelist) {
             $logErrors = 'Customer: ' . $customerName . ' - ' . 'Shipper: ' . $shipperName . ' - ' . 'Origin: ' . $originName . ' - ' . 'Price: ' . 
-            $request->price . ' - ' . 'Start Period: ' . $startPeriod . ' - ' . 'End Period: ' . $endPeriod . ', already in the system';
+            $request->price . ' - ' . 'Type: ' . $request->type . ' - ' . 'Start Period: ' . $startPeriod . ' - ' . 'End Period: ' . $endPeriod . ', already in the system';
             
             return redirect('pricelist')->with('logErrors', $logErrors);
 
@@ -101,6 +102,7 @@ class PricelistController extends Controller
             $pricelist->id_shipper = $request->id_shipper;
             $pricelist->id_origin = $request->id_origin;
             $pricelist->price = $numericPrice;
+            $pricelist->type = $request->type;
             $pricelist->start_period = $request->start_period;
             $pricelist->end_period = $request->end_period;
 

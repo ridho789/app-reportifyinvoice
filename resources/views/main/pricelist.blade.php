@@ -133,6 +133,17 @@
                             <input type="text" class="form-control" name="price" id="new-price" value="{{ old('price') }}" placeholder="..." required>
                         </div>
 
+                        <div class="input-group input-group-static mb-1">
+                            <label>Type <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select text-left" name="type" id="new-type" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                <option value="">...</option>
+                                <option value="BASE PRICE BILL">BASE PRICE BILL</option>
+                                <option value="DIFFERENCE BILL">DIFFERENCE BILL</option>
+                            </select>
+                        </div>
+
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>Start Period </label>
@@ -244,6 +255,17 @@
                             <input type="text" class="form-control" id="price" name="price" value="{{ old('price') }}" placeholder="..." required>
                         </div>
 
+                        <div class="input-group input-group-static mb-1">
+                            <label>Type <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <select class="form-select text-left" name="type" id="type" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                <option value="">...</option>
+                                <option value="BASE PRICE BILL">BASE PRICE BILL</option>
+                                <option value="DIFFERENCE BILL">DIFFERENCE BILL</option>
+                            </select>
+                        </div>
+
                         <div class="input-group input-group-static mb-4">
                             <div class="col-5">
                                 <label>Start Period </label>
@@ -305,6 +327,7 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipper</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Origin</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Price</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start Period</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">End Period</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
@@ -313,7 +336,7 @@
                             <tbody>
                                 @foreach($pricelists as $p)
                                 <tr data-id="{{ $p->id_pricelist }}" data-id-customer="{{ $p->id_customer }}" data-id-shipper="{{ $p->id_shipper }}"
-                                data-id-origin="{{ $p->id_origin }}">
+                                data-id-origin="{{ $p->id_origin }}" data-id-type="{{ $p->id_type }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
@@ -332,6 +355,9 @@
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="price-selected text-sm font-weight-normal mb-0">{{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }}</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="type-selected text-sm font-weight-normal mb-0">{{ $p->type ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         @if (!empty($p->start_period))
@@ -436,6 +462,7 @@
                 var customer = row.getAttribute("data-id-customer");
                 var shipper = row.getAttribute("data-id-shipper");
                 var origin = row.getAttribute("data-id-origin");
+                var type = row.getAttribute("data-id-type");
                 var price = row.querySelector(".price-selected").textContent.trim();
 
                 const priceConvert = parseFloat(price);
@@ -444,6 +471,7 @@
                 document.getElementById("id").value = id;
                 document.getElementById("origin").value = origin;
                 document.getElementById("price").value = price;
+                document.getElementById("type").value = type;
 
                 $("#customer").val(customer);
                 $("#customer").select2({
