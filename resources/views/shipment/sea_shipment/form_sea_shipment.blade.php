@@ -1343,7 +1343,7 @@
             calculateTotalPackages();
 
             var row = input.closest('tr');
-            var unitQtyPkgs = row.querySelector('select[name="unit_qty_pkgs[]"]');
+            var unitQtyPkgs = row.querySelector('select[name="id_uom_pkgs[]"]');
 
             if (!input.value || input.value === '0') {
                 unitQtyPkgs.value = '';
@@ -1365,7 +1365,7 @@
             calculateTotalVolume();
             
             var row = QtyLoose[index].closest('tr');
-            var unitQtyLoose = row.querySelector('select[name="unit_qty_loose[]"]');
+            var unitQtyLoose = row.querySelector('select[name="id_uom_loose[]"]');
 
             if (!input.value || input.value === '0') {
                 unitQtyLoose.value = '';
@@ -1985,7 +1985,7 @@
                 calculateTotalPackages();
 
                 var row = input.closest('tr');
-                var unitQtyPkgs = row.querySelector('select[name="unit_qty_pkgs[]"]');
+                var unitQtyPkgs = row.querySelector('select[name="id_uom_pkgs[]"]');
 
                 if (!input.value || input.value === '0') {
                     unitQtyPkgs.value = '';
@@ -2007,7 +2007,7 @@
                 calculateTotalVolume();
                 
                 var row = QtyLoose[index].closest('tr');
-                var unitQtyLoose = row.querySelector('select[name="unit_qty_loose[]"]');
+                var unitQtyLoose = row.querySelector('select[name="id_uom_loose[]"]');
 
                 if (!input.value || input.value === '0') {
                     unitQtyLoose.value = '';
