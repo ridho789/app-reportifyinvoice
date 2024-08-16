@@ -314,6 +314,29 @@ class ShipmentController extends Controller
         }
     }
 
+    public function deleteMultiSeaShipment(Request $request) {
+        // Convert comma-separated string to array
+        $ids = explode(',', $request->ids);
+
+        // Validate that each element in the array is an integer
+        $validatedIds = array_filter($ids, function($id) {
+            return is_numeric($id);
+        });
+
+        SeaShipmentLine::whereIn('id_sea_shipment', $validatedIds)->delete();
+        SeaShipment::whereIn('id_sea_shipment', $validatedIds)->delete();
+        SeaShipmentBill::whereIn('id_sea_shipment', $validatedIds)->delete();
+        SeaShipmentAnotherBill::whereIn('id_sea_shipment', $validatedIds)->delete();
+        History::whereIn('id_changed_data', $validatedIds)->delete();
+
+        if (count(SeaShipment::all()) == 0) {
+            return redirect('list_shipments');
+            
+        } else {
+            return redirect()->back();
+        }
+    }
+
     public function importSeaShipment(Request $request) {
         $request->validate([
             'file' => 'required|mimes:xlsx|max:2048',
