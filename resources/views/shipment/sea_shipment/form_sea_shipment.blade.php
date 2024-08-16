@@ -276,15 +276,15 @@
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
                                             <input type="number" class="form-control text-center" name="p[]" value="{{ $ssl->dimension_p ?? '-' }}" 
-                                            placeholder="..." style="border: 0px;" min="1" required>
+                                            placeholder="..." style="border: 0px;" min="1" >
                                         </td>
                                         <td class="align-middle text-center" width=5%>
                                             <input type="number" class="form-control text-center" name="l[]" value="{{ $ssl->dimension_l ?? '-' }}" 
-                                            placeholder="..." style="border: 0px;" min="1" required>
+                                            placeholder="..." style="border: 0px;" min="1" >
                                         </td>
                                         <td class="align-middle text-center" width=5%>
                                             <input type="number" class="form-control text-center" name="t[]" value="{{ $ssl->dimension_t ?? '-' }}" 
-                                            placeholder="..." style="border: 0px;" min="1" required>
+                                            placeholder="..." style="border: 0px;" min="1" >
                                         </td>
                                         <!-- ### -->
                                         <!-- total cbm -->
@@ -541,13 +541,13 @@
                                         </td>
                                         <!-- dimension -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="p[]" placeholder="..." style="border: 0px;" min="1" required>
+                                            <input type="number" class="form-control text-center" name="p[]" placeholder="..." style="border: 0px;" min="1" >
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="l[]" placeholder="..." style="border: 0px;" min="1" required>
+                                            <input type="number" class="form-control text-center" name="l[]" placeholder="..." style="border: 0px;" min="1" >
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="number" class="form-control text-center" name="t[]" placeholder="..." style="border: 0px;" min="1" required>
+                                            <input type="number" class="form-control text-center" name="t[]" placeholder="..." style="border: 0px;" min="1" >
                                         </td>
                                         <!-- ### -->
                                         <!-- total cbm -->

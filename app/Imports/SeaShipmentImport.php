@@ -163,6 +163,11 @@ class SeaShipmentSheetImport implements ToCollection
 
                     if ($row[4] && $row[9] && $row[10] && $row[11]) {
                         $tot_cbm1 = $row[9] * $row[10] * $row[11] / 1000000 * $row[4];
+
+                    } else {
+                        if ($row[12]) {
+                            $tot_cbm1 = $row[12];
+                        }
                     }
 
                     if ($row[6] && $row[9] && $row[10] && $row[11]) {

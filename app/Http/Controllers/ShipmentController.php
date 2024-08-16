@@ -172,8 +172,26 @@ class ShipmentController extends Controller
 
             foreach ($request->bldate as $index => $bldate) {
                 // Total CBM 1 and Total CBM 2
-                $totalCBM1 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_pkgs[$index];
-                $totalCBM2 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_loose[$index];
+                $totalCBM1 = null;
+                $totalCBM2 = null;
+
+                if ($request->p[$index] && $request->l[$index] && $request->t[$index] && $request->qty_pkgs[$index]) {
+                    $totalCBM1 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_pkgs[$index];
+
+                } else {
+                    if ($request->cbm1[$index]) {
+                        $totalCBM1 = $request->cbm1[$index];
+                    }
+                }
+
+                if ($request->p[$index] && $request->l[$index] && $request->t[$index] && $request->qty_loose[$index]) {
+                    $totalCBM2 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_loose[$index];
+
+                } else {
+                    if ($request->cbm2[$index]) {
+                        $totalCBM2 = $request->cbm2[$index];
+                    }
+                }
 
                 $dataSeaShipmentLine = [
                     'date' => $bldate,
@@ -262,8 +280,26 @@ class ShipmentController extends Controller
             $seaShipmentLine = SeaShipmentLine::find($idSeaShipmentLine);
 
             // Total CBM 1 and Total CBM 2
-            $totalCBM1 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_pkgs[$index];
-            $totalCBM2 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_loose[$index];
+            $totalCBM1 = null;
+            $totalCBM2 = null;
+
+            if ($request->p[$index] && $request->l[$index] && $request->t[$index] && $request->qty_pkgs[$index]) {
+                $totalCBM1 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_pkgs[$index];
+
+            } else {
+                if ($request->cbm1[$index]) {
+                    $totalCBM1 = $request->cbm1[$index];
+                }
+            }
+
+            if ($request->p[$index] && $request->l[$index] && $request->t[$index] && $request->qty_loose[$index]) {
+                $totalCBM2 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_loose[$index];
+
+            } else {
+                if ($request->cbm2[$index]) {
+                    $totalCBM2 = $request->cbm2[$index];
+                }
+            }
         
             $data = [
                 'date' => $request->bldate[$index],
@@ -301,10 +337,11 @@ class ShipmentController extends Controller
 
     public function deleteSeaShipment($id) {
         SeaShipmentLine::where('id_sea_shipment', $id)->delete();
-        SeaShipment::where('id_sea_shipment', $id)->delete();
         SeaShipmentBill::where('id_sea_shipment', $id)->delete();
         SeaShipmentAnotherBill::where('id_sea_shipment', $id)->delete();
+        BillRecap::whereIn('id_sea_shipment', $id)->delete();
         History::where('id_changed_data', $id)->delete();
+        SeaShipment::where('id_sea_shipment', $id)->delete();
 
         if (count(SeaShipment::all()) == 0) {
             return redirect('list_shipments');
@@ -317,17 +354,18 @@ class ShipmentController extends Controller
     public function deleteMultiSeaShipment(Request $request) {
         // Convert comma-separated string to array
         $ids = explode(',', $request->ids);
-
+        
         // Validate that each element in the array is an integer
         $validatedIds = array_filter($ids, function($id) {
             return is_numeric($id);
         });
-
+        
         SeaShipmentLine::whereIn('id_sea_shipment', $validatedIds)->delete();
-        SeaShipment::whereIn('id_sea_shipment', $validatedIds)->delete();
         SeaShipmentBill::whereIn('id_sea_shipment', $validatedIds)->delete();
         SeaShipmentAnotherBill::whereIn('id_sea_shipment', $validatedIds)->delete();
+        BillRecap::whereIn('id_sea_shipment', $validatedIds)->delete();
         History::whereIn('id_changed_data', $validatedIds)->delete();
+        SeaShipment::whereIn('id_sea_shipment', $validatedIds)->delete();
 
         if (count(SeaShipment::all()) == 0) {
             return redirect('list_shipments');
