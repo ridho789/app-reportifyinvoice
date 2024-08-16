@@ -339,7 +339,7 @@ class ShipmentController extends Controller
         SeaShipmentLine::where('id_sea_shipment', $id)->delete();
         SeaShipmentBill::where('id_sea_shipment', $id)->delete();
         SeaShipmentAnotherBill::where('id_sea_shipment', $id)->delete();
-        BillRecap::whereIn('id_sea_shipment', $id)->delete();
+        BillRecap::where('id_sea_shipment', $id)->delete();
         History::where('id_changed_data', $id)->delete();
         SeaShipment::where('id_sea_shipment', $id)->delete();
 
