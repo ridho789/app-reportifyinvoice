@@ -162,11 +162,11 @@ class SeaShipmentSheetImport implements ToCollection
                     $tot_cbm2 = null;
 
                     if ($row[4] && $row[9] && $row[10] && $row[11]) {
-                        $tot_cbm1 = number_format((($row[9] * $row[10] * $row[11]) / 1000000) * $row[4], 3);
+                        $tot_cbm1 = $row[9] * $row[10] * $row[11] / 1000000 * $row[4];
                     }
 
                     if ($row[6] && $row[9] && $row[10] && $row[11]) {
-                        $tot_cbm2 = number_format((($row[9] * $row[10] * $row[11]) / 1000000) * $row[6], 3);
+                        $tot_cbm2 = $row[9] * $row[10] * $row[11] / 1000000 * $row[6];
                     }
 
                     // UOM Pkgs

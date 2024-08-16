@@ -171,6 +171,10 @@ class ShipmentController extends Controller
             $seaShipmentId = $createdSeaShipment->id_sea_shipment;
 
             foreach ($request->bldate as $index => $bldate) {
+                // Total CBM 1 and Total CBM 2
+                $totalCBM1 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_pkgs[$index];
+                $totalCBM2 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_loose[$index];
+
                 $dataSeaShipmentLine = [
                     'date' => $bldate,
                     'code' => strtoupper($request->code[$index]),
@@ -183,8 +187,8 @@ class ShipmentController extends Controller
                     'dimension_p' => $request->p[$index],
                     'dimension_l' => $request->l[$index],
                     'dimension_t' => $request->t[$index],
-                    'tot_cbm_1' => $request->cbm1[$index],
-                    'tot_cbm_2' => $request->cbm2[$index],
+                    'tot_cbm_1' => $totalCBM1,
+                    'tot_cbm_2' => $totalCBM2,
                     'lts' => strtoupper($request->lts[$index]),
                     'qty' => $request->qty[$index],
                     'id_unit' => $request->id_unit[$index],
@@ -256,6 +260,10 @@ class ShipmentController extends Controller
         
         foreach ($request->id_sea_shipment_line as $index => $idSeaShipmentLine) {
             $seaShipmentLine = SeaShipmentLine::find($idSeaShipmentLine);
+
+            // Total CBM 1 and Total CBM 2
+            $totalCBM1 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_pkgs[$index];
+            $totalCBM2 = $request->p[$index] * $request->l[$index] * $request->t[$index] / 1000000 * $request->qty_loose[$index];
         
             $data = [
                 'date' => $request->bldate[$index],
@@ -269,8 +277,8 @@ class ShipmentController extends Controller
                 'dimension_p' => $request->p[$index],
                 'dimension_l' => $request->l[$index],
                 'dimension_t' => $request->t[$index],
-                'tot_cbm_1' => $request->cbm1[$index],
-                'tot_cbm_2' => $request->cbm2[$index],
+                'tot_cbm_1' => $totalCBM1,
+                'tot_cbm_2' => $totalCBM2,
                 'lts' => strtoupper($request->lts[$index]),
                 'qty' => $request->qty[$index],
                 'id_unit' => $request->id_unit[$index],
@@ -469,7 +477,7 @@ class ShipmentController extends Controller
             $totalCasOverall += $totals['cas'];
 
             // amount
-            $cbm = $totals['total_cbm2'] != 0 ? $totals['total_cbm2'] : $totals['total_cbm1'];
+            $cbm = round($totals['total_cbm2'] != 0 ? $totals['total_cbm2'] : $totals['total_cbm1'], 3);
             $weight = $totals['total_weight'];
             
             if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM'])) {
@@ -857,6 +865,7 @@ class ShipmentController extends Controller
                 'seaShipmentBill' => $seaShipmentBill,
                 'groupSeaShipmentLines' => $groupSeaShipmentLines,
                 'groupedSeaShipmentLinesDate' => $groupedSeaShipmentLinesDate,
+                'allTotalAmount' => $totalAmountOverall + $totalAmountUnit,
                 'pricelist' => $pricelist,
                 'term' => $request->term,
                 'is_weight' => $isWeight,
@@ -889,7 +898,7 @@ class ShipmentController extends Controller
                     }
 
                 } else {
-                    $size = ($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall) + $totalCbmDiffOverall . ' M3';
+                    $size = round(($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall) + $totalCbmDiffOverall, 3) . ' M3';
                 }
 
             } else {
@@ -902,13 +911,13 @@ class ShipmentController extends Controller
                     }
 
                 } else {
-                    $size = ($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall) . ' M3';
+                    $size = round(($totalCbm2Overall != 0 ? $totalCbm2Overall : $totalCbm1Overall), 3) . ' M3';
                 }
             }
 
             $amountOther = $totalBlOverall + $totalPermitOverall + $totalTransportOverall + $totalInsuranceOverall + $totalanotherBillOverall;
             // Calculate with bill_diff
-            $amountDiff = $totalCbmDiffOverall * $bill_diff;
+            $amountDiff = round($totalCbmDiffOverall, 3) * $bill_diff;
 
             if ($isWeight) {
                 $amountDiff = 0;

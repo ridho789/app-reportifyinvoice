@@ -284,6 +284,11 @@
                 @endphp
 
                 @if (in_array($origin->name, ['SIN-BTH', 'SIN-JKT']))
+                    @php
+                        // Set total amount not include another bill
+                        $totalAmount = $allTotalAmount;
+                    @endphp
+
                     @foreach($groupSeaShipmentLines as $groupDate => $totals)
                         @php
                             // Memisahkan bagian-bagian dari key
@@ -300,6 +305,7 @@
 
                             $customerPrice = $pricelist;
                             $qty = $totals['total_qty_loose'];
+                            $cbm = round($totals['total_cbm2'], 3);
                             $weight = $totals['total_weight'];
                             $cas = $totals['cas'];
 
@@ -351,7 +357,7 @@
                                 $amount = $unit_price;
 
                             } else {
-                                $amount = $totals['total_cbm2'] * $unit_price;
+                                $amount = $cbm * $unit_price;
         
                                 // Jika beralih penagihan dengan berat
                                 if ($is_weight || $unitType == 'T') {
@@ -362,7 +368,7 @@
 
                             $totalQty += $qty;
                             $totalWeight += $weight;
-                            $totalAmount += $amount + (intval($bl) + intval($permit) + intval($transport) + intval($insurance));
+                            $totalAmount += intval($bl) + intval($permit) + intval($transport) + intval($insurance);
                             $totalCbm += $totals['total_cbm2'];
 
                             $groupedMarkings = collect(array_keys($totals['markings']))->groupBy(function ($marking) {
@@ -421,18 +427,18 @@
                                     @if ($is_weight || $unitType == 'T')
                                         @if (!$cas)
                                             @if ($lts == 'SP')
-                                                {{ $code ? $code : '' }} : {{ $totals['total_cbm2'] }} M3 
+                                                {{ $code ? $code : '' }} : {{ $cbm }} M3 
                                                 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                             @else
-                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} : {{ $totals['total_cbm2'] }} M3 
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} : {{ $cbm }} M3 
                                                 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                             @endif
                                         @else
                                             @if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM']))
-                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ $totals['total_qty_unit'] }} 
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 ( {{ $totals['total_qty_unit'] }} 
                                                 {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} ) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                             @else
-                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 
                                                 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M') }}
                                             @endif
                                         @endif
@@ -456,16 +462,16 @@
                                     @if ($is_weight || $unitType == 'T')
                                         @if (!$cas)
                                             @if ($lts == 'SP')
-                                                {{ $code ? $code : '' }} : {{ $totals['total_cbm2'] }} M3 
+                                                {{ $code ? $code : '' }} : {{ $cbm }} M3 
                                             @else
-                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} : {{ $totals['total_cbm2'] }} M3 
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} : {{ $cbm }} M3 
                                             @endif
                                         @else
                                             @if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM']))
-                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 ( {{ $totals['total_qty_unit'] }} 
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 ( {{ $totals['total_qty_unit'] }} 
                                                 {{ $unitType }} x {{ 'Rp ' . number_format($cas ?? 0, 0, ',', '.') }} )
                                             @else
-                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $totals['total_cbm2'] }} M3 
+                                                {{ $code ? $code : '' }} {{ implode(', ', $mergedMarkings) }} = {{ $lts }} : {{ $cbm }} M3 
                                             @endif
                                         @endif
                                     @else
@@ -495,13 +501,13 @@
                             <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $qty }} PKG</td>
 
                             @if ($is_weight || $unitType == 'T')
-                                @if ( ($weight / 1000) > $totals['total_cbm2']) 
+                                @if ( ($weight / 1000) > $cbm) 
                                     <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight / 1000 }} T</td>
                                 @else
                                     <td width="10%" class="border_left_right text_center text_uppercase">{{ $weight }} KG</td>
                                 @endif
                             @else
-                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $totals['total_cbm2'] }} M3</td>
+                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $cbm }} M3</td>
                             @endif
 
                             @if (in_array($lts, ['LP', 'LPI', 'LPM']))
@@ -598,7 +604,7 @@
                     @endforeach
                     @php
                         if ($cbmDiff > 0) {
-                            $amountCbmDiff = $bill_diff * $cbmDiff;
+                            $amountCbmDiff = $bill_diff * round($cbmDiff, 3);
                             $totalAmount += $amountCbmDiff;
                             $totalCbm += $cbmDiff;
                         }
@@ -607,9 +613,9 @@
                     @if (!$is_weight && $cbmDiff > 0)
                         <tr>
                             <td width="5%" class="border_left_right"></td>
-                            <td width="30%" class="border_left_right text_center">Selisih SIN BTH ({{ $cbm1 }} - {{ $cbm2 }} M3)</td>
+                            <td width="30%" class="border_left_right text_center">Selisih SIN BTH ({{ round($cbm1, 3) }} - {{ round($cbm2, 3) }} M3)</td>
                             <td width="12.5%" class="border_left_right text_center text_uppercase"></td>
-                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $cbmDiff }} M3</td>
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ round($cbmDiff, 3) }} M3</td>
                             <td width="15%" class="border_left_right text_center">{{ 'Rp ' . number_format($bill_diff ?? 0, 0, ',', '.') }}</td>
                             <td width="20%" class="border_left_right text_center">{{ 'Rp ' . number_format($amountCbmDiff ?? 0, 0, ',', '.') }}</td>
                         </tr>
@@ -645,6 +651,11 @@
                     @endfor
 
                 @else
+                    @php
+                        // Set total amount not include another bill
+                        $totalAmount = $allTotalAmount;
+                    @endphp
+
                     @foreach($groupSeaShipmentLines as $groupDate => $totals)
                         @php
                             // Memisahkan bagian-bagian dari key
@@ -661,7 +672,7 @@
 
                             $customerPrice = $pricelist;
                             $qty = $totals['total_qty_pkgs'];
-                            $cbm = $totals['total_cbm2'];
+                            $cbm = round($totals['total_cbm2'], 3);
                             $weight = $totals['total_weight'];
                             $cas = $totals['cas'];
 
@@ -687,7 +698,7 @@
 
                             $totalQty += $qty;
                             
-                            $totalCbm += $cbm;
+                            $totalCbm += $totals['total_cbm2'];
                             $totalWeight += $weight;
 
                             if (in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM'])) {
@@ -703,7 +714,7 @@
                                 }
                             }
 
-                            $totalAmount += $amount + (isset($anotherBillData['charge']) ? intval($anotherBillData['charge']) : 0);
+                            $totalAmount += isset($anotherBillData['charge']) ? intval($anotherBillData['charge']) : 0;
 
                             $groupedMarkings = collect(array_keys($totals['markings']))->groupBy(function ($marking) {
                                 // Menentukan pola regex untuk ekstraksi prefix dan nomor
@@ -846,26 +857,26 @@
                 <tr>
                     <td width="5%" class="border_left_right"></td>
                     @if ($is_weight)
-                        <td width="30%" class="border_left_right text_center">Total {{ $totalCbm }} M3</td>
+                        <td width="30%" class="border_left_right text_center">Total {{ round($totalCbm, 3) }} M3</td>
                     @else
                         <td width="30%" class="border_left_right text_center">Total</td>
                     @endif
                     <td width="12.5%" class="border_left_right text_center text_uppercase">{{ $totalQty }}</td>
                     @if ($is_weight)
-                        @if (($totalWeight / 1000) > $totalCbm)
+                        @if (($totalWeight / 1000) > round($totalCbm, 3))
                             <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalWeight / 1000 }} T</td>
                         @else
                             <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalWeight }} KG</td>
                         @endif
                     @else
                         @if ($is_tonase)
-                            @if (($totalWeight / 1000) > $totalCbm)
-                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3 <br> {{ $totalWeight / 1000 }} T</td>
+                            @if (($totalWeight / 1000) > round($totalCbm, 3))
+                                <td width="10%" class="border_left_right text_center text_uppercase">{{ round($totalCbm, 3) }} M3 <br> {{ $totalWeight / 1000 }} T</td>
                             @else
-                                <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3 <br> {{ $totalWeight }} KG</td>
+                                <td width="10%" class="border_left_right text_center text_uppercase">{{ round($totalCbm, 3) }} M3 <br> {{ $totalWeight }} KG</td>
                             @endif
                         @else
-                            <td width="10%" class="border_left_right text_center text_uppercase">{{ $totalCbm }} M3</td>
+                            <td width="10%" class="border_left_right text_center text_uppercase">{{ round($totalCbm, 3) }} M3</td>
                         @endif
                     @endif
                     <td width="15%" class="border_left_right text_center"></td>

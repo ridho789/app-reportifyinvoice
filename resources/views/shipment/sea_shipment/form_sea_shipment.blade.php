@@ -53,13 +53,13 @@
                                     </td>
                                     <!-- total cbm -->
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm1'] != 0 ? $gsl['total_cbm1'] . ' M3' : '-' }}</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm1'] > 0 ? round($gsl['total_cbm1'], 3) . ' M3' : '-' }}</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm2'] != 0 ? $gsl['total_cbm2'] . ' M3' : '-' }}</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['total_cbm2'] > 0 ? round($gsl['total_cbm2'], 3) . ' M3' : '-' }}</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['cbm_difference'] != 0 ? $gsl['cbm_difference'] . ' M3' : '-' }}</span>
+                                        <span class="text-secondary text-xs font-weight-normal">{{ $gsl['cbm_difference'] > 0 ? round($gsl['cbm_difference'], 3) . ' M3' : '-' }}</span>
                                     </td>
                                     <!-- ### -->
                                     <td class="align-middle text-center">
@@ -289,10 +289,14 @@
                                         <!-- ### -->
                                         <!-- total cbm -->
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="cbm1[]" value="{{ $ssl->tot_cbm_1 }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="cbm1[]" 
+                                            value="{{ isset($ssl->tot_cbm_1) && $ssl->tot_cbm_1 !== null ? round($ssl->tot_cbm_1, 3) : '' }}" 
+                                            placeholder="..." style="border: 0px;">
                                         </td>
                                         <td class="align-middle text-center" width=5%>
-                                            <input type="text" class="form-control text-center" name="cbm2[]" value="{{ $ssl->tot_cbm_2 }}" placeholder="..." style="border: 0px;">
+                                            <input type="text" class="form-control text-center" name="cbm2[]" 
+                                            value="{{ isset($ssl->tot_cbm_2) && $ssl->tot_cbm_2 !== null ? round($ssl->tot_cbm_2, 3) : '' }}" 
+                                            placeholder="..." style="border: 0px;">
                                         </td>
                                         <!-- ### -->
                                         <td class="align-middle text-center" width=5%>
@@ -1255,16 +1259,27 @@
     // Function to update total volume
     function calculateTotalVolume() {
         var totalVolume = 0;
-        var rows = document.querySelectorAll('input[name="cbm2[]"]');
-        
+        var rows = document.querySelectorAll('tr');
+        var volumel = 0;
+
         rows.forEach(function(row) {
-            if (row.value.trim() !== '') {
-                totalVolume += parseFloat(row.value) || 0;
+            var inputPl = row.querySelector('input[name="p[]"]');
+            var inputLl = row.querySelector('input[name="l[]"]');
+            var inputTl = row.querySelector('input[name="t[]"]');
+            var inputQtyLoose = row.querySelector('input[name="qty_loose[]"]');
+
+            if (inputPl && inputLl && inputTl && inputQtyLoose) {
+                var pl = parseFloat(inputPl.value) || 0;
+                var ll = parseFloat(inputLl.value) || 0;
+                var tl = parseFloat(inputTl.value) || 0;
+
+                volumel += ((pl * ll * tl) / 1000000) * inputQtyLoose.value;
             }
         });
 
-        document.querySelector('input[name="tot_vol"]').value = totalVolume.toFixed(3);
+        document.querySelector('input[name="tot_vol"]').value = volumel.toFixed(3);
     }
+
 
     calculateTotalVolume();
 
