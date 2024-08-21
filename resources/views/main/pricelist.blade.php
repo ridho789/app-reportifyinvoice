@@ -336,7 +336,7 @@
                             <tbody>
                                 @foreach($pricelists as $p)
                                 <tr data-id="{{ $p->id_pricelist }}" data-id-customer="{{ $p->id_customer }}" data-id-shipper="{{ $p->id_shipper }}"
-                                data-id-origin="{{ $p->id_origin }}" data-id-type="{{ $p->id_type }}">
+                                data-id-origin="{{ $p->id_origin }}" data-id-type="{{ $p->type }}">
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">

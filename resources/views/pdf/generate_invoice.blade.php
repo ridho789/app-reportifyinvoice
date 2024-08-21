@@ -287,6 +287,10 @@
                     @php
                         // Set total amount not include another bill
                         $totalAmount = $allTotalAmount;
+
+                        if ($a == 1 && ($customer->discount && $customer->discount > 0)) {
+                            $totalAmount = $allTotalAmountDisc;
+                        }
                     @endphp
 
                     @foreach($groupSeaShipmentLines as $groupDate => $totals)
@@ -654,6 +658,10 @@
                     @php
                         // Set total amount not include another bill
                         $totalAmount = $allTotalAmount;
+
+                        if ($a == 1 && ($customer->discount && $customer->discount > 0)) {
+                            $totalAmount = $allTotalAmountDisc;
+                        }
                     @endphp
 
                     @foreach($groupSeaShipmentLines as $groupDate => $totals)

@@ -73,9 +73,11 @@ class ShipmentController extends Controller
 
         $seaShipment = SeaShipment::where('id_sea_shipment', $id)->first();
         $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->get();
+        $groupedLTS = $seaShipmentLines->groupBy('lts')->map->unique('lts')->flatten()->pluck('lts');
         $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
         $seaShipmentAnotherBill = SeaShipmentAnotherBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
-        $pricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_origin', $seaShipment->id_origin)->get();
+        $pricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_origin', $seaShipment->id_origin)->where('type', 'BASE PRICE BILL')->get();
+        $billDiff = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_origin', $seaShipment->id_origin)->where('type', 'DIFFERENCE BILL')->get();
         $checkCbmDiff = false;
 
         $isWeight = false;
@@ -138,7 +140,7 @@ class ShipmentController extends Controller
         $uoms = Uom::orderBy('name')->get();
         return view('shipment.sea_shipment.form_sea_shipment', compact('seaShipment', 'seaShipmentLines', 'customers', 'customer', 'shippers', 'accounts', 'bankers', 'origins', 'originName', 'uoms', 
         'states', 'ships', 'units', 'descs', 'companies', 'groupSeaShipmentLines', 'checkCbmDiff', 'seaShipmentBill', 'seaShipmentAnotherBill', 'isWeight', 'totalWeightOverall', 
-        'pricelist', 'totalCbmOverall'));
+        'pricelist', 'billDiff', 'groupedLTS', 'totalCbmOverall'));
     }
 
     public function storeSeaShipment(Request $request) {
@@ -422,48 +424,82 @@ class ShipmentController extends Controller
 
         // set pricelist
         $pricelist = 0;
+        $checkPricelist = null;
 
-        $defaultPricelist = Pricelist::where('id_customer', null)->where('id_shipper', null)->where('id_origin', $seaShipment->id_origin)
-        ->where('start_period', null)->where('end_period', null)->first();
+        if ($request->custom_pricelist) {
+            $numericNewPricelist = preg_replace("/[^0-9]/", "", explode(",", $request->custom_pricelist)[0]);
 
-        $shipperPricelist = Pricelist::where('id_customer', null)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
-        ->where('start_period', null)->where('end_period', null)->first();
+            $exitingPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)
+            ->where('id_origin', $seaShipment->id_origin)->where('type', 'BASE PRICE BILL')->where('price', $numericNewPricelist)->first();
 
-        $customerPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', null)->where('id_origin', $seaShipment->id_origin)
-        ->where('start_period', null)->where('end_period', null)->first();
+            if ($exitingPricelist) {
+                $checkPricelist = $exitingPricelist;
 
-        $customerShipperPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
-        ->where('start_period', null)->where('end_period', null)->first();
+            } else {
+                $newPricelist = Pricelist::create([
+                    'id_customer' => $seaShipment->id_customer,
+                    'id_shipper' => $seaShipment->id_shipper,
+                    'id_origin' => $seaShipment->id_origin,
+                    'type' => 'BASE PRICE BILL',
+                    'price' => $numericNewPricelist,
+                ]);
 
-        $periodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
-        ->where('start_period', '>=', $seaShipment->date)->where('end_period', null)->first();
+                $checkPricelist = $newPricelist;
+            }
 
-        $allPeriodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
-        ->where('start_period', '<=', $seaShipment->date)->where('end_period', '>=', $seaShipment->date)->first();
-
-        if ($defaultPricelist) {
-            $pricelist = $defaultPricelist->price;
+        } else {
+            if ($request->pricelist) {
+                $checkPricelist = Pricelist::where('id_pricelist', $request->pricelist)->first();
+            }
         }
 
-        if ($shipperPricelist) {
-            $pricelist = $shipperPricelist->price;
+        if ($checkPricelist) {
+            $seaShipment->pricelist = $checkPricelist->id_pricelist;
+            $seaShipment->save();
+            $pricelist = $checkPricelist->price;
         }
 
-        if ($customerPricelist) {
-            $pricelist = $customerPricelist->price;
-        }
+        // $defaultPricelist = Pricelist::where('id_customer', null)->where('id_shipper', null)->where('id_origin', $seaShipment->id_origin)
+        // ->where('start_period', null)->where('end_period', null)->first();
 
-        if ($customerShipperPricelist) {
-            $pricelist = $customerShipperPricelist->price;
-        }
+        // $shipperPricelist = Pricelist::where('id_customer', null)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
+        // ->where('start_period', null)->where('end_period', null)->first();
 
-        if ($periodPricelist) {
-            $pricelist = $periodPricelist->price;
-        }
+        // $customerPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', null)->where('id_origin', $seaShipment->id_origin)
+        // ->where('start_period', null)->where('end_period', null)->first();
 
-        if ($allPeriodPricelist) {
-            $pricelist = $allPeriodPricelist->price;
-        }
+        // $customerShipperPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
+        // ->where('start_period', null)->where('end_period', null)->first();
+
+        // $periodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
+        // ->where('start_period', '>=', $seaShipment->date)->where('end_period', null)->first();
+
+        // $allPeriodPricelist = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)->where('id_origin', $seaShipment->id_origin)
+        // ->where('start_period', '<=', $seaShipment->date)->where('end_period', '>=', $seaShipment->date)->first();
+
+        // if ($defaultPricelist) {
+        //     $pricelist = $defaultPricelist->price;
+        // }
+
+        // if ($shipperPricelist) {
+        //     $pricelist = $shipperPricelist->price;
+        // }
+
+        // if ($customerPricelist) {
+        //     $pricelist = $customerPricelist->price;
+        // }
+
+        // if ($customerShipperPricelist) {
+        //     $pricelist = $customerShipperPricelist->price;
+        // }
+
+        // if ($periodPricelist) {
+        //     $pricelist = $periodPricelist->price;
+        // }
+
+        // if ($allPeriodPricelist) {
+        //     $pricelist = $allPeriodPricelist->price;
+        // }
 
         $totalCbm1Overall = 0;
         $totalCbm2Overall = 0;
@@ -475,12 +511,17 @@ class ShipmentController extends Controller
         $totalAmountCbmOverall = 0;
         $totalAmountUnit = 0;
 
+        // Customer Discount
+        $totalAmountOverallDisc = 0;
+        $totalAmountWeightOverallDisc = 0;
+        $totalAmountCbmOverallDisc = 0;
+
         // Initial variabel
         $isWeight = $request->is_weight;
         $is_tonase = false;
 
         function calculateTotals($group, $customer, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
-        &$totalAmountWeightOverall, &$totalAmountCbmOverall, &$totalAmountUnit, $pricelist, $isWeight) {
+        &$totalAmountWeightOverall, &$totalAmountCbmOverall, &$totalAmountUnit, &$totalAmountWeightOverallDisc, &$totalAmountCbmOverallDisc, $pricelist, $isWeight) {
             $totals = [
                 'total_qty_pkgs' => $group->filter(function ($item) {
                     return is_numeric($item->qty_pkgs);
@@ -556,6 +597,18 @@ class ShipmentController extends Controller
                 }
             }
 
+            // Customer Discount
+            if ($customer->discount && $pricelist > 0 && $pricelist > $customer->discount) {
+                if ($isWeight || ($unit == 'T')) {
+                    $totalAmountWeightOverallDisc += $weight * (($pricelist - $customer->discount) + $totals['cas']);
+    
+                } else {
+                    if ($lts && !in_array($lts, ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM'])) {
+                        $totalAmountCbmOverallDisc += $cbm * (($pricelist - $customer->discount) + $totals['cas']);
+                    }
+                }
+            }
+
             // $totals['markings'] = $group->pluck('marking')->unique()->toArray();
 
             // initialize markings with empty arrays
@@ -591,6 +644,11 @@ class ShipmentController extends Controller
             $totalAmountCbmOverall = 0;
             $totalAmountUnit = 0;
 
+            // Customer Discount
+            $totalAmountOverallDisc = 0;
+            $totalAmountWeightOverallDisc = 0;
+            $totalAmountCbmOverallDisc = 0;
+
             // Initial variabel
             $is_tonase = false;
 
@@ -607,9 +665,9 @@ class ShipmentController extends Controller
                 return $item->date . '-' . $unitPart . $item->lts;
                 
             })->map(function ($group) use ($customer, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
-                &$totalAmountWeightOverall, &$totalAmountCbmOverall, &$totalAmountUnit, $pricelist, $isWeight) {
+                &$totalAmountWeightOverall, &$totalAmountCbmOverall, &$totalAmountUnit, &$totalAmountWeightOverallDisc, &$totalAmountCbmOverallDisc, $pricelist, $isWeight) {
                 return calculateTotals($group, $customer, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, 
-                $totalAmountWeightOverall, $totalAmountCbmOverall, $totalAmountUnit, $pricelist, $isWeight);
+                $totalAmountWeightOverall, $totalAmountCbmOverall, $totalAmountUnit, $totalAmountWeightOverallDisc, $totalAmountCbmOverallDisc, $pricelist, $isWeight);
             });
         }
 
@@ -627,6 +685,11 @@ class ShipmentController extends Controller
             $totalAmountCbmOverall = 0;
             $totalAmountUnit = 0;
 
+            // Customer Discount
+            $totalAmountOverallDisc = 0;
+            $totalAmountWeightOverallDisc = 0;
+            $totalAmountCbmOverallDisc = 0;
+
             // Initial variabel
             $is_tonase = false;
 
@@ -643,9 +706,9 @@ class ShipmentController extends Controller
                 return $item->date . '-' . $unitPart . $item->marking . '-' . $item->lts;
 
             })->map(function ($group) use ($customer, $seaShipment, &$totalCbm1Overall, &$totalCbm2Overall, &$totalWeightOverall, &$totalCasOverall, &$totalCbmDiffOverall, 
-                &$totalAmountWeightOverall, &$totalAmountCbmOverall, &$totalAmountUnit, $pricelist, $isWeight) {
+                &$totalAmountWeightOverall, &$totalAmountCbmOverall, &$totalAmountUnit, &$totalAmountWeightOverallDisc, &$totalAmountCbmOverallDisc, $pricelist, $isWeight) {
                 return calculateTotals($group, $customer, $seaShipment, $totalCbm1Overall, $totalCbm2Overall, $totalWeightOverall, $totalCasOverall, $totalCbmDiffOverall, 
-                $totalAmountWeightOverall, $totalAmountCbmOverall, $totalAmountUnit, $pricelist, $isWeight);
+                $totalAmountWeightOverall, $totalAmountCbmOverall, $totalAmountUnit, $totalAmountWeightOverallDisc, $totalAmountCbmOverallDisc, $pricelist, $isWeight);
             });
         }
 
@@ -673,13 +736,16 @@ class ShipmentController extends Controller
         // Apply isWeight condition to totalAmountOverall calculation
         if ($isWeight) {
             $totalAmountOverall = $totalAmountWeightOverall;
+            $totalAmountOverallDisc = $totalAmountWeightOverallDisc;
             
         } else {
             if ($is_tonase) {
                 $totalAmountOverall = $totalAmountCbmOverall + $totalAmountWeightOverall;
+                $totalAmountOverallDisc = $totalAmountCbmOverallDisc + $totalAmountWeightOverallDisc;
 
             } else {
                 $totalAmountOverall = $totalAmountCbmOverall;
+                $totalAmountOverallDisc = $totalAmountCbmOverallDisc;
             }
         }
 
@@ -727,13 +793,49 @@ class ShipmentController extends Controller
         // update bill diff in sea shipment
         $bill_diff = 0;
 
-        if ($request->bill_diff) {
-            $checkBillDiff = Pricelist::find($request->bill_diff);
-            $numericBillDiff = $checkBillDiff->price;
-            $bill_diff = $numericBillDiff;
+        // if ($request->bill_diff) {
+        //     $checkBillDiff = Pricelist::find($request->bill_diff);
+        //     $numericBillDiff = $checkBillDiff->price;
+        //     $bill_diff = $numericBillDiff;
 
-            $seaShipment->bill_diff = $request->bill_diff;
-            $seaShipment->save();
+        //     $seaShipment->bill_diff = $request->bill_diff;
+        //     $seaShipment->save();
+        // }
+
+        if (in_array($origin->name, ['SIN-BTH', 'SIN-JKT'])) {
+            $checkBillDiff = null;
+            if ($request->custom_bill_diff) {
+                $numericNewBillDiff = preg_replace("/[^0-9]/", "", explode(",", $request->custom_bill_diff)[0]);
+
+                $exitingBillDiff = Pricelist::where('id_customer', $seaShipment->id_customer)->where('id_shipper', $seaShipment->id_shipper)
+                ->where('id_origin', $seaShipment->id_origin)->where('type', 'DIFFERENCE BILL')->where('price', $numericNewBillDiff)->first();
+
+                if ($exitingBillDiff) {
+                    $checkBillDiff = $exitingBillDiff;
+
+                } else {
+                    $newBillDiff = Pricelist::create([
+                        'id_customer' => $seaShipment->id_customer,
+                        'id_shipper' => $seaShipment->id_shipper,
+                        'id_origin' => $seaShipment->id_origin,
+                        'type' => 'DIFFERENCE BILL',
+                        'price' => $numericNewBillDiff,
+                    ]);
+
+                    $checkBillDiff = $newBillDiff;
+                }
+
+            } else {
+                if ($request->bill_diff) {
+                    $checkBillDiff = Pricelist::where('id_pricelist', $request->bill_diff)->first();
+                }
+            }
+
+            if ($checkBillDiff) {
+                $seaShipment->bill_diff = $checkBillDiff->id_pricelist;
+                $seaShipment->save();
+                $bill_diff = $checkBillDiff->price;
+            }
         }
 
         // update invoice type
@@ -927,6 +1029,7 @@ class ShipmentController extends Controller
                 'groupSeaShipmentLines' => $groupSeaShipmentLines,
                 'groupedSeaShipmentLinesDate' => $groupedSeaShipmentLinesDate,
                 'allTotalAmount' => $totalAmountOverall + $totalAmountUnit,
+                'allTotalAmountDisc' => $totalAmountOverallDisc + $totalAmountUnit,
                 'pricelist' => $pricelist,
                 'term' => $request->term,
                 'is_weight' => $isWeight,

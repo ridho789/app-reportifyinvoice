@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_history')->nullable();
             $table->string('no_aju')->nullable();
             $table->string('no_inv')->nullable();
+            $table->string('pricelist')->nullable();
             $table->string('bill_diff')->nullable();
             $table->date('date')->nullable();
             $table->date('etd')->nullable();

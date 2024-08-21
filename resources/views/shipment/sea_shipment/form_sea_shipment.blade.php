@@ -613,9 +613,9 @@
 <!-- Modal - SetPrint -->
 <div class="modal fade" id="setPrintModal" tabindex="-1" role="dialog" aria-labelledby="setPrintModalLabel" aria-hidden="true">
     @if (in_array($originName[$seaShipment->id_origin], ['SIN-BTH', 'SIN-JKT']))
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
     @else
-    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     @endif
         <div class="modal-content">
             <div class="modal-header">
@@ -628,8 +628,8 @@
                 <div class="modal-body">
                     @if (in_array($originName[$seaShipment->id_origin], ['SIN-BTH', 'SIN-JKT']))
                         <div class="row">
-                            <div class="col-6">
-                                <h5 class="text-sm">Form</h5>
+                            <div class="col-4">
+                                <h5 class="text-sm">Basic Setup</h5>
                                 <input type="hidden" name="id" value="{{ $seaShipment->id_sea_shipment }}">
                                 <div class="input-group input-group-static mb-4">
                                     <label>Invoice No. <span class="text-danger">*</span></label>
@@ -713,40 +713,129 @@
                                 </div>
                                 
                             </div>
-                            <div class="col-6">
+                            <div class="col-4">
+                                <h5 class="text-sm">Fee Setup</h5>
                                 @if ($groupSeaShipmentLines)
-                                    <h5 class="text-sm">Fee Setup</h5>
+                                    <!-- Tagihan selisih -->
                                     @if ($checkCbmDiff)
-                                        @if (count($pricelist) > 0)
-                                            <div class="input-group input-group-static mb-0">
+                                        @if (count($billDiff) > 0)
+                                            <div class="input-group input-group-static">
                                                 <label class="text-sm">Diff SIN-BTH <span class="text-danger">*</span></label>
                                             </div>
                                             <div class="input-group input-group-static mb-4">
-                                                <select class="form-select select-diff" name="bill_diff" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
-                                                    <option value="">...</option>
-                                                    @foreach ($pricelist as $p)
+                                                <div class="col-5">
+                                                    <select class="form-select select-diff" name="bill_diff" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                                        <option value="">...</option>
+                                                        @foreach ($billDiff as $b)
                                                         <option 
-                                                            value="{{ $p->id_pricelist }}" {{ old('bill_diff', $seaShipment->bill_diff) == $p->id_pricelist ? 'selected' : '' }}>
-                                                            {{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }} ( {{ $p->type }} )
+                                                            value="{{ $b->id_pricelist }}" {{ old('bill_diff', $seaShipment->bill_diff) == $b->id_pricelist ? 'selected' : '' }}>
+                                                            {{ 'Rp ' . number_format($b->price ?? 0, 0, ',', '.') }}
                                                         </option>
-                                                    @endforeach
-                                                </select>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-6">
+                                                    <input type="text" class="form-control custom_bill_diff" style="margin-top: 2.15px;" name="custom_bill_diff" 
+                                                    placeholder="Enter special price..">
+                                                </div>
                                             </div>
                                         @else
                                             <div class="input-group input-group-static mb-4">
-                                                <label>Diff SIN-BTH</label>
-                                                <input type="text" class="form-control" value="No data.. Prepare price in the pricelist.." 
-                                                style="background-color: #fff;" readonly>
+                                                <label class="text-sm" style="margin-bottom: 2px;">Diff SIN-BTH <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control custom_bill_diff" style="margin-bottom: 2px;" name="custom_bill_diff" 
+                                                placeholder="Enter price.." required>
                                             </div>
                                         @endif
                                     @endif
                                     
-                                    <div class="input-group input-group-static mb-1">
+                                    <!-- Tagihan customer -->
+                                    @if (count($pricelist) > 0)
+                                        <div class="input-group input-group-static" style="margin-bottom: 3.15px;">
+                                            <label class="text-sm">Customer Bill <span class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="input-group input-group-static mb-4">
+                                            <div class="col-5">
+                                                <select class="form-select select-diff" name="pricelist" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                                    <option value="">...</option>
+                                                    @foreach ($pricelist as $p)
+                                                    <option 
+                                                        value="{{ $p->id_pricelist }}" {{ old('pricelist', $seaShipment->pricelist) == $p->id_pricelist ? 'selected' : '' }}>
+                                                        {{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-1"></div>
+                                            <div class="col-6">
+                                                <input type="text" class="form-control custom_pricelist" style="margin-top: 2.75px;" name="custom_pricelist" 
+                                                placeholder="Enter special price..">
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="input-group input-group-static mb-4">
+                                            <label class="text-sm" style="margin-bottom: {{ count($billDiff) > 0 ? '5.5px' : '2.5px' }};">
+                                                Customer Bill <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control custom_pricelist" name="custom_pricelist" placeholder="Enter price.." required>
+                                        </div>
+                                    @endif
+
+                                    <!-- cas -->
+                                    <!-- @if (count($groupedLTS) > 0)
+                                        <div class="accordion-1">
+                                            <div class="row">
+                                                <div class="accordion" id="accordionLTS">
+                                                    @foreach ($groupedLTS as $data)
+                                                    @if ($data)
+                                                    <div class="accordion-item mb-4">
+                                                        <div class="accordion-header" id="headingOne-{{ $loop->index }}">
+                                                            <label style="margin-left: 0;">Additional Bill</label>
+                                                            <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" 
+                                                                data-bs-target="#collapseOneLTS-{{ $loop->index }}" aria-expanded="false" aria-controls="collapseOneLTS-{{ $loop->index }}" 
+                                                                style="padding: 0rem 0.5rem;">
+                                                                <label class="font-weight-normal" style="margin-left: -7.5px;">
+                                                                    <b style="color: #344767;">LTS - {{ $data }}</b>
+                                                                </label>
+                                                                <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3 collapse-icon" aria-hidden="true"></i>
+                                                                <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3 collapse-icon d-none" aria-hidden="true"></i>
+                                                            </button>
+                                                        </div>
+
+                                                        <div id="collapseOneLTS-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="headingOne-{{ $loop->index }}" 
+                                                        data-bs-parent="#accordionLTS">
+                                                            <div class="accordion-body" style="padding: 3.20rem 0rem 0rem;">
+                                                            <div class="input-group input-group-static mb-4">
+                                                                    <div class="col-5">
+                                                                        <input type="text" class="form-control lts_code" name="lts_code[]" value="{{ $data }}" readonly>
+                                                                    </div>
+                                                                    <div class="col-1"></div>
+                                                                    <div class="col-6">
+                                                                        <input type="text" class="form-control lts_bill" name="lts_bill[]" placeholder="Enter price..">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif -->
+                                @else
+                                    <p>No data can be processed</p>
+                                @endif
+                            </div>
+                            <div class="col-4">
+                                <h5 class="text-sm">Advanced Setup</h5>
+                                @if ($groupSeaShipmentLines)
+                                    <div class="input-group input-group-static mb-0">
                                         <label class="text-sm">Invoice Type <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="input-group input-group-static mb-4">
                                         <select class="form-select text-left" id="inv_type" name="inv_type" 
-                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px; {{ $checkCbmDiff ? '' : 'margin-top: -4px;' }};" required>
+                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
                                             <option value="" {{ old('inv_type', $customer->inv_type) == '' ? 'selected' : '' }}>...</option>
                                             <option value="basic" {{ old('inv_type', $customer->inv_type) == 'basic' ? 'selected' : '' }} selected>Basic</option>
                                             <option value="separate" {{ old('inv_type', $customer->inv_type) == 'separate' ? 'selected' : '' }}>Separate</option>
@@ -762,19 +851,14 @@
                                                     if (count($seaShipmentBill) > 0) {
                                                         $checkSeaShipmentBill = $seaShipmentBill->where('date', $date)->first();
                                                     }
-
-                                                    $marginBottomAccordion = $checkCbmDiff ? '25px' : '23.25px';
                                                 @endphp
-                                                <div class="accordion-item" style="margin-bottom: {{ $marginBottomAccordion }};">
+                                                <div class="accordion-item mb-4">
                                                     <div class="accordion-header" id="headingOne-{{ $loop->index }}">
-                                                        @php
-                                                            $marginTop = $checkCbmDiff ? '-9.5px' : '-8.5px';
-                                                        @endphp
-                                                        <label style="margin-left: 0; margin-bottom: 7.5px;">Other Fees</label>
+                                                        <label style="margin-left: 0;">Other Setup</label>
                                                         <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" 
                                                             data-bs-target="#collapseOne-{{ $loop->index }}" aria-expanded="false" aria-controls="collapseOne-{{ $loop->index }}" 
-                                                            style="padding: 0.5rem; margin-top: {{ $marginTop }}; margin-bottom: 8.5px;">
-                                                            <label class="font-weight-normal" style="margin-bottom: 2px; margin-left: -7.5px;">
+                                                            style="padding: 0.05rem 0.5rem;">
+                                                            <label class="font-weight-normal" style="margin-left: -7.5px;">
                                                                 <b style="color: #344767;">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d-M-y') }}</b>
                                                                 <input type="hidden" class="form-control" id="dateBL" name="dateBL[]" value="{{ $date }}">
                                                             </label>
@@ -785,11 +869,8 @@
 
                                                     <div id="collapseOne-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="headingOne-{{ $loop->index }}" 
                                                     data-bs-parent="#accordionRental">
-                                                        <div class="accordion-body">
-                                                            @php
-                                                                $marginTopCode = $checkCbmDiff ? '3.5px' : '3px';
-                                                            @endphp
-                                                            <div class="input-group input-group-static mb-4" style="margin-top: 3.5px;">
+                                                        <div class="accordion-body" style="padding: 1.7rem 0rem;">
+                                                            <div class="input-group input-group-static mb-4">
                                                                 <label>Code - Narita / CNG / Other</label>
                                                                 <input type="text" class="form-control" id="codeShipment-{{ $loop->index }}" name="codeShipment[]" 
                                                                 value="{{ old('codeShipment', $checkSeaShipmentBill ? $checkSeaShipmentBill->code : '') }}" 
@@ -884,10 +965,8 @@
                                                                 <input type="hidden" name="dateAnotherBL[]" value="{{ $date }}">
                                                                 <div class="input-group input-group-static mb-4">
                                                                     <div class="col-3">
-                                                                        <div class="input-group input-group-static mb-1">
-                                                                            <label class="text-sm">Desc</label>
-                                                                        </div>
-                                                                        <div class="input-group input-group-static mb-0">
+                                                                        <label>Desc</label>
+                                                                        <div class="input-group input-group-static">
                                                                             <select class="form-select" name="id_desc[]" 
                                                                             style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                                                                 <option value="">...</option>
@@ -916,180 +995,263 @@
                                             </div>
                                         </div>
                                     </div>
+                                @else
+                                    <p>No data can be processed</p>
                                 @endif
                             </div>
                         </div>
                     @else
-                        <h5 class="text-sm">Form</h5>
-                        <input type="hidden" name="id" value="{{ $seaShipment->id_sea_shipment }}">
-                        <input type="hidden" name="dateBL" value="{{ $seaShipment->date }}">
-                        <div class="input-group input-group-static mb-4">
-                            <label>Invoice No. <span class="text-danger">*</span></label>
-                            @if ($seaShipment->no_inv)
-                                <input type="text" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->no_inv) }}" placeholder="..." required>
-                            @else
-                                <input type="text" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->id_sea_shipment) }}" placeholder="..." required>
-                            @endif
-                        </div>
-    
-                        <div class="input-group input-group-static mb-1">
-                            <label class="text-sm">Company <span class="text-danger">*</span></label>
-                        </div>
-                        <div class="input-group input-group-static mb-4">
-                            <select class="form-select select-company" name="id_company" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
-                                <option value="">...</option>
-                                @foreach ($companies as $c)
-                                <option value="{{ $c->id_company }}" {{ old('id_company', $customer->id_company) == $c->id_company ? 'selected' : '' }}>{{ $c->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <div class="input-group input-group-static mb-4">
-                            <div class="col-5">
-                                <label>Term <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="term" name="term" min="1" value="{{ old('term', $seaShipment->term) }}" placeholder="..." required>
-                            </div>
-                            <div class="col-1"></div>
+                        <div class="row">
                             <div class="col-6">
-                                <label>Payment Due</label>
-                                <input type="date" class="form-control" id="payment_due" name="payment_due" value="{{ old('payment_due', $seaShipment->etd) }}" readonly>
-                            </div>
-                        </div>
-    
-                        <div class="input-group input-group-static mb-4">
-                            <div class="col-5">
-                                <div class="input-group input-group-static mb-1">
-                                    <label class="text-sm">Banker</label>
+                                <h5 class="text-sm">Basic Setup</h5>
+                                <input type="hidden" name="id" value="{{ $seaShipment->id_sea_shipment }}">
+                                <input type="hidden" name="dateBL" value="{{ $seaShipment->date }}">
+                                <div class="input-group input-group-static mb-4">
+                                    <label>Invoice No. <span class="text-danger">*</span></label>
+                                    @if ($seaShipment->no_inv)
+                                        <input type="text" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->no_inv) }}" placeholder="..." required>
+                                    @else
+                                        <input type="text" class="form-control" name="inv_no" value="{{ old('inv_no', $seaShipment->id_sea_shipment) }}" placeholder="..." required>
+                                    @endif
                                 </div>
-                                <select class="form-select select-banker" name="id_banker" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                                    <option value="">...</option>
-                                    @foreach ($bankers as $b)
-                                    <option value="{{ $b->id_banker }}" {{ old('id_banker', $customer->id_banker) == $b->id_banker ? 'selected' : '' }}>{{ $b->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-1"></div>
-                            <div class="col-6">
+            
                                 <div class="input-group input-group-static mb-1">
-                                    <label class="text-sm">Account</label>
+                                    <label class="text-sm">Company <span class="text-danger">*</span></label>
                                 </div>
-                                <select class="form-select select-account" name="id_account" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                                    <option value="">...</option>
-                                    @foreach ($accounts as $a)
-                                    <option value="{{ $a->id_account }}" {{ old('id_account', $customer->id_account) == $a->id_account ? 'selected' : '' }}>{{ $a->account_no }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="input-group input-group-static">
-                            <div>
-                                <button id="addButton" class="btn btn-outline-primary btn-sm" type="button">
-                                    <span class="btn-inner--text">+ Add another bill</span>
-                                </button>
-                            </div>
-
-                            <div id="inputGroupContainer" class="input-group input-group-static">
-                                <!-- Input groups (another bill) will be appended here -->
-                                @php
-                                    $checkSeaShipmentAnotherBill = null;
-                                    if (isset($seaShipmentAnotherBill) && count($seaShipmentAnotherBill) > 0) {
-                                        $checkSeaShipmentAnotherBill = $seaShipmentAnotherBill->where('date', $seaShipment->date)->all();
-                                    }
-                                @endphp
-                                @if($checkSeaShipmentAnotherBill)
-                                    @foreach($checkSeaShipmentAnotherBill as $data)
-                                        <input type="hidden" name="idAnotherBill[]" value="{{ $data->id_sea_shipment_other_bill }}">
-                                        <input type="hidden" name="dateAnotherBL[]" value="{{ $seaShipment->date }}">
-                                        <div class="input-group input-group-static mb-4">
-                                            <div class="col-3">
-                                                <div class="input-group input-group-static mb-1">
-                                                    <label class="text-sm">Desc</label>
-                                                </div>
-                                                <div class="input-group input-group-static mb-0">
-                                                    <select class="form-select" name="id_desc[]" 
-                                                    style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
-                                                        <option value="">...</option>
-                                                        @foreach ($descs as $d)
-                                                        <option value="{{ $d->id_desc }}" {{ old('id_desc.' . $loop->index, $data->id_desc) == 
-                                                            $d->id_desc ? 'selected' : '' }}>{{ $d->name }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-1"></div>
-                                            <div class="col-3">
-                                                <label>Charge</label>
-                                                <input type="text" class="form-control anotherBill" name="anotherBill[]" 
-                                                value="{{ old('anotherBill.' . $loop->index, $data->charge) }}" placeholder="...">
-                                            </div>
-                                            <div class="col-1"></div>
-                                            <div class="col-4">
-                                                <label>Note</label>
-                                                <input type="text" class="form-control anotherBillNote" name="anotherBillNote[]" 
-                                                value="{{ old('anotherBillNote.' . $loop->index, $data->note) }}" placeholder="...">                    
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- Template for input another bill -->
-                        <template id="inputGroupTemplate">
-                            <input type="hidden" name="idAnotherBill[]" value="">
-                            <input type="hidden" name="dateAnotherBL[]" value="{{ $seaShipment->date }}">
-                            <div class="input-group input-group-static mb-4">
-                                <div class="col-3">
-                                    <div class="input-group input-group-static mb-1">
-                                        <label class="text-sm">Desc</label>
+                                <div class="input-group input-group-static mb-4">
+                                    <select class="form-select select-company" name="id_company" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;" required>
+                                        <option value="">...</option>
+                                        @foreach ($companies as $c)
+                                        <option value="{{ $c->id_company }}" {{ old('id_company', $customer->id_company) == $c->id_company ? 'selected' : '' }}>{{ $c->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div class="input-group input-group-static mb-4">
+                                    <div class="col-5">
+                                        <label>Term <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="term" name="term" min="1" value="{{ old('term', $seaShipment->term) }}" placeholder="..." required>
                                     </div>
-                                    <div class="input-group input-group-static mb-0">
-                                        <select class="form-select" name="id_desc[]" 
-                                        style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                    <div class="col-1"></div>
+                                    <div class="col-6">
+                                        <label>Payment Due</label>
+                                        <input type="date" class="form-control" id="payment_due" name="payment_due" value="{{ old('payment_due', $seaShipment->etd) }}" readonly>
+                                    </div>
+                                </div>
+            
+                                <div class="input-group input-group-static mb-4">
+                                    <div class="col-5">
+                                        <div class="input-group input-group-static mb-1">
+                                            <label class="text-sm">Banker</label>
+                                        </div>
+                                        <select class="form-select select-banker" name="id_banker" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
                                             <option value="">...</option>
-                                            @foreach ($descs as $d)
-                                            <option value="{{ $d->id_desc }}" {{ old('id_desc') == $d->id_desc ? 'selected' : '' }}>{{ $d->name }}</option>
+                                            @foreach ($bankers as $b)
+                                            <option value="{{ $b->id_banker }}" {{ old('id_banker', $customer->id_banker) == $b->id_banker ? 'selected' : '' }}>{{ $b->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-1"></div>
+                                    <div class="col-6">
+                                        <div class="input-group input-group-static mb-1">
+                                            <label class="text-sm">Account</label>
+                                        </div>
+                                        <select class="form-select select-account" name="id_account" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                            <option value="">...</option>
+                                            @foreach ($accounts as $a)
+                                            <option value="{{ $a->id_account }}" {{ old('id_account', $customer->id_account) == $a->id_account ? 'selected' : '' }}>{{ $a->account_no }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-1"></div>
-                                <div class="col-3">
-                                    <label>Charge</label>
-                                    <input type="text" class="form-control anotherBill" name="anotherBill[]" placeholder="...">                    
+        
+                                <div class="input-group input-group-static">
+                                    <div>
+                                        <button id="addButton" class="btn btn-outline-primary btn-sm" type="button">
+                                            <span class="btn-inner--text">+ Add another bill</span>
+                                        </button>
+                                    </div>
+        
+                                    <div id="inputGroupContainer" class="input-group input-group-static">
+                                        <!-- Input groups (another bill) will be appended here -->
+                                        @php
+                                            $checkSeaShipmentAnotherBill = null;
+                                            if (isset($seaShipmentAnotherBill) && count($seaShipmentAnotherBill) > 0) {
+                                                $checkSeaShipmentAnotherBill = $seaShipmentAnotherBill->where('date', $seaShipment->date)->all();
+                                            }
+                                        @endphp
+                                        @if($checkSeaShipmentAnotherBill)
+                                            @foreach($checkSeaShipmentAnotherBill as $data)
+                                                <input type="hidden" name="idAnotherBill[]" value="{{ $data->id_sea_shipment_other_bill }}">
+                                                <input type="hidden" name="dateAnotherBL[]" value="{{ $seaShipment->date }}">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <div class="col-3">
+                                                        <div class="input-group input-group-static mb-1">
+                                                            <label class="text-sm">Desc</label>
+                                                        </div>
+                                                        <div class="input-group input-group-static mb-0">
+                                                            <select class="form-select" name="id_desc[]" 
+                                                            style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                                                <option value="">...</option>
+                                                                @foreach ($descs as $d)
+                                                                <option value="{{ $d->id_desc }}" {{ old('id_desc.' . $loop->index, $data->id_desc) == 
+                                                                    $d->id_desc ? 'selected' : '' }}>{{ $d->name }}
+                                                                </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                    <div class="col-3">
+                                                        <label>Charge</label>
+                                                        <input type="text" class="form-control anotherBill" name="anotherBill[]" 
+                                                        value="{{ old('anotherBill.' . $loop->index, $data->charge) }}" placeholder="...">
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                    <div class="col-4">
+                                                        <label>Note</label>
+                                                        <input type="text" class="form-control anotherBillNote" name="anotherBillNote[]" 
+                                                        value="{{ old('anotherBillNote.' . $loop->index, $data->note) }}" placeholder="...">                    
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="col-1"></div>
-                                <div class="col-4">
-                                    <label>Note</label>
-                                    <input type="text" class="form-control anotherBillNote" name="anotherBillNote[]" placeholder="...">                    
+        
+                                <!-- Template for input another bill -->
+                                <template id="inputGroupTemplate">
+                                    <input type="hidden" name="idAnotherBill[]" value="">
+                                    <input type="hidden" name="dateAnotherBL[]" value="{{ $seaShipment->date }}">
+                                    <div class="input-group input-group-static mb-4">
+                                        <div class="col-3">
+                                            <div class="input-group input-group-static mb-1">
+                                                <label class="text-sm">Desc</label>
+                                            </div>
+                                            <div class="input-group input-group-static mb-0">
+                                                <select class="form-select" name="id_desc[]" 
+                                                style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                                    <option value="">...</option>
+                                                    @foreach ($descs as $d)
+                                                    <option value="{{ $d->id_desc }}" {{ old('id_desc') == $d->id_desc ? 'selected' : '' }}>{{ $d->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-1"></div>
+                                        <div class="col-3">
+                                            <label>Charge</label>
+                                            <input type="text" class="form-control anotherBill" name="anotherBill[]" placeholder="...">                    
+                                        </div>
+                                        <div class="col-1"></div>
+                                        <div class="col-4">
+                                            <label>Note</label>
+                                            <input type="text" class="form-control anotherBillNote" name="anotherBillNote[]" placeholder="...">                    
+                                        </div>
+                                    </div>
+                                </template>
+                                
+                                <div class="input-group input-group-static">
+                                    <div class="form-check form-check-inline" style="padding-left: 0;">
+                                        <input type="hidden" name="is_weight" value="{{ $seaShipment->is_weight }}">
+                                        <input type="hidden" name="is_bill_weight" value="{{ $customer->is_bill_weight }}">
+                                        <input class="form-check-input" type="checkbox" id="isWeight">
+                                        <label class="form-check-label mb-1 mx-2" for="isWeight">Click to switch billing by <span class="text-primary">heavy</span></label>
+                                        @if ($isWeight)
+                                            <label class="form-check-label mb-1 text-xs">Recommended to enable heavy billing - 
+                                                Total Weight <b>{{ $totalWeightOverall / 1000 }} T</b> <u>></u> Total CBM <b>{{ $totalCbmOverall }} M3</b>
+                                            </label>
+                                        @else
+                                            @if ($customer->is_bill_weight)
+                                            <label class="form-check-label mb-1 text-xs">This particular customer has been set up for heavy-based billing</label>
+                                            @endif
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        </template>
-                        
-                        <div class="input-group input-group-static">
-                            <div class="form-check form-check-inline" style="padding-left: 0;">
-                                <input type="hidden" name="is_weight" value="{{ $seaShipment->is_weight }}">
-                                <input type="hidden" name="is_bill_weight" value="{{ $customer->is_bill_weight }}">
-                                <input class="form-check-input" type="checkbox" id="isWeight">
-                                <label class="form-check-label mb-1 mx-2" for="isWeight">Click to switch billing by <span class="text-primary">heavy</span></label>
-                                @if ($isWeight)
-                                    <label class="form-check-label mb-1 text-xs">Recommended to enable heavy billing - 
-                                        Total Weight <b>{{ $totalWeightOverall / 1000 }} T</b> <u>></u> Total CBM <b>{{ $totalCbmOverall }} M3</b>
-                                    </label>
+                            <div class="col-6">
+                                <h5 class="text-sm">Fee Setup</h5>
+                                <!-- Tagihan customer -->
+                                @if (count($pricelist) > 0)
+                                    <div class="input-group input-group-static">
+                                        <label class="text-sm">Customer Bill <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="input-group input-group-static mb-4">
+                                        <div class="col-5">
+                                            <select class="form-select select-diff" name="pricelist" style="border: none; border-bottom: 1px solid #ced4da; border-radius: 0px;">
+                                                <option value="">...</option>
+                                                @foreach ($pricelist as $p)
+                                                <option 
+                                                    value="{{ $p->id_pricelist }}" {{ old('pricelist', $seaShipment->pricelist) == $p->id_pricelist ? 'selected' : '' }}>
+                                                    {{ 'Rp ' . number_format($p->price ?? 0, 0, ',', '.') }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-1"></div>
+                                        <div class="col-6">
+                                            <input type="text" class="form-control custom_pricelist" style="margin-top: 2.5px;" name="custom_pricelist" 
+                                            placeholder="Enter special price..">
+                                        </div>
+                                    </div>
                                 @else
-                                    @if ($customer->is_bill_weight)
-                                    <label class="form-check-label mb-1 text-xs">This particular customer has been set up for heavy-based billing</label>
-                                    @endif
+                                    <div class="input-group input-group-static mb-4">
+                                        <label class="text-sm">Customer Bill <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control custom_pricelist" style="margin-bottom: 1.5px;" 
+                                        name="custom_pricelist" placeholder="Enter price.." required>
+                                    </div>
                                 @endif
+
+                                <!-- cas -->
+                                <!-- @if (count($groupedLTS) > 0)
+                                    <div class="accordion-1">
+                                        <div class="row">
+                                            <div class="accordion" id="accordionLTS">
+                                                @foreach ($groupedLTS as $data)
+                                                @if ($data)
+                                                <div class="accordion-item mb-4">
+                                                    <div class="accordion-header" id="headingOne-{{ $loop->index }}">
+                                                        <label style="margin-left: 0;">Additional Bill</label>
+                                                        <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" 
+                                                            data-bs-target="#collapseOneLTS-{{ $loop->index }}" aria-expanded="false" aria-controls="collapseOneLTS-{{ $loop->index }}" 
+                                                            style="padding: 0rem 0.5rem;">
+                                                            <label class="font-weight-normal" style="margin-left: -7.5px;">
+                                                                <b style="color: #344767;">LTS - {{ $data }}</b>
+                                                            </label>
+                                                            <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3 collapse-icon" aria-hidden="true"></i>
+                                                            <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3 collapse-icon d-none" aria-hidden="true"></i>
+                                                        </button>
+                                                    </div>
+
+                                                    <div id="collapseOneLTS-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="headingOne-{{ $loop->index }}" 
+                                                    data-bs-parent="#accordionLTS">
+                                                        <div class="accordion-body" style="padding: {{ count($pricelist) > 0 ? '3.1rem' : '3.2rem' }} 0rem 0rem;">
+                                                        <div class="input-group input-group-static mb-4">
+                                                                <div class="col-5">
+                                                                    <input type="text" class="form-control lts_code" name="lts_code[]" value="{{ $data }}" readonly>
+                                                                </div>
+                                                                <div class="col-1"></div>
+                                                                <div class="col-6">
+                                                                    <input type="text" class="form-control lts_bill" name="lts_bill[]" placeholder="Enter price..">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif -->
                             </div>
                         </div>
                     @endif
                     
-                    <div class="text-end mt-3">
-                        <button type="submit" class="btn bg-gradient-secondary btn-sm" name="is_update" value="true">Update Setup</button>
-                        <button type="submit" class="btn bg-gradient-primary btn-sm ms-2" name="is_print" value="true">Print Invoice</button>
+                    <hr>
+                    <div class="text-start mt-4">
+                        <button type="submit" class="btn bg-gradient-primary btn-sm" name="is_update" value="true">Update Data</button>
+                        <button type="submit" class="btn bg-gradient-secondary btn-sm ms-2" name="is_print" value="true">Print Invoice</button>
                     </div>
                 </div>
             </form>
@@ -1600,7 +1762,7 @@
         }
 
         function formatInputs() {
-            let priceBillDiff = document.querySelectorAll("#bill_diff");
+            let priceBillDiff = document.querySelectorAll(".custom_bill_diff");
             priceBillDiff.forEach(function(billDiff) {
                 if (billDiff.value.trim() !== "") {
                     billDiff.value = formatCurrency(billDiff.value);
@@ -1611,6 +1773,30 @@
                     }
                 });
             });
+
+            let pricelist = document.querySelectorAll(".custom_pricelist");
+            pricelist.forEach(function(priceC) {
+                if (priceC.value.trim() !== "") {
+                    priceC.value = formatCurrency(priceC.value);
+                }
+                priceC.addEventListener("input", function() {
+                    if (this.value.trim() !== "") {
+                        this.value = formatCurrency(this.value);
+                    }
+                });
+            });
+
+            // let ltsBill = document.querySelectorAll(".lts_bill");
+            // ltsBill.forEach(function(lts) {
+            //     if (lts.value.trim() !== "") {
+            //         lts.value = formatCurrency(lts.value);
+            //     }
+            //     lts.addEventListener("input", function() {
+            //         if (this.value.trim() !== "") {
+            //             this.value = formatCurrency(this.value);
+            //         }
+            //     });
+            // });
 
             let priceBillTransport = document.querySelectorAll(".transport");
             priceBillTransport.forEach(function(billTransport) {
