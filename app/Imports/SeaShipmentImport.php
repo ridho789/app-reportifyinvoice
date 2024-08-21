@@ -9,10 +9,12 @@ use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\Customer;
 use App\Models\Shipper;
+use App\Models\Company;
 use App\Models\Ship;
 use App\Models\Origin;
 use App\Models\State;
 use App\Models\Uom;
+use App\Models\Unit;
 use App\Models\SeaShipment;
 use App\Models\SeaShipmentLine;
 
@@ -74,7 +76,7 @@ class SeaShipmentSheetImport implements ToCollection
         try {
             foreach ($collection as $row) {
                 $currentRow++;
-                if ($rowNumber < 3) {
+                if ($rowNumber < 2) {
                     // Header column
                     $headerColumn = $row->toArray();
                     $rowNumber++;
@@ -82,7 +84,7 @@ class SeaShipmentSheetImport implements ToCollection
                 }
 
                 // Shipment
-                if ($rowNumber === 3) {
+                if ($rowNumber === 2) {
                     // Shipper
                     if ($row[4]) {
                         $checkShipper = Shipper::where('name', 'like', '%' . $row[4] . '%')->first();
@@ -94,11 +96,22 @@ class SeaShipmentSheetImport implements ToCollection
                         $IdShipper = $checkShipper->id_shipper;
                     }
 
+                    // Company
+                    if ($row[13]) {
+                        $checkCompany = Company::where('name', 'like', '%' . $row[13] . '%')->first();
+                        if (!$checkCompany) {
+                            $checkCompany = Company::create(['name' => strtoupper($row[13])]);
+                        }
+
+                        // IdCompany
+                        $IdCompany = $checkCompany->id_company;
+                    }
+
                     // Customer
                     if ($row[2]) {
                         $checkCustomer = Customer::where('name', 'like', '%' . $row[2] . '%')->first();
                         if (!$checkCustomer) {
-                            $checkCustomer = Customer::create(['name' => strtoupper($row[2]), 'shipper_ids' => $IdShipper]);
+                            $checkCustomer = Customer::create(['name' => strtoupper($row[2]), 'shipper_ids' => $IdShipper, 'id_company' => $IdCompany]);
                         }
 
                         // IdCustomer
@@ -138,7 +151,7 @@ class SeaShipmentSheetImport implements ToCollection
                     }
 
                     $valueKey = $row[0] . \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1])->format('Y-m-d') . $IdShipper . $IdCustomer . $IdOrigin . 
-                    \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[7])->format('Y-m-d');
+                    \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[7])->format('Y-m-d') . $IdCompany;
 
                     $dataSeaShipment = [
                         'no_aju' => strtoupper($row[0]),
@@ -157,29 +170,29 @@ class SeaShipmentSheetImport implements ToCollection
                 }
 
                 // Shipment line
-                if ($rowNumber > 8 && !empty($row[0])) {
+                if ($rowNumber > 6 && !empty($row[1])) {
                     $tot_cbm1 = null;
                     $tot_cbm2 = null;
 
-                    if ($row[4] && $row[9] && $row[10] && $row[11]) {
-                        $tot_cbm1 = $row[9] * $row[10] * $row[11] / 1000000 * $row[4];
+                    if ($row[5] && $row[10] && $row[11] && $row[12]) {
+                        $tot_cbm1 = $row[10] * $row[11] * $row[12] / 1000000 * $row[5];
 
                     } else {
-                        if ($row[12]) {
-                            $tot_cbm1 = $row[12];
+                        if ($row[13]) {
+                            $tot_cbm1 = $row[13];
                         }
                     }
 
-                    if ($row[6] && $row[9] && $row[10] && $row[11]) {
-                        $tot_cbm2 = $row[9] * $row[10] * $row[11] / 1000000 * $row[6];
+                    if ($row[7] && $row[10] && $row[11] && $row[12]) {
+                        $tot_cbm2 = $row[10] * $row[11] * $row[12] / 1000000 * $row[7];
                     }
 
                     // UOM Pkgs
                     $IdUomPkgs = null;
-                    if ($row[5]) {
-                        $checkUomPkgs = Uom::where('name', 'like', '%' . $row[5] . '%')->first();
+                    if ($row[6]) {
+                        $checkUomPkgs = Uom::where('name', 'like', '%' . $row[6] . '%')->first();
                         if (!$checkUomPkgs) {
-                            $checkUomPkgs = Uom::create(['name' => strtoupper($row[5])]);
+                            $checkUomPkgs = Uom::create(['name' => strtoupper($row[6])]);
                         }
 
                         // IdState
@@ -188,22 +201,34 @@ class SeaShipmentSheetImport implements ToCollection
 
                     // UOM Loose
                     $IdUomLoose = null;
-                    if ($row[7]) {
-                        $checkUomLoose = Uom::where('name', 'like', '%' . $row[7] . '%')->first();
+                    if ($row[8]) {
+                        $checkUomLoose = Uom::where('name', 'like', '%' . $row[8] . '%')->first();
                         if (!$checkUomLoose) {
-                            $checkUomLoose = Uom::create(['name' => strtoupper($row[7])]);
+                            $checkUomLoose = Uom::create(['name' => strtoupper($row[8])]);
                         }
 
                         // IdState
                         $IdUomLoose = $checkUomLoose->id_uom;
                     }
 
+                    // IdUnit - LTS = LP, LPI, LPM/LPI
+                    $IdUnit = null;
+                    if ($row[15] && in_array(strtoupper($row[15]), ['LP', 'LPI', 'LPM', 'LPM/LPI', 'LPI/LPM'])) {
+                        $checkUnit = Unit::where('name', 'PCS')->first();
+                        if (!$checkUnit) {
+                            $checkUnit = Unit::create(['name' => 'PCS']);
+                        }
+
+                        // IdState
+                        $IdUnit = $checkUnit->id_unit;
+                    }
+
                     // State
                     $IdState = null;
-                    if ($row[16]) {
-                        $checkState = State::where('name', 'like', '%' . $row[16] . '%')->first();
+                    if ($row[18]) {
+                        $checkState = State::where('name', 'like', '%' . $row[18] . '%')->first();
                         if (!$checkState) {
-                            $checkState = State::create(['name' => strtoupper($row[16])]);
+                            $checkState = State::create(['name' => strtoupper($row[18])]);
                         }
 
                         // IdState
@@ -211,28 +236,30 @@ class SeaShipmentSheetImport implements ToCollection
                     }
 
                     // Marking
-                    $marking = $row[2];
-                    if (!empty($row[3])) {
-                        $marking .= ' ' . $row[3];
+                    $marking = $row[3];
+                    if (!empty($row[4])) {
+                        $marking .= ' ' . $row[4];
                     }
 
                     $dataShipmentLine = [
                         'id_sea_shipment' => $seaShipment->id_sea_shipment,
-                        'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]),
-                        'code' => strtoupper($row[1]),
+                        'date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1]),
+                        'code' => strtoupper($row[2]),
                         'marking' => strtoupper($marking),
-                        'qty_pkgs' => $row[4],
+                        'qty_pkgs' => $row[5],
                         'id_uom_pkgs' => $IdUomPkgs,
-                        'qty_loose' => $row[6],
+                        'qty_loose' => $row[7],
                         'id_uom_loose' => $IdUomLoose,
-                        'weight' => $row[8],
-                        'dimension_p' => $row[9],
-                        'dimension_l' => $row[10],
-                        'dimension_t' => $row[11],
+                        'weight' => $row[9],
+                        'dimension_p' => $row[10],
+                        'dimension_l' => $row[11],
+                        'dimension_t' => $row[12],
                         'tot_cbm_1' => $tot_cbm1,
                         'tot_cbm_2' => $tot_cbm2,
-                        'lts' => strtoupper($row[14]),
-                        'desc' => strtoupper($row[15]),
+                        'lts' => strtoupper($row[15]),
+                        'qty' => $row[16],
+                        'id_unit' => $IdUnit,
+                        'desc' => strtoupper($row[17]),
                         'id_state' => $IdState,
                     ];
 

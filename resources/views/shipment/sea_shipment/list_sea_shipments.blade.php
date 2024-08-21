@@ -47,6 +47,7 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Origin</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etd</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Eta</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                                     <th class="text-center text-uppercase text-secondary"></th>
                                 </tr>
@@ -72,10 +73,10 @@
                                     <td class="align-middle text-center text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ $ss->date ? \Carbon\Carbon::createFromFormat('Y-m-d', $ss->date)->format('d-M-y') : '-' }}</p>
                                     </td>
-                                    <td class="align-middle text-center text-sm">
+                                    <td class="align-middle text-start text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ $customer[$ss->id_customer] ?? '-' }}</p>
                                     </td>
-                                    <td class="align-middle text-center text-sm">
+                                    <td class="align-middle text-start text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ $shipper[$ss->id_shipper] ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-end">
@@ -91,6 +92,9 @@
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         <p class="text-sm font-weight-normal mb-0">{{ $ss->eta ? \Carbon\Carbon::createFromFormat('Y-m-d', $ss->eta)->format('d-M-y') : '-' }}</p>
+                                    </td>
+                                    <td class="align-middle text-start text-sm">
+                                        <p class="text-sm font-weight-normal mb-0">{{ $ss->customer->company->name ?? '-' }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         @if ($ss->is_printed)

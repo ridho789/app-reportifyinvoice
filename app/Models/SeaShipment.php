@@ -35,4 +35,12 @@ class SeaShipment extends Model
         'printdate',
         'id_history'
     ];
+
+    public function customer() {
+        return $this->belongsTo(Customer::class, 'id_customer', 'id_customer');
+    }
+
+    public function company() {
+        return $this->belongsTo(Company::class, 'id_company', 'id_company');
+    }
 }

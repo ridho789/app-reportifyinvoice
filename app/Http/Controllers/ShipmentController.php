@@ -59,7 +59,18 @@ class ShipmentController extends Controller
     }
 
     public function listSeaShipment() {
-        $allSeaShipment = SeaShipment::orderBy('etd')->get();
+        // $allSeaShipment = SeaShipment::orderBy('etd')->get();
+        $allSeaShipment = SeaShipment::select(
+            'tbl_sea_shipment.*',
+            'tbl_customers.id_company as customer_id_company',
+            'tbl_companies.id_company as company_id_company'
+        )
+        ->leftJoin('tbl_customers', 'tbl_sea_shipment.id_customer', '=', 'tbl_customers.id_customer')
+        ->leftJoin('tbl_companies', 'tbl_customers.id_company', '=', 'tbl_companies.id_company')
+        ->orderBy('tbl_companies.id_company')
+        ->orderBy('tbl_sea_shipment.etd')
+        ->get();
+    
         $customer = Customer::pluck('name', 'id_customer');
         $shipper = Shipper::pluck('name', 'id_shipper');
         $ship = Ship::pluck('name', 'id_ship');

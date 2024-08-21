@@ -26,4 +26,8 @@ class Customer extends Model
         'id_banker',
         'id_history',
     ];
+
+    public function company() {
+        return $this->belongsTo(Company::class, 'id_company', 'id_company');
+    }
 }
