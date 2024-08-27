@@ -364,6 +364,11 @@ class ShipmentController extends Controller
         }
     }
 
+    public function deleteSeaShipmentLine($id) {
+        SeaShipmentLine::where('id_sea_shipment_line', $id)->delete();
+        return redirect()->back();
+    }
+
     public function deleteMultiSeaShipment(Request $request) {
         // Convert comma-separated string to array
         $ids = explode(',', $request->ids);

@@ -208,6 +208,7 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Unit</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Desc</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">State</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2"></th>
                                     </tr>
                                     <tr>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" colspan="2">Pkgs</th>
@@ -328,6 +329,11 @@
                                                 </option>
                                                 @endforeach
                                             </select>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <a href="javascript:void(0);" onclick="confirmShipmentLineDelete({{ $ssl->id_sea_shipment_line }}, {{ $loop->iteration }})">
+                                                <i class="material-icons text-primary position-relative text-lg">delete</i>
+                                            </a>
                                         </td>
                                     </tr>
                                     <!-- inside new line -->
@@ -478,6 +484,7 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Unit</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">Desc</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2">State</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" rowspan="2"></th>
                                     </tr>
                                     <tr>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" colspan="2">Pkgs</th>
@@ -786,39 +793,38 @@
                                         <div class="accordion-1">
                                             <div class="row">
                                                 <div class="accordion" id="accordionLTS">
-                                                    @foreach ($groupedLTS as $data)
-                                                    @if ($data)
                                                     <div class="accordion-item mb-4">
-                                                        <div class="accordion-header" id="headingOne-{{ $loop->index }}">
-                                                            <label style="margin-left: 0;">Additional Bill</label>
+                                                        <div class="accordion-header" id="headingOne" style="margin-top: -1.7px;">
+                                                            <label style="margin-left: 0; margin-bottom: 8.5px;">Additional Bill</label>
                                                             <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" 
-                                                                data-bs-target="#collapseOneLTS-{{ $loop->index }}" aria-expanded="false" aria-controls="collapseOneLTS-{{ $loop->index }}" 
+                                                                data-bs-target="#collapseOneLTS" aria-expanded="false" aria-controls="collapseOneLTS" 
                                                                 style="padding: 0rem 0.5rem;">
                                                                 <label class="font-weight-normal" style="margin-left: -7.5px;">
-                                                                    <b style="color: #344767;">LTS - {{ $data }}</b>
+                                                                    <b style="color: #344767;">List Cas LTS</b>
                                                                 </label>
                                                                 <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3 collapse-icon" aria-hidden="true"></i>
                                                                 <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3 collapse-icon d-none" aria-hidden="true"></i>
                                                             </button>
                                                         </div>
 
-                                                        <div id="collapseOneLTS-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="headingOne-{{ $loop->index }}" 
-                                                        data-bs-parent="#accordionLTS">
-                                                            <div class="accordion-body" style="padding: 3.20rem 0rem 0rem;">
-                                                            <div class="input-group input-group-static mb-4">
-                                                                    <div class="col-5">
-                                                                        <input type="text" class="form-control lts_code" name="lts_code[]" value="{{ $data }}" readonly>
+                                                        <div id="collapseOneLTS" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionLTS">
+                                                            <div class="accordion-body" style="padding: 0.5rem 0rem 0rem;">
+                                                                @foreach ($groupedLTS as $data)
+                                                                    @if ($data)
+                                                                    <div class="input-group input-group-static mb-1">
+                                                                        <div class="col-5">
+                                                                            <input type="text" class="form-control lts_code" name="lts_code[]" value="{{ $data }}" readonly>
+                                                                        </div>
+                                                                        <div class="col-1"></div>
+                                                                        <div class="col-6">
+                                                                            <input type="text" class="form-control lts_bill" name="lts_bill[]" placeholder="Enter price..">
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="col-1"></div>
-                                                                    <div class="col-6">
-                                                                        <input type="text" class="form-control lts_bill" name="lts_bill[]" placeholder="Enter price..">
-                                                                    </div>
-                                                                </div>
+                                                                    @endif
+                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    @endif
-                                                    @endforeach
                                                 </div>
                                             </div>
                                         </div>
@@ -1196,9 +1202,8 @@
                                     </div>
                                 @else
                                     <div class="input-group input-group-static mb-4">
-                                        <label class="text-sm">Customer Bill <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control custom_pricelist" style="margin-bottom: 1.5px;" 
-                                        name="custom_pricelist" placeholder="Enter price.." required>
+                                        <label class="text-sm" style="margin-bottom: 1.5px;">Customer Bill <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control custom_pricelist" name="custom_pricelist" placeholder="Enter price.." required>
                                     </div>
                                 @endif
 
@@ -1207,39 +1212,39 @@
                                     <div class="accordion-1">
                                         <div class="row">
                                             <div class="accordion" id="accordionLTS">
-                                                @foreach ($groupedLTS as $data)
-                                                @if ($data)
                                                 <div class="accordion-item mb-4">
-                                                    <div class="accordion-header" id="headingOne-{{ $loop->index }}">
-                                                        <label style="margin-left: 0;">Additional Bill</label>
+                                                    <div class="accordion-header" id="headingOne" style="margin-top: -5px;">
+                                                        <label style="margin-left: 0; margin-top: 9px;">Additional Bill</label>
                                                         <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" 
-                                                            data-bs-target="#collapseOneLTS-{{ $loop->index }}" aria-expanded="false" aria-controls="collapseOneLTS-{{ $loop->index }}" 
+                                                            data-bs-target="#collapseOneLTS" aria-expanded="false" aria-controls="collapseOneLTS" 
                                                             style="padding: 0rem 0.5rem;">
                                                             <label class="font-weight-normal" style="margin-left: -7.5px;">
-                                                                <b style="color: #344767;">LTS - {{ $data }}</b>
+                                                                <b style="color: #344767;">List Cas LTS</b>
                                                             </label>
                                                             <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3 collapse-icon" aria-hidden="true"></i>
                                                             <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3 collapse-icon d-none" aria-hidden="true"></i>
                                                         </button>
                                                     </div>
 
-                                                    <div id="collapseOneLTS-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="headingOne-{{ $loop->index }}" 
+                                                    <div id="collapseOneLTS" class="accordion-collapse collapse" aria-labelledby="headingOne" 
                                                     data-bs-parent="#accordionLTS">
-                                                        <div class="accordion-body" style="padding: {{ count($pricelist) > 0 ? '3.1rem' : '3.2rem' }} 0rem 0rem;">
-                                                        <div class="input-group input-group-static mb-4">
-                                                                <div class="col-5">
-                                                                    <input type="text" class="form-control lts_code" name="lts_code[]" value="{{ $data }}" readonly>
-                                                                </div>
-                                                                <div class="col-1"></div>
-                                                                <div class="col-6">
-                                                                    <input type="text" class="form-control lts_bill" name="lts_bill[]" placeholder="Enter price..">
+                                                        <div class="accordion-body" style="padding: 0.3rem 0rem 0rem;">
+                                                        @foreach ($groupedLTS as $data)
+                                                            @if ($data)
+                                                            <div class="input-group input-group-static mb-1">
+                                                                    <div class="col-5">
+                                                                        <input type="text" class="form-control lts_code" name="lts_code[]" value="{{ $data }}" readonly>
+                                                                    </div>
+                                                                    <div class="col-1"></div>
+                                                                    <div class="col-6">
+                                                                        <input type="text" class="form-control lts_bill" name="lts_bill[]" placeholder="Enter price..">
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                            @endif
+                                                        @endforeach
                                                     </div>
                                                 </div>
-                                                @endif
-                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
@@ -1332,6 +1337,23 @@
             tags: true
         });
     });
+
+    function confirmShipmentLineDelete(id, number) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You sure you want to delete the data in row ' + number + '?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let deleteUrl = '{{ url("sea_shipment_line-delete") }}/' + id;
+                window.location.href = deleteUrl;
+            }
+        });
+    }
 
     $('.select-cust').change(function() {
         var selectedCustomerId = $(this).val();
@@ -2008,7 +2030,7 @@
         newRow.innerHTML = `
         <input type="hidden" name="id_sea_shipment_line[]" value="">
         <td class="align-middle text-center text-sm" width="2.5%">
-            <div class="d-flex px-3 py-1">${rowCount}.</div>
+            <div class="d-flex px-3 py-1 row-number">${rowCount}.</div>
         </td>
         <td class="align-middle text-center" width="7.5%">
             <input type="date" class="form-control text-center" name="bldate[]" value="" style="border: 0px;" required>
@@ -2103,6 +2125,11 @@
                 </option>
                 @endforeach
             </select>
+        </td>
+        <td class="align-middle text-center">
+            <a href="javascript:void(0);" onclick="confirmNewShipmentLineDelete(this)">
+                <i class="material-icons text-primary position-relative text-lg">delete</i>
+            </a>
         </td>
         `;
         tableBody.appendChild(newRow);
@@ -2230,6 +2257,38 @@
             });
         }
     });
+
+    // Confirm to delete shipment line
+    function confirmNewShipmentLineDelete(element) {
+        const row = element.closest('tr');
+        const rowNumber = row.querySelector('.row-number').textContent.trim().replace('.', '');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You sure you want to delete row number ' + rowNumber + '?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const row = element.closest('tr');
+                row.remove();
+                updateRowNumbers();
+            }
+        });
+    }
+
+    // Fungsi untuk memperbarui nomor baris
+    function updateRowNumbers() {
+        const rows = document.querySelectorAll('#shipmentTableBody tr');
+        rows.forEach((row, index) => {
+            const numberCell = row.querySelector('.row-number');
+            if (numberCell) {
+                numberCell.textContent = `${index + 1}.`;
+            }
+        });
+    }
 
     // Drag or Drop File
     document.addEventListener('DOMContentLoaded', (event) => {

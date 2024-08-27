@@ -64,6 +64,9 @@ Route::group(['middleware' => ['auth', 'check.role.user:0,1']], function () {
     Route::post('import-sea-shipment', [shipmentController::class, 'importSeaShipment']);
     Route::post('print-sea-shipment', [shipmentController::class, 'printSeaShipment']);
 
+    // sea shipment line
+    Route::get('sea_shipment_line-delete/{id_sea_shipment_line}', [shipmentController::class, 'deleteSeaShipmentLine']);
+
     // bill recaps
     Route::get('/list_bill_recap', [BillRecapController::class, 'index']);
     Route::get('/form_bill_recap', [BillRecapController::class, 'create']);
