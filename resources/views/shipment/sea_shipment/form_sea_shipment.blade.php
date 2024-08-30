@@ -114,7 +114,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td width=10%>
+                                        <td>
                                             <div class="d-flex px-3 py-1">
                                                 <input type="hidden" name="id_sea_shipment" value="{{ $seaShipment->id_sea_shipment }}">
                                                 <input type="text" class="form-control" name="no_aju" value="{{ $seaShipment->no_aju ?? '-' }}" 
@@ -400,7 +400,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td width=10%>
+                                        <td>
                                             <div class="d-flex px-3 py-1">
                                                 <input type="text" class="form-control" name="number" oninput="this.value = this.value.toUpperCase()" placeholder="...">
                                             </div>
@@ -1255,8 +1255,11 @@
                     
                     <hr>
                     <div class="text-start mt-4">
-                        <button type="submit" class="btn bg-gradient-primary btn-sm" name="is_update" value="true">Update Data</button>
-                        <button type="submit" class="btn bg-gradient-secondary btn-sm ms-2" name="is_print" value="true">Print Invoice</button>
+                        @php
+                            $hasNullState = $seaShipmentLines->whereNull('id_state')->isNotEmpty();
+                        @endphp
+                        <button type="submit" class="btn bg-gradient-primary btn-sm" name="is_update" value="true" {{ $hasNullState ? '' : 'disabled' }}>Update Data</button>
+                        <button type="submit" class="btn bg-gradient-secondary btn-sm ms-2" name="is_print" value="true" {{ $hasNullState ? '' : 'disabled' }}>Print Invoice</button>
                     </div>
                 </div>
             </form>

@@ -427,7 +427,12 @@ class ShipmentController extends Controller
     public function printSeaShipment(Request $request) {
         $id_sea_shipment = $request->id;
         $seaShipment = SeaShipment::where('id_sea_shipment', $id_sea_shipment)->firstOrFail();
-        $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->orderBy('marking')->get();
+        $holdState = State::where('name', 'HOLD')->first();
+        $seaShipmentLines = SeaShipmentLine::where('id_sea_shipment', $seaShipment->id_sea_shipment)
+        ->where(function($query) use ($holdState) {
+            $query->where('id_state', '!=', $holdState->id_state)
+                  ->orWhereNull('id_state');
+        })->orderBy('date')->orderBy('marking')->get();
         $seaShipmentBill = SeaShipmentBill::where('id_sea_shipment', $seaShipment->id_sea_shipment)->orderBy('date')->get();
 
         $customer = Customer::where('id_customer', $seaShipment->id_customer)->firstOrFail();
