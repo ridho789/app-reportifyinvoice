@@ -923,10 +923,10 @@
                                                                     @php
                                                                         $checkSeaShipmentAnotherBill = null;
                                                                         if (isset($seaShipmentAnotherBill) && count($seaShipmentAnotherBill) > 0) {
-                                                                            $checkSeaShipmentAnotherBill = $seaShipmentAnotherBill->where('date', $date)->all();
+                                                                            $checkSeaShipmentAnotherBill = $seaShipmentAnotherBill->where('id_sea_shipment', $seaShipment->id_sea_shipment)->all();
                                                                         }
                                                                     @endphp
-                                                                    @if($checkSeaShipmentAnotherBill)
+                                                                    @if($checkSeaShipmentAnotherBill && count($checkSeaShipmentAnotherBill) > 0)
                                                                         @foreach($checkSeaShipmentAnotherBill as $index => $data)
                                                                             <input type="hidden" name="idAnotherBill[]" value="{{ $data->id_sea_shipment_other_bill }}">
                                                                             <input type="hidden" name="dateAnotherBL[]" value="{{ $date }}">
@@ -1083,10 +1083,10 @@
                                         @php
                                             $checkSeaShipmentAnotherBill = null;
                                             if (isset($seaShipmentAnotherBill) && count($seaShipmentAnotherBill) > 0) {
-                                                $checkSeaShipmentAnotherBill = $seaShipmentAnotherBill->where('date', $seaShipment->date)->all();
+                                                $checkSeaShipmentAnotherBill = $seaShipmentAnotherBill->where('id_sea_shipment', $seaShipment->id_sea_shipment)->all();
                                             }
                                         @endphp
-                                        @if($checkSeaShipmentAnotherBill)
+                                        @if($checkSeaShipmentAnotherBill && count($checkSeaShipmentAnotherBill) > 0)
                                             @foreach($checkSeaShipmentAnotherBill as $data)
                                                 <input type="hidden" name="idAnotherBill[]" value="{{ $data->id_sea_shipment_other_bill }}">
                                                 <input type="hidden" name="dateAnotherBL[]" value="{{ $seaShipment->date }}">
